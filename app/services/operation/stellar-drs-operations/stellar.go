@@ -8,7 +8,7 @@ import (
 	"gitlab.com/velo-labs/cen/app/constants"
 	env "gitlab.com/velo-labs/cen/app/environments"
 	"gitlab.com/velo-labs/cen/app/modules/stellar"
-	"gitlab.com/velo-labs/cen/app/services"
+	"gitlab.com/velo-labs/cen/app/services/operation"
 	"gitlab.com/velo-labs/cen/app/utils"
 )
 
@@ -21,22 +21,22 @@ func (o *ops) Setup(
 	peggedCurrency string,
 	assetName string,
 	creditOwnerAddress string,
-) (string, error) {
+) (setupTxB64 string, issuerAddress string, distributorAddress string, err error) {
 	var txops []txnbuild.Operation
 
 	drsKP, err := utils.KpFromSeedString(env.DrsPrivkey)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to derived KP from seed key")
+		return "", "", "", errors.Wrap(err, "failed to derived KP from seed key")
 	}
 
 	issuerKP, err := keypair.Random()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to create issuer KP")
+		return "", "", "", errors.Wrap(err, "failed to create issuer KP")
 	}
 
 	distributorKP, err := keypair.Random()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to create distributor KP")
+		return "", "", "", errors.Wrap(err, "failed to create distributor KP")
 	}
 
 	createIssuerOp := txnbuild.CreateAccount{
@@ -52,16 +52,31 @@ func (o *ops) Setup(
 	txops = append(txops, &createDistributorOp)
 
 	storePeggedValueOp := txnbuild.ManageData{
+		SourceAccount: &horizon.Account{
+			AccountID: issuerKP.Address(),
+		},
 		Name:  "peggedValue",
 		Value: []byte(peggedValue),
 	}
 	txops = append(txops, &storePeggedValueOp)
 
 	storePeggedCurrencyOp := txnbuild.ManageData{
+		SourceAccount: &horizon.Account{
+			AccountID: issuerKP.Address(),
+		},
 		Name:  "peggedCurrency",
 		Value: []byte(peggedCurrency),
 	}
 	txops = append(txops, &storePeggedCurrencyOp)
+
+	storeAssetNameOp := txnbuild.ManageData{
+		SourceAccount: &horizon.Account{
+			AccountID: issuerKP.Address(),
+		},
+		Name:  "assetName",
+		Value: []byte(assetName),
+	}
+	txops = append(txops, &storeAssetNameOp)
 
 	distTrustOp := txnbuild.ChangeTrust{
 		Limit: constants.MaxTrustlineLimit,
@@ -136,7 +151,7 @@ func (o *ops) Setup(
 
 	drsAccount, err := o.StellarRepository.LoadAccount(env.DrsAddress)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to load the drs account")
+		return "", "", "", errors.Wrap(err, "failed to load the drs account")
 	}
 
 	setupTx := txnbuild.Transaction{
@@ -146,12 +161,12 @@ func (o *ops) Setup(
 		Timebounds:    txnbuild.NewTimeout(300),
 	}
 
-	setupTxB64, err := setupTx.BuildSignEncode(drsKP, distributorKP, issuerKP)
+	setupTxB64, err = setupTx.BuildSignEncode(drsKP, distributorKP, issuerKP)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to build and sign mintTx")
+		return "", "", "", errors.Wrap(err, "failed to build and sign mintTx")
 	}
 
-	return setupTxB64, nil
+	return setupTxB64, issuerKP.Address(), distributorKP.Address(), nil
 }
 
 func (o *ops) Mint(
@@ -200,7 +215,7 @@ func (o *ops) Mint(
 	return mintTxB64, nil
 }
 
-func NewDrsOps(stellarRepository stellar.Repository) services.Operation {
+func NewDrsOps(stellarRepository stellar.Repository) operation.Interface {
 	return &ops{
 		StellarRepository: stellarRepository,
 	}

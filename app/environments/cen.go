@@ -10,6 +10,8 @@ var (
 	DrsPrivkey        string
 	VeloIssuerAddress string
 	NetworkPassphrase string
+	LevelDBPath       string
+	HorizonUrl string
 )
 
 // Init Initialize env variables
@@ -18,6 +20,8 @@ func Init() {
 	DrsPrivkey = requireEnv("DRS_PRIVKEY")
 	VeloIssuerAddress = requireEnv("VELO_ISSUER_ADDRESS")
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
+	LevelDBPath = requireEnv("LEVEL_DB_PATH")
+	HorizonUrl = requireEnv("HORIZON_URL")
 }
 
 func requireEnv(envName string) string {

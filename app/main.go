@@ -1,5 +1,32 @@
 package main
 
-func main() {
+import (
+	"github.com/gin-gonic/gin"
+	"gitlab.com/velo-labs/cen/app/extensions"
+	_nodeHttps "gitlab.com/velo-labs/cen/app/modules/node/deliveries/https"
+	_nodeRepository "gitlab.com/velo-labs/cen/app/modules/node/repositories"
+	_nodeUsecase "gitlab.com/velo-labs/cen/app/modules/node/usecases"
+	_stellarRepository "gitlab.com/velo-labs/cen/app/modules/stellar/repository"
+	stellar_drsops "gitlab.com/velo-labs/cen/app/services/operation/stellar-drs-operations"
+)
 
+func main() {
+	ginEngine := gin.New()
+
+	ginEngine.Use(gin.Recovery())
+	ginEngine.Use(gin.Logger())
+
+	levelConn := extensions.ConnLevelDB()
+	defer levelConn.Close()
+
+	horizonclient := extensions.ConnectHorizon()
+
+	nodeRepository := _nodeRepository.NewNodeRepository(levelConn)
+	stellarRepository := _stellarRepository.NewHorizonStellarRepository(horizonclient)
+
+	drsops := stellar_drsops.NewDrsOps(stellarRepository)
+
+	nodeUsecase := _nodeUsecase.NewNodeUseCase(drsops, nodeRepository, stellarRepository)
+
+	_nodeHttps.NewEndpointHttpHandler(ginEngine, nodeUsecase)
 }

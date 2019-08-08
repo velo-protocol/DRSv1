@@ -12,7 +12,7 @@ func (uc *usecase) Setup(
 	peggedValue string,
 	peggedCurrency string,
 	assetName string,
-) (*entities.Setup, error) {
+) (*entities.Credit, error) {
 	var txe xdr.TransactionEnvelope
 
 	err := xdr.SafeUnmarshalBase64(issuerCreationTx, &txe)
@@ -21,7 +21,11 @@ func (uc *usecase) Setup(
 	}
 
 	if len(txe.Tx.Operations) != 1 {
-		return nil, errors.New("issuer creation tx must contains at least 3 XLM for issuer account")
+		return nil, errors.New("issuer creation tx must contains only one operation")
+	}
+
+	if txe.Tx.Operations[0].Body.PaymentOp.Amount != 30000000 {
+		return nil, errors.New("issuer creation tx must send 3 XLM to the DRS address")
 	}
 
 	if txe.Tx.Operations[0].Body.PaymentOp.Destination.Address() != env.DrsAddress {
@@ -33,7 +37,7 @@ func (uc *usecase) Setup(
 		return nil, errors.Wrap(err, "failed to submit issuer creation tx")
 	}
 
-	setupTxB64, err := uc.Drsops.Setup(peggedValue, peggedCurrency, assetName, txe.Tx.SourceAccount.Address())
+	setupTxB64, issuerAddress, distributorAddress, err := uc.Drsops.Setup(peggedValue, peggedCurrency, assetName, txe.Tx.SourceAccount.Address())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create a setup tx")
 	}
@@ -43,10 +47,21 @@ func (uc *usecase) Setup(
 		return nil, errors.Wrap(err, "failed to submit setup txe to stellar")
 	}
 
-	//TODO: save creditOwnerAddress, issuerAddress, and distributorAddress to leveldb
+	creditEntity := &entities.Credit{
+		CreditOwnerAddress:   txe.Tx.SourceAccount.Address(),
+		IssuerCreationTxHash: issuerCreationTxSuccess.Hash,
+		SetupTxHash:          setupTxSuccess.Hash,
+		IssuerAddress:        issuerAddress,
+		DistributorAddress:   distributorAddress,
+		AssetName:            assetName,
+		PeggedCurrency:       peggedCurrency,
+		PeggedValue:          peggedValue,
+	}
 
-	return &entities.Setup{
-		PostCollateralTxHash: issuerCreationTxSuccess.Hash,
-		MintTxHash: setupTxSuccess.Hash,
-	}, nil
+	err = uc.NodeRepository.SaveCredit(*creditEntity)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to save credit")
+	}
+
+	return creditEntity, nil
 }

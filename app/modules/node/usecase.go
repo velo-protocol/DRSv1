@@ -1,12 +1,12 @@
-package client
+package node
 
 import "gitlab.com/velo-labs/cen/app/entities"
 
 type UseCase interface {
 	Setup(
-		setupXdr string,
+		issuerCreationTx string,
 		peggedValue string,
 		peggedCurrency string,
 		assetName string,
-	) (*entities.Mint, error)
+	) (*entities.Credit, error)
 }

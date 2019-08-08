@@ -1,12 +1,12 @@
-package services
+package operation
 
-type Operation interface {
+type Interface interface {
 	Setup(
 		peggedValue string,
 		peggedCurrency string,
 		assetName string,
 		creditOwnerAddress string,
-	) (string, error)
+	) (setupTxB64 string, issuerAddress string, distributorAddress string, err error)
 
 	Mint(
 		amount string,
