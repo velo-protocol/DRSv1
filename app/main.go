@@ -7,7 +7,7 @@ import (
 	_nodeRepository "gitlab.com/velo-labs/cen/app/modules/node/repositories"
 	_nodeUsecase "gitlab.com/velo-labs/cen/app/modules/node/usecases"
 	_stellarRepository "gitlab.com/velo-labs/cen/app/modules/stellar/repository"
-	stellar_drsops "gitlab.com/velo-labs/cen/app/services/operation/stellar-drs-operations"
+	_stellarDrsops "gitlab.com/velo-labs/cen/app/services/operation/stellar-drs-operations"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	nodeRepository := _nodeRepository.NewNodeRepository(levelConn)
 	stellarRepository := _stellarRepository.NewHorizonStellarRepository(horizonclient)
 
-	drsops := stellar_drsops.NewDrsOps(stellarRepository)
+	drsops := _stellarDrsops.NewDrsOps(stellarRepository)
 
 	nodeUsecase := _nodeUsecase.NewNodeUseCase(drsops, nodeRepository, stellarRepository)
 
