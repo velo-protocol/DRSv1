@@ -3,10 +3,13 @@ package models
 import "github.com/mitchellh/mapstructure"
 
 type SetupCreditRequest struct {
+	SenderAccount          string `json:"senderAccount" binding:"required"`
+	Nonce                  int64  `json:"nonce" binding:"required"`
 	SignedIssuerCreationTx string `json:"signedIssuerCreationTx" binding:"required"`
 	PeggedValue            string `json:"peggedValue" binding:"required"`
 	PeggedCurrency         string `json:"peggedCurrency" binding:"required"`
 	AssetName              string `json:"assetName" binding:"required"`
+	Signature              string `json:"signature" binding:"required"`
 }
 
 type SetupCreditResponse struct {

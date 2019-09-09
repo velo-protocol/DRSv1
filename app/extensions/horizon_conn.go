@@ -8,8 +8,8 @@ import (
 
 func ConnectHorizon() *horizonclient.Client {
 	horizonClient := horizonclient.Client{
-		HorizonURL:  env.HorizonUrl,
-		HTTP: http.DefaultClient,
+		HorizonURL: env.HorizonUrl,
+		HTTP:       http.DefaultClient,
 	}
 
 	return &horizonClient

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/app/entities"
+	env "gitlab.com/velo-labs/cen/app/environments"
 	"gitlab.com/velo-labs/cen/app/modules/node/repositories/models"
 )
 
@@ -18,7 +19,7 @@ func (repo *repository) SaveCredit(credit entities.Credit) error {
 		return err
 	}
 
-	err = repo.LevelConn.Put([]byte(credit.CreditOwnerAddress+credit.AssetName), creditJson, nil)
+	err = repo.LevelConn.Put([]byte(env.CreditPrefix+credit.CreditOwnerAddress+credit.AssetName), creditJson, nil)
 
 	return nil
 }

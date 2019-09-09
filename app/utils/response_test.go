@@ -1,7 +1,7 @@
 package utils_test
 
 import (
-	"gitlab.com/lightnet-thailand/velo-operators/report-service/app/utils"
+	"gitlab.com/velo-labs/cen/app/utils"
 	"testing"
 )
 

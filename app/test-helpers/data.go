@@ -6,6 +6,6 @@ import (
 
 func GetCreditEntity() entities.Credit {
 	return entities.Credit{
-		CreditOwnerAddress: GetRandStellarAccount(),
+		CreditOwnerAddress: GetRandStellarAccount().Address(),
 	}
 }

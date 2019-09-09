@@ -30,15 +30,6 @@ func NewSuccessResponse(data interface{}) BaseSuccessResponse {
 	return *r
 }
 
-func NewSuccessResponseWithPagination(data interface{}, meta interface{}) SuccessResponseWithPagination {
-	r := new(SuccessResponseWithPagination)
-	r.Status = StatusSuccess
-	r.Message = MessageOk
-	r.Metadata = meta
-	r.Data = data
-	return *r
-}
-
 type ErrorResponse struct {
 	Status  string `json:"status" example:"fail"`
 	Message string `json:"message" example:"Error message will be show here"`

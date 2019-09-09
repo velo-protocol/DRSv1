@@ -11,7 +11,10 @@ var (
 	VeloIssuerAddress string
 	NetworkPassphrase string
 	LevelDBPath       string
-	HorizonUrl string
+	HorizonUrl        string
+	CreditPrefix      string
+	PriceFeedPrefix   string
+	PricePrefix       string
 )
 
 // Init Initialize env variables
@@ -22,6 +25,9 @@ func Init() {
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
 	LevelDBPath = requireEnv("LEVEL_DB_PATH")
 	HorizonUrl = requireEnv("HORIZON_URL")
+	CreditPrefix = requireEnv("CREDIT_PREFIX")
+	PriceFeedPrefix = requireEnv("PRICE_FEED_PREFIX")
+	PricePrefix = requireEnv("PRICE_PREFIX")
 }
 
 func requireEnv(envName string) string {

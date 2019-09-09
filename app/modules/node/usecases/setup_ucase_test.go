@@ -26,7 +26,7 @@ func TestUsecase_Setup(t *testing.T) {
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("string"),
-		).Return(test_helpers.GetIssuerCreationTxB64(), test_helpers.GetRandStellarAccount(), test_helpers.GetRandStellarAccount(), nil)
+		).Return(test_helpers.GetIssuerCreationTxB64(), test_helpers.GetRandStellarAccount().Address(), test_helpers.GetRandStellarAccount().Address(), nil)
 
 		mockedStellarRepository.On("SubmitTransaction", mock.AnythingOfType("string")).
 			Return(&horizon.TransactionSuccess{
@@ -41,6 +41,6 @@ func TestUsecase_Setup(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.NotEmpty(t, setupResult)
-		//assert.Equal(t, "fake-hash", setupResult.IssuerCreationTxHash)
+		assert.Equal(t, "fake-hash", setupResult.IssuerCreationTxHash)
 	})
 }
