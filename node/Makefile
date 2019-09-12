@@ -8,7 +8,6 @@ docs-gen:
 
 dev:
 	@echo "=============starting locally============="
-	go mod tidy
 	docker-compose -f resources/docker/docker-compose.yaml up --build
 
 dev-app:
