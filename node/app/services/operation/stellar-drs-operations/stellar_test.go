@@ -4,9 +4,9 @@ import (
 	"github.com/stellar/go/xdr"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	_stellarRepositoryMocks "gitlab.com/velo-labs/cen/app/modules/stellar/mocks"
-	drsops "gitlab.com/velo-labs/cen/app/services/operation/stellar-drs-operations"
-	test_helpers "gitlab.com/velo-labs/cen/app/test-helpers"
+	_stellarRepositoryMocks "gitlab.com/velo-labs/cen/node/app/modules/stellar/mocks"
+	drsops "gitlab.com/velo-labs/cen/node/app/services/operation/stellar-drs-operations"
+	test_helpers "gitlab.com/velo-labs/cen/node/app/test-helpers"
 	"testing"
 )
 

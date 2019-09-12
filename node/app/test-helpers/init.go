@@ -1,7 +1,7 @@
 package test_helpers
 
 import (
-	env "gitlab.com/velo-labs/cen/app/environments"
+	env "gitlab.com/velo-labs/cen/node/app/environments"
 	"os"
 )
 

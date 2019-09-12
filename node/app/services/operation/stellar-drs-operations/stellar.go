@@ -5,11 +5,11 @@ import (
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/app/constants"
-	env "gitlab.com/velo-labs/cen/app/environments"
-	"gitlab.com/velo-labs/cen/app/modules/stellar"
-	"gitlab.com/velo-labs/cen/app/services/operation"
-	"gitlab.com/velo-labs/cen/app/utils"
+	"gitlab.com/velo-labs/cen/node/app/constants"
+	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/modules/stellar"
+	"gitlab.com/velo-labs/cen/node/app/services/operation"
+	"gitlab.com/velo-labs/cen/node/app/utils"
 )
 
 type ops struct {

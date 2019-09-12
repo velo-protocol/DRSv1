@@ -3,10 +3,10 @@ version: "3.4"
 services:
   cen:
     build:
-      context: ../..
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile: node/Dockerfile
       target: builder
-    container_name: bifrost-service
+    container_name: cen-node
     command:  "sh -c \"cd app && fresh\" "
     volumes:
       - ../..:/go/src/gitlab.com/velo-labs/cen

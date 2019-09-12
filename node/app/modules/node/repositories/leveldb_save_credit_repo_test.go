@@ -6,8 +6,8 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	"github.com/syndtr/goleveldb/leveldb/testutil"
-	"gitlab.com/velo-labs/cen/app/modules/node/repositories"
-	test_helpers "gitlab.com/velo-labs/cen/app/test-helpers"
+	"gitlab.com/velo-labs/cen/node/app/modules/node/repositories"
+	test_helpers "gitlab.com/velo-labs/cen/node/app/test-helpers"
 	"testing"
 )
 

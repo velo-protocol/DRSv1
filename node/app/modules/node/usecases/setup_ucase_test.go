@@ -4,11 +4,11 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	_nodeRepositoryMocked "gitlab.com/velo-labs/cen/app/modules/node/mocks"
-	"gitlab.com/velo-labs/cen/app/modules/node/usecases"
-	_stellarRepositoryMocked "gitlab.com/velo-labs/cen/app/modules/stellar/mocks"
-	_operationServiceMocked "gitlab.com/velo-labs/cen/app/services/operation/mocks"
-	test_helpers "gitlab.com/velo-labs/cen/app/test-helpers"
+	_nodeRepositoryMocked "gitlab.com/velo-labs/cen/node/app/modules/node/mocks"
+	"gitlab.com/velo-labs/cen/node/app/modules/node/usecases"
+	_stellarRepositoryMocked "gitlab.com/velo-labs/cen/node/app/modules/stellar/mocks"
+	_operationServiceMocked "gitlab.com/velo-labs/cen/node/app/services/operation/mocks"
+	test_helpers "gitlab.com/velo-labs/cen/node/app/test-helpers"
 	"testing"
 )
 

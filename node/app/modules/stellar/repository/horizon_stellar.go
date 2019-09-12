@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
-	"gitlab.com/velo-labs/cen/app/modules/stellar"
+	"gitlab.com/velo-labs/cen/node/app/modules/stellar"
 )
 
 type horizonStellarRepository struct {

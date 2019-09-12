@@ -3,8 +3,8 @@ package usecases
 import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/xdr"
-	"gitlab.com/velo-labs/cen/app/entities"
-	env "gitlab.com/velo-labs/cen/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/entities"
+	env "gitlab.com/velo-labs/cen/node/app/environments"
 )
 
 func (uc *usecase) Setup(

@@ -28,7 +28,7 @@ RUN go mod download
 # Copy Go source code
 COPY . .
 # Set Docker's entry point commands
-RUN cd app/ && go build
+RUN cd node/app/ && go build
 
 # ------------------------------------------------------------------------------
 # Deployment image
@@ -40,7 +40,7 @@ FROM golang:1.12.7-alpine3.10
 WORKDIR /go/src/gitlab.com/velo-labs/cen
 #Get artifact from buiber stage
 COPY --from=builder /usr/local/bin/wait-for /usr/local/bin/wait-for
-COPY --from=builder /go/src/gitlab.com/velo-labs/cen/app/app app/
+COPY --from=builder /go/src/gitlab.com/velo-labs/cen/node/app app/
 COPY --from=builder /go/src/gitlab.com/velo-labs/cen/vendor vendor
 # Set Docker's entry point commands
 CMD cd app/ && ./app;

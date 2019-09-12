@@ -2,8 +2,8 @@ package https
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/velo-labs/cen/app/modules/node/deliveries/models"
-	"gitlab.com/velo-labs/cen/app/utils"
+	"gitlab.com/velo-labs/cen/node/app/modules/node/deliveries/models"
+	"gitlab.com/velo-labs/cen/node/app/utils"
 	"net/http"
 )
 

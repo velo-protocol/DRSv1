@@ -1,7 +1,7 @@
 package test_helpers
 
 import (
-	"gitlab.com/velo-labs/cen/app/entities"
+	"gitlab.com/velo-labs/cen/node/app/entities"
 )
 
 func GetCreditEntity() entities.Credit {

@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"github.com/syndtr/goleveldb/leveldb"
-	"gitlab.com/velo-labs/cen/app/modules/node"
+	"gitlab.com/velo-labs/cen/node/app/modules/node"
 )
 
 type repository struct {

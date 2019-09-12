@@ -2,7 +2,7 @@ package extensions
 
 import (
 	"github.com/syndtr/goleveldb/leveldb"
-	env "gitlab.com/velo-labs/cen/app/environments"
+	env "gitlab.com/velo-labs/cen/node/app/environments"
 )
 
 func ConnLevelDB() *leveldb.DB {

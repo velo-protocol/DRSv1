@@ -1,9 +1,9 @@
 package usecases
 
 import (
-	"gitlab.com/velo-labs/cen/app/modules/node"
-	"gitlab.com/velo-labs/cen/app/modules/stellar"
-	"gitlab.com/velo-labs/cen/app/services/operation"
+	"gitlab.com/velo-labs/cen/node/app/modules/node"
+	"gitlab.com/velo-labs/cen/node/app/modules/stellar"
+	"gitlab.com/velo-labs/cen/node/app/services/operation"
 )
 
 type usecase struct {

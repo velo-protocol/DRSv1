@@ -2,7 +2,7 @@ package https
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/velo-labs/cen/app/modules/node"
+	"gitlab.com/velo-labs/cen/node/app/modules/node"
 )
 
 type nodeHandler struct {

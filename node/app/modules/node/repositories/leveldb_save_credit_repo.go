@@ -3,9 +3,9 @@ package repositories
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/app/entities"
-	env "gitlab.com/velo-labs/cen/app/environments"
-	"gitlab.com/velo-labs/cen/app/modules/node/repositories/models"
+	"gitlab.com/velo-labs/cen/node/app/entities"
+	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/modules/node/repositories/models"
 )
 
 func (repo *repository) SaveCredit(credit entities.Credit) error {

@@ -1,7 +1,7 @@
 package utils_test
 
 import (
-	"gitlab.com/velo-labs/cen/app/utils"
+	"gitlab.com/velo-labs/cen/node/app/utils"
 	"testing"
 )
 

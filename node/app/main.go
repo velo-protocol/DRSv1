@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/velo-labs/cen/app/extensions"
-	_nodeHttps "gitlab.com/velo-labs/cen/app/modules/node/deliveries/https"
-	_nodeRepository "gitlab.com/velo-labs/cen/app/modules/node/repositories"
-	_nodeUsecase "gitlab.com/velo-labs/cen/app/modules/node/usecases"
-	_stellarRepository "gitlab.com/velo-labs/cen/app/modules/stellar/repository"
-	_stellarDrsops "gitlab.com/velo-labs/cen/app/services/operation/stellar-drs-operations"
+	"gitlab.com/velo-labs/cen/node/app/extensions"
+	_nodeHttps "gitlab.com/velo-labs/cen/node/app/modules/node/deliveries/https"
+	_nodeRepository "gitlab.com/velo-labs/cen/node/app/modules/node/repositories"
+	_nodeUsecase "gitlab.com/velo-labs/cen/node/app/modules/node/usecases"
+	_stellarRepository "gitlab.com/velo-labs/cen/node/app/modules/stellar/repository"
+	_stellarDrsops "gitlab.com/velo-labs/cen/node/app/services/operation/stellar-drs-operations"
 )
 
 func main() {
