@@ -16,12 +16,12 @@ func main() {
 	ginEngine.Use(gin.Recovery())
 	ginEngine.Use(gin.Logger())
 
-	levelConn := extensions.ConnLevelDB()
-	defer levelConn.Close()
+	dbConn := extensions.ConnectDB()
+	defer dbConn.Close()
 
 	horizonclient := extensions.ConnectHorizon()
 
-	nodeRepository := _nodeRepository.NewNodeRepository(levelConn)
+	nodeRepository := _nodeRepository.NewNodeRepository(dbConn)
 	stellarRepository := _stellarRepository.NewHorizonStellarRepository(horizonclient)
 
 	drsops := _stellarDrsops.NewDrsOps(stellarRepository)

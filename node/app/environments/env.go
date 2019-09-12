@@ -7,23 +7,27 @@ import (
 
 var (
 	DrsAddress        string
-	DrsPrivkey        string
+	DrsPrivateKey     string
 	VeloIssuerAddress string
 	NetworkPassphrase string
-	LevelDBPath       string
 	HorizonUrl        string
 	CreditPrefix      string
 	PriceFeedPrefix   string
 	PricePrefix       string
+
+	PostgresHost     string
+	PostgresPort     string
+	PostgresUser     string
+	PostgresPassword string
+	PostgresDB       string
 )
 
 // Init Initialize env variables
 func Init() {
 	DrsAddress = requireEnv("DRS_ADDRESS")
-	DrsPrivkey = requireEnv("DRS_PRIVKEY")
+	DrsPrivateKey = requireEnv("DRS_PRIVKEY")
 	VeloIssuerAddress = requireEnv("VELO_ISSUER_ADDRESS")
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
-	LevelDBPath = requireEnv("LEVEL_DB_PATH")
 	HorizonUrl = requireEnv("HORIZON_URL")
 	CreditPrefix = requireEnv("CREDIT_PREFIX")
 	PriceFeedPrefix = requireEnv("PRICE_FEED_PREFIX")

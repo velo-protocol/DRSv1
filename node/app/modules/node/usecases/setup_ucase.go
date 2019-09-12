@@ -58,10 +58,5 @@ func (uc *usecase) Setup(
 		PeggedValue:          peggedValue,
 	}
 
-	err = uc.NodeRepository.SaveCredit(*creditEntity)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to save credit")
-	}
-
 	return creditEntity, nil
 }

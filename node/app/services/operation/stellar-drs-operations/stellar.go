@@ -24,7 +24,7 @@ func (o *ops) Setup(
 ) (setupTxB64 string, issuerAddress string, distributorAddress string, err error) {
 	var txops []txnbuild.Operation
 
-	drsKP, err := utils.KpFromSeedString(env.DrsPrivkey)
+	drsKP, err := utils.KpFromSeedString(env.DrsPrivateKey)
 	if err != nil {
 		return "", "", "", errors.Wrap(err, "failed to derived KP from seed key")
 	}
@@ -177,7 +177,7 @@ func (o *ops) Mint(
 ) (string, error) {
 	var txops []txnbuild.Operation
 
-	drsKP, err := utils.KpFromSeedString(env.DrsPrivkey)
+	drsKP, err := utils.KpFromSeedString(env.DrsPrivateKey)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to derived KP from seed key")
 	}

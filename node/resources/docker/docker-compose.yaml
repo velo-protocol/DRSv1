@@ -7,9 +7,9 @@ services:
       dockerfile: node/Dockerfile
       target: builder
     container_name: cen-node
-    command:  "sh -c \"cd app && fresh\" "
+    command:  sh -c 'cd node/app && fresh'
     volumes:
-      - ../..:/go/src/gitlab.com/velo-labs/cen
+      - ../../..:/go/src/gitlab.com/velo-labs/cen
     ports:
       - "8080:8080"
     environment:

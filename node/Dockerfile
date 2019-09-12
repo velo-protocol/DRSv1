@@ -9,7 +9,7 @@ FROM golang:1.12.7-alpine3.10 as builder
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on
-ENV GOPROXY=http://172.17.0.1:3333
+#ENV GOPROXY=http://172.17.0.1:3333
 
 # Update OS package and install Git
 RUN apk update && apk add git mercurial bzr && apk add build-base
@@ -33,7 +33,8 @@ RUN wget https://raw.githubusercontent.com/eficode/wait-for/master/wait-for -O /
 COPY go.mod go.mod
 COPY go.sum go.sum
 
-COPY . .
+COPY node/app node/app
+COPY libs libs
 
 # Set Docker's entry point commands
 RUN cd node/app/ && go build -o /go/bin/node.bin
