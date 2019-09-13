@@ -54,3 +54,12 @@ mock-module:
 
 mock-service:
 	mockery -dir ./app/services/$(service) -name Interface -output ./app/services/$(service)/mocks
+
+proto/init:
+	brew install protobuf
+	go get -u github.com/golang/protobuf/protoc-gen-go
+
+proto/gen:
+	protoc -I ./../grpc --go_out=plugins=grpc:./../grpc ./../grpc/*.proto
+
+
