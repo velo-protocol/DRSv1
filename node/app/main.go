@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	env.Init()
 	grpcServer := grpc.NewServer(
 		// TODO: Add auth, log, correlation, etc. middleware?
 		//grpc.UnaryInterceptor(
@@ -26,6 +27,7 @@ func main() {
 	horizonClient := extensions.GetHorizonClient()
 	dbConn := extensions.ConnectDB()
 	defer dbConn.Close()
+	extensions.DBMigration()
 
 	// Repo
 	stellarRepo := _stellarRepo.Init(horizonClient)

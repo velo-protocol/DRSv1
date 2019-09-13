@@ -35,6 +35,12 @@ func Init() {
 	PriceFeedPrefix = requireEnv("PRICE_FEED_PREFIX")
 	PricePrefix = requireEnv("PRICE_PREFIX")
 
+	PostgresHost = requireEnv("POSTGRES_HOST")
+	PostgresPort = requireEnv("POSTGRES_PORT")
+	PostgresUser = requireEnv("POSTGRES_USER")
+	PostgresPassword = requireEnv("POSTGRES_PASSWORD")
+	PostgresDB = requireEnv("POSTGRES_DB")
+
 	Port = "8080"
 }
 

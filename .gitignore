@@ -1,10 +1,9 @@
 vendor
 node/app/tmp
-app/app
-app/tmp
+node/app/app
 coverage.out
 .coverage.txt
-resources/docker/postgres/db
+node/resources/docker/postgres/db
 
 # IntelliJ project files
 .idea

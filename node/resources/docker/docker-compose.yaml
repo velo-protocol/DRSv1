@@ -7,7 +7,7 @@ services:
       dockerfile: node/Dockerfile
       target: builder
     container_name: cen-node
-    command:  sh -c 'cd node/app && fresh'
+    command:  sh -c 'wait-for postgres-cen-db:5432 --timeout=60 && cd node/app && fresh'
     volumes:
       - ../../..:/go/src/gitlab.com/velo-labs/cen
     ports:
@@ -21,9 +21,15 @@ services:
       CREDIT_PREFIX: "0x0000"
       PRICE_FEED_PREFIX: "0x0001"
       PRICE_PREFIX: "0x0002"
+      POSTGRES_HOST: postgres-cen-db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cen_db
+
   postgres-cen-db:
     image: "postgres:11.5-alpine"
-    container_name: postgres-service-db
+    container_name: postgres-cen-db
     volumes:
       - ./postgres/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
       - ./postgres/db:/var/lib/postgresql/data

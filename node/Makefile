@@ -10,13 +10,16 @@ dev:
 	@echo "=============starting locally============="
 	docker-compose -f resources/docker/docker-compose.yaml up --build
 
-dev-app:
+dev/fast:
 	@echo "=============starting locally============="
-	dep ensure
-	docker-compose -f resources/docker/docker-compose.yaml up --build demo_app
+	docker-compose -f resources/docker/docker-compose.yaml up
+
+dev/app:
+	@echo "=============starting locally============="
+	docker-compose -f resources/docker/docker-compose.yaml up --build cen
 
 db:
-	docker-compose -f resources/docker/docker-compose.yaml up -d postgres-service-db pgadmin
+	docker-compose -f resources/docker/docker-compose.yaml up -d postgres-cen-db pgadmin
 
 logs:
 	docker-compose -f resources/docker/docker-compose.yaml logs -f

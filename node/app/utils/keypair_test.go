@@ -2,7 +2,7 @@ package utils_test
 
 import (
 	"github.com/stretchr/testify/assert"
-	test_helpers "gitlab.com/velo-labs/cen/node/app/test-helpers"
+	test_helpers "gitlab.com/velo-labs/cen/node/app/test_helpers"
 	"gitlab.com/velo-labs/cen/node/app/utils"
 	"testing"
 )
