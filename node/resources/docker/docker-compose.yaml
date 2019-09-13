@@ -7,7 +7,7 @@ services:
       dockerfile: node/Dockerfile
       target: builder
     container_name: cen-node
-    command:  sh -c 'cd node/app && fresh'
+    command:  sh -c 'wait-for postgres-cen-db:5432 --timeout=60 && cd node/app && fresh'
     volumes:
       - ../../..:/go/src/gitlab.com/velo-labs/cen
     ports:
