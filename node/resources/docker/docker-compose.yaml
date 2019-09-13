@@ -18,7 +18,24 @@ services:
       DRS_PRIVKEY: "SANRCZEEE3JNSWJCTDFPCKKZJYQBM45QYFIK3J52UHD7LB5A2TQVL6YI"
       VELO_ISSUER_ADDRESS: "GCV3Q6QZZUG7RWPIQ5CZ5MOW3KBBCQYT64EIQX6GVKDQL27WOYNDQD3G"
       NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
-      LEVEL_DB_PATH: "./databases/leveldb/.data/node.db"
       CREDIT_PREFIX: "0x0000"
       PRICE_FEED_PREFIX: "0x0001"
       PRICE_PREFIX: "0x0002"
+  postgres-cen-db:
+    image: "postgres:11.5-alpine"
+    container_name: postgres-service-db
+    volumes:
+      - ./postgres/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
+      - ./postgres/db:/var/lib/postgresql/data
+    restart: 'always'
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: chorss/docker-pgadmin4
+    depends_on:
+      - postgres-cen-db
+    ports:
+      - 5050:5050

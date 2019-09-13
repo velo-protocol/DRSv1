@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func ConnectHorizon() *horizonclient.Client {
+func GetHorizonClient() *horizonclient.Client {
 	horizonClient := horizonclient.Client{
 		HorizonURL: env.HorizonUrl,
 		HTTP:       http.DefaultClient,

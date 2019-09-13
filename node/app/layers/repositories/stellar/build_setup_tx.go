@@ -1,28 +1,23 @@
-package stellar_drsops
+package stellar
 
 import (
-	"github.com/interstellar/starlight/errors"
+	"github.com/pkg/errors"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/modules/stellar"
-	"gitlab.com/velo-labs/cen/node/app/services/operation"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/utils"
 )
 
-type ops struct {
-	StellarRepository stellar.Repository
-}
-
-func (o *ops) Setup(
+func (repo *repo) BuildSetupTx(
+	drsAccount *horizon.Account,
 	peggedValue string,
 	peggedCurrency string,
 	assetName string,
 	creditOwnerAddress string,
 ) (setupTxB64 string, issuerAddress string, distributorAddress string, err error) {
-	var txops []txnbuild.Operation
+	var txOps []txnbuild.Operation
 
 	drsKP, err := utils.KpFromSeedString(env.DrsPrivateKey)
 	if err != nil {
@@ -43,13 +38,13 @@ func (o *ops) Setup(
 		Destination: issuerKP.Address(),
 		Amount:      "3",
 	}
-	txops = append(txops, &createIssuerOp)
+	txOps = append(txOps, &createIssuerOp)
 
 	createDistributorOp := txnbuild.CreateAccount{
 		Destination: distributorKP.Address(),
 		Amount:      "2",
 	}
-	txops = append(txops, &createDistributorOp)
+	txOps = append(txOps, &createDistributorOp)
 
 	storePeggedValueOp := txnbuild.ManageData{
 		SourceAccount: &horizon.Account{
@@ -58,7 +53,7 @@ func (o *ops) Setup(
 		Name:  "peggedValue",
 		Value: []byte(peggedValue),
 	}
-	txops = append(txops, &storePeggedValueOp)
+	txOps = append(txOps, &storePeggedValueOp)
 
 	storePeggedCurrencyOp := txnbuild.ManageData{
 		SourceAccount: &horizon.Account{
@@ -67,7 +62,7 @@ func (o *ops) Setup(
 		Name:  "peggedCurrency",
 		Value: []byte(peggedCurrency),
 	}
-	txops = append(txops, &storePeggedCurrencyOp)
+	txOps = append(txOps, &storePeggedCurrencyOp)
 
 	storeAssetNameOp := txnbuild.ManageData{
 		SourceAccount: &horizon.Account{
@@ -76,7 +71,7 @@ func (o *ops) Setup(
 		Name:  "assetName",
 		Value: []byte(assetName),
 	}
-	txops = append(txops, &storeAssetNameOp)
+	txOps = append(txOps, &storeAssetNameOp)
 
 	distTrustOp := txnbuild.ChangeTrust{
 		Limit: constants.MaxTrustlineLimit,
@@ -88,7 +83,7 @@ func (o *ops) Setup(
 			AccountID: distributorKP.Address(),
 		},
 	}
-	txops = append(txops, &distTrustOp)
+	txOps = append(txOps, &distTrustOp)
 
 	zeroThreshold := txnbuild.Threshold(0)
 	oneThreshold := txnbuild.Threshold(1)
@@ -103,7 +98,7 @@ func (o *ops) Setup(
 			AccountID: issuerKP.Address(),
 		},
 	}
-	txops = append(txops, &setIssuerWeightOp)
+	txOps = append(txOps, &setIssuerWeightOp)
 
 	addDrsIssuerSignerOp := txnbuild.SetOptions{
 		Signer: &txnbuild.Signer{
@@ -114,7 +109,7 @@ func (o *ops) Setup(
 			AccountID: issuerKP.Address(),
 		},
 	}
-	txops = append(txops, &addDrsIssuerSignerOp)
+	txOps = append(txOps, &addDrsIssuerSignerOp)
 
 	addCreditOwnerIssuerSignerOp := txnbuild.SetOptions{
 		Signer: &txnbuild.Signer{
@@ -125,7 +120,7 @@ func (o *ops) Setup(
 			AccountID: issuerKP.Address(),
 		},
 	}
-	txops = append(txops, &addCreditOwnerIssuerSignerOp)
+	txOps = append(txOps, &addCreditOwnerIssuerSignerOp)
 
 	setDistributorWeightOp := txnbuild.SetOptions{
 		MasterWeight:    &zeroThreshold,
@@ -136,7 +131,7 @@ func (o *ops) Setup(
 			AccountID: distributorKP.Address(),
 		},
 	}
-	txops = append(txops, &setDistributorWeightOp)
+	txOps = append(txOps, &setDistributorWeightOp)
 
 	addCreditOwnerDistributorSignerOp := txnbuild.SetOptions{
 		Signer: &txnbuild.Signer{
@@ -147,16 +142,11 @@ func (o *ops) Setup(
 			AccountID: distributorKP.Address(),
 		},
 	}
-	txops = append(txops, &addCreditOwnerDistributorSignerOp)
-
-	drsAccount, err := o.StellarRepository.LoadAccount(env.DrsAddress)
-	if err != nil {
-		return "", "", "", errors.Wrap(err, "failed to load the drs account")
-	}
+	txOps = append(txOps, &addCreditOwnerDistributorSignerOp)
 
 	setupTx := txnbuild.Transaction{
 		SourceAccount: drsAccount,
-		Operations:    txops,
+		Operations:    txOps,
 		Network:       env.NetworkPassphrase,
 		Timebounds:    txnbuild.NewTimeout(300),
 	}
@@ -167,56 +157,4 @@ func (o *ops) Setup(
 	}
 
 	return setupTxB64, issuerKP.Address(), distributorKP.Address(), nil
-}
-
-func (o *ops) Mint(
-	amount string,
-	assetName string,
-	issuerAddress string,
-	distributorAddress string,
-) (string, error) {
-	var txops []txnbuild.Operation
-
-	drsKP, err := utils.KpFromSeedString(env.DrsPrivateKey)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to derived KP from seed key")
-	}
-
-	issueAssetOp := txnbuild.Payment{
-		Destination: distributorAddress,
-		Amount:      amount,
-		Asset: txnbuild.CreditAsset{
-			Code:   assetName,
-			Issuer: issuerAddress,
-		},
-		SourceAccount: &horizon.Account{
-			AccountID: issuerAddress,
-		},
-	}
-	txops = append(txops, &issueAssetOp)
-
-	drsAccount, err := o.StellarRepository.LoadAccount(env.DrsAddress)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to load the drs account")
-	}
-
-	mintTx := txnbuild.Transaction{
-		SourceAccount: drsAccount,
-		Operations:    txops,
-		Network:       env.NetworkPassphrase,
-		Timebounds:    txnbuild.NewTimeout(300),
-	}
-
-	mintTxB64, err := mintTx.BuildSignEncode(drsKP)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to build and sign mintTx")
-	}
-
-	return mintTxB64, nil
-}
-
-func NewDrsOps(stellarRepository stellar.Repository) operation.Interface {
-	return &ops{
-		StellarRepository: stellarRepository,
-	}
 }

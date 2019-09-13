@@ -20,6 +20,8 @@ var (
 	PostgresUser     string
 	PostgresPassword string
 	PostgresDB       string
+
+	Port string
 )
 
 // Init Initialize env variables
@@ -32,6 +34,8 @@ func Init() {
 	CreditPrefix = requireEnv("CREDIT_PREFIX")
 	PriceFeedPrefix = requireEnv("PRICE_FEED_PREFIX")
 	PricePrefix = requireEnv("PRICE_PREFIX")
+
+	Port = "8080"
 }
 
 func requireEnv(envName string) string {

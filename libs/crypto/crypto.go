@@ -1,19 +1,22 @@
-package crypto
+package vcrypto
 
 import (
 	"encoding/base64"
-
 	"github.com/stellar/go/keypair"
 )
 
-type SignerVerifierInterface interface {
+type Interface interface {
 	Sign(secretSeed string, message []byte) (string, error)
 	Verify(publicKey string, message, signature []byte) error
 }
 
-type SignerVerifier struct{}
+type Crypto struct{}
 
-func (s *SignerVerifier) Sign(secretSeed string, message []byte) (string, error) {
+func New() *Crypto {
+	return &Crypto{}
+}
+
+func (c *Crypto) Sign(secretSeed string, message []byte) (string, error) {
 	kp, err := keypair.Parse(secretSeed)
 	if err != nil {
 		return "", err
@@ -27,7 +30,7 @@ func (s *SignerVerifier) Sign(secretSeed string, message []byte) (string, error)
 	return base64.StdEncoding.EncodeToString(signature), nil
 }
 
-func (s *SignerVerifier) Verify(publicKey string, message, signature []byte) error {
+func (c *Crypto) Verify(publicKey string, message, signature []byte) error {
 	kp, err := keypair.Parse(publicKey)
 	if err != nil {
 		return err

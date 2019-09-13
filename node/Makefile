@@ -47,9 +47,3 @@ dep: ## Get the dependencies
 
 migrate-create:
 	migrate create -ext sql -dir app/migrations $(name)
-
-mock-module:
-	mockery -dir ./app/modules/$(module) -name $(interface) -output ./app/modules/$(module)/mocks
-
-mock-service:
-	mockery -dir ./app/services/$(service) -name Interface -output ./app/services/$(service)/mocks

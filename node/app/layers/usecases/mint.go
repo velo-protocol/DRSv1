@@ -7,7 +7,7 @@ import (
 	env "gitlab.com/velo-labs/cen/node/app/environments"
 )
 
-func (uc *usecase) Mint(
+func (useCase *useCase) Mint(
 	postCollateralXdr string,
 	assetName string,
 	mintAmount string,

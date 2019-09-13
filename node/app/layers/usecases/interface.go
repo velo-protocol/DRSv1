@@ -1,4 +1,4 @@
-package node
+package usecases
 
 import "gitlab.com/velo-labs/cen/node/app/entities"
 
