@@ -10,6 +10,7 @@ services:
     command:  sh -c 'wait-for postgres-cen-db:5432 --timeout=60 && cd node/app && fresh'
     volumes:
       - ../../..:/go/src/gitlab.com/velo-labs/cen
+      - $GOPATH/pkg/mod:/go/pkg/mod # to avoid re-"go mod download" on every build
     ports:
       - "8080:8080"
     environment:
