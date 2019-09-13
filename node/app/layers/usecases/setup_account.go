@@ -7,7 +7,7 @@ import (
 	env "gitlab.com/velo-labs/cen/node/app/environments"
 )
 
-func (uc *usecase) Setup(
+func (useCase *useCase) Setup(
 	issuerCreationTx string,
 	peggedValue string,
 	peggedCurrency string,
@@ -32,17 +32,22 @@ func (uc *usecase) Setup(
 		return nil, errors.New("issuer creation tx must send 3 XLM to the DRS address as a destination")
 	}
 
-	issuerCreationTxSuccess, err := uc.StellarRepository.SubmitTransaction(issuerCreationTx)
+	issuerCreationTxSuccess, err := useCase.StellarRepo.SubmitTransaction(issuerCreationTx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to submit issuer creation tx")
 	}
 
-	setupTxB64, issuerAddress, distributorAddress, err := uc.Drsops.Setup(peggedValue, peggedCurrency, assetName, txe.Tx.SourceAccount.Address())
+	drsAccount, err := useCase.StellarRepo.LoadAccount(env.DrsAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load DRS Account")
+	}
+
+	setupTxB64, issuerAddress, distributorAddress, err := useCase.StellarRepo.BuildSetupTx(drsAccount, peggedValue, peggedCurrency, assetName, txe.Tx.SourceAccount.Address())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create a setup tx")
 	}
 
-	setupTxSuccess, err := uc.StellarRepository.SubmitTransaction(setupTxB64)
+	setupTxSuccess, err := useCase.StellarRepo.SubmitTransaction(setupTxB64)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to submit setup txe to stellar")
 	}

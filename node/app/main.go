@@ -1,32 +1,53 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/extensions"
-	_nodeHttps "gitlab.com/velo-labs/cen/node/app/modules/node/deliveries/https"
-	_nodeRepository "gitlab.com/velo-labs/cen/node/app/modules/node/repositories"
-	_nodeUsecase "gitlab.com/velo-labs/cen/node/app/modules/node/usecases"
-	_stellarRepository "gitlab.com/velo-labs/cen/node/app/modules/stellar/repository"
-	_stellarDrsops "gitlab.com/velo-labs/cen/node/app/services/operation/stellar-drs-operations"
+	grpcDelivery "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
+	_stellarRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
+	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
+	"google.golang.org/grpc"
+	"log"
+	"net"
 )
 
 func main() {
-	ginEngine := gin.New()
+	grpcServer := grpc.NewServer(
+		// TODO: Add auth, log, correlation middleware
+		//grpc.UnaryInterceptor(
+		//	grpc_middleware.ChainUnaryServer(
+		//		// TODO: Each middleware goes here
+		//	),
+		//),
+	)
 
-	ginEngine.Use(gin.Recovery())
-	ginEngine.Use(gin.Logger())
-
+	// Extensions
+	horizonClient := extensions.GetHorizonClient()
 	dbConn := extensions.ConnectDB()
 	defer dbConn.Close()
 
-	horizonclient := extensions.ConnectHorizon()
+	// Repo
+	stellarRepo := _stellarRepo.Init(horizonClient)
 
-	nodeRepository := _nodeRepository.NewNodeRepository(dbConn)
-	stellarRepository := _stellarRepository.NewHorizonStellarRepository(horizonclient)
+	// Use Cases
+	useCase := usecases.Init(stellarRepo)
 
-	drsops := _stellarDrsops.NewDrsOps(stellarRepository)
+	// Deliveries
+	grpcDelivery.Init(grpcServer, useCase)
 
-	nodeUsecase := _nodeUsecase.NewNodeUseCase(drsops, nodeRepository, stellarRepository)
+	initServer(grpcServer)
+}
 
-	_nodeHttps.NewEndpointHttpHandler(ginEngine, nodeUsecase)
+func initServer(grpcServer *grpc.Server) {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", env.Port))
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("Server is starting at port %s", env.Port)
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		panic(err)
+	}
 }
