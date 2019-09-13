@@ -1,0 +1,2 @@
+DROP "whitelists",
+DROP "roles";
