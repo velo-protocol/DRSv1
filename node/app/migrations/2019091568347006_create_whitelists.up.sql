@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE "public"."whitelists"
 (
   "id"          uuid DEFAULT uuid_generate_v4()             PRIMARY KEY NOT NULL,
-  "address"     varchar(200)                                NOT NULL,
+  "stellar_address"     varchar(200)                        NOT NULL,
   "role"        varchar(100)                                NOT NULL,
   "created_at"  timestamptz                                 NOT NULL,
   "updated_at"  timestamptz                                 NOT NULL,
@@ -28,7 +28,7 @@ WHERE deleted_at IS NULL;
 
 INSERT INTO public.roles
  (name, role, created_at, updated_at) VALUES
-('Whitelist user', 'whitelist-user', current_timestamp, current_timestamp),
-('Set up token', 'setup-token', current_timestamp, current_timestamp),
-('Mint token', 'mint-token', current_timestamp, current_timestamp),
-('Feed price to Node', 'feed-price', current_timestamp, current_timestamp);
+('Whitelist user', 'WHITELIST_USER', current_timestamp, current_timestamp),
+('Set up token', 'SETUP_TOKEN', current_timestamp, current_timestamp),
+('Mint token', 'MINT_TOKEN', current_timestamp, current_timestamp),
+('Feed price to Node', 'FEED_PRICE', current_timestamp, current_timestamp);
