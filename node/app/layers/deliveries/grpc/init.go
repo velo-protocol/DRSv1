@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	spec "gitlab.com/velo-labs/cen/grpc"
 	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -15,9 +16,9 @@ func Init(grpcServer *grpc.Server, useCase usecases.UseCase) {
 		UseCase: useCase,
 	}
 
-	// Health check
+	// Register Health check
 	grpc_health_v1.RegisterHealthServer(grpcServer, &handler)
 
-	// TODO: properly load grpc spec
-	//spec.RegisterVeloNodeServer(grpcServer, &handler)
+	// Register Velo Node
+	spec.RegisterVeloNodeServer(grpcServer, &handler)
 }

@@ -35,6 +35,7 @@ COPY go.sum go.sum
 
 COPY node/app node/app
 COPY libs libs
+COPY grpc grpc
 
 # Set Docker's entry point commands
 RUN cd node/app/ && go build -o /go/bin/node.bin
