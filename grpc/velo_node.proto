@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package grpc;
+
+service VeloNode {
+    rpc SubmitVeloTransaction (VeloTxRequest) returns (VeloTxReply) {
+    }
+}
+
+message VeloTxRequest {
+    string signedVeloTxXdr = 1;
+}
+
+message VeloTxReply {
+    string resultVeloXdr = 1;
+}
