@@ -9,6 +9,9 @@ docs-gen:
 dev:
 	@echo "=============starting locally============="
 	docker-compose -f resources/docker/docker-compose.yaml up --build
+dev/fast:
+	@echo "=============starting locally============="
+	docker-compose -f resources/docker/docker-compose.yaml up
 
 dev-app:
 	@echo "=============starting locally============="
