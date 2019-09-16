@@ -28,5 +28,6 @@ WHERE deleted_at IS NULL;
 
 INSERT INTO public.roles
  (name, role, created_at, updated_at) VALUES
+('KYC checker', 'REGULATOR', current_timestamp, current_timestamp),
 ('Trusted partner', 'TRUSTED_PARTNER', current_timestamp, current_timestamp),
 ('Price feeder', 'PRICE_FEEDER', current_timestamp, current_timestamp),
