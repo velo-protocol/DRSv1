@@ -28,7 +28,5 @@ WHERE deleted_at IS NULL;
 
 INSERT INTO public.roles
  (name, role, created_at, updated_at) VALUES
-('Whitelist user', 'WHITELIST_USER', current_timestamp, current_timestamp),
-('Set up token', 'SETUP_TOKEN', current_timestamp, current_timestamp),
-('Mint token', 'MINT_TOKEN', current_timestamp, current_timestamp),
-('Feed price to Node', 'FEED_PRICE', current_timestamp, current_timestamp);
+('Trusted partner', 'TRUSTED_PARTNER', current_timestamp, current_timestamp),
+('Price feeder', 'PRICE_FEEDER', current_timestamp, current_timestamp),
