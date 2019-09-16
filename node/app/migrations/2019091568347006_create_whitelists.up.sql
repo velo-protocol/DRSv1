@@ -20,10 +20,10 @@ CREATE TABLE "public"."roles"
   "deleted_at"  timestamptz
 );
 
-CREATE UNIQUE INDEX whitelists_partial_unique_code1 ON "public"."whitelists" (address, role, deleted_at)
+CREATE UNIQUE INDEX whitelists_partial_unique_code1 ON "public"."whitelists" (stellar_address, role, deleted_at)
 WHERE deleted_at IS NOT NULL;
 
-CREATE UNIQUE INDEX whitelists_partial_unique_code2 ON "public"."whitelists" (address, role)
+CREATE UNIQUE INDEX whitelists_partial_unique_code2 ON "public"."whitelists" (stellar_address, role)
 WHERE deleted_at IS NULL;
 
 INSERT INTO public.roles
