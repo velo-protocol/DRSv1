@@ -5,7 +5,9 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/extensions"
 	grpcDelivery "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
+	_roleRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/role"
 	_stellarRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
+	_whitelistRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist"
 	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
 	"google.golang.org/grpc"
 	"log"
@@ -31,9 +33,10 @@ func main() {
 
 	// Repo
 	stellarRepo := _stellarRepo.Init(horizonClient)
+	whitelistRepo := _whitelistRepo.InitRepo(dbConn)
 
 	// Use Cases
-	useCase := usecases.Init(stellarRepo)
+	useCase := usecases.Init(stellarRepo, whitelistRepo)
 
 	// Deliveries
 	grpcDelivery.Init(grpcServer, useCase)
