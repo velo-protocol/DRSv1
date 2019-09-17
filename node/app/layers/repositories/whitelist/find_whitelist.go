@@ -7,7 +7,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
 
-func (r repo) FindOne(filter entities.WhitelistFilter) (*entities.Whitelist, error) {
+func (r repo) FindOneWhitelist(filter entities.WhitelistFilter) (*entities.Whitelist, error) {
 	var resultModel models.WhitelistModel
 	if err := r.Conn.Where(makeFilterAttr(filter)).First(&resultModel).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {

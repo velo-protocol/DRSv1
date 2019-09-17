@@ -1,14 +1,14 @@
-package role
+package whitelist
 
 import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/velo-labs/cen/libs/errors"
 	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/layers/repositories/role/models"
+	models2 "gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
 
-func (r repo) FindOne(role string) (*entities.Role, error) {
-	var resultModel models.RoleModel
+func (r repo) FindOneRole(role string) (*entities.Role, error) {
+	var resultModel models2.RoleModel
 	if err := r.Conn.Where("code = ?", role).First(&resultModel).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil

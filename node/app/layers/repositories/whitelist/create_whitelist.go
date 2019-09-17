@@ -6,7 +6,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/entities"
 )
 
-func create(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error) {
+func createWhitelist(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error) {
 	if err := dbTx.Save(&whitelist).Error; err != nil {
 		return nil, verrors.InternalError{Message: err.Error()}
 	}
@@ -14,12 +14,12 @@ func create(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, 
 	return whitelist, nil
 }
 
-func (r *repo) CreateTx(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error) {
-	return create(dbTx, whitelist)
+func (r *repo) CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error) {
+	return createWhitelist(dbTx, whitelist)
 }
 
-func (r *repo) Create(whitelist *entities.Whitelist) (*entities.Whitelist, error) {
-	return create(r.Conn, whitelist)
+func (r *repo) CreateWhitelist(whitelist *entities.Whitelist) (*entities.Whitelist, error) {
+	return createWhitelist(r.Conn, whitelist)
 }
 
 
