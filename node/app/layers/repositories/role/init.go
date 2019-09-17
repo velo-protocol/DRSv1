@@ -1,4 +1,4 @@
-package whitelist
+package role
 
 import (
 	"github.com/jinzhu/gorm"
