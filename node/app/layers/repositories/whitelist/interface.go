@@ -15,14 +15,3 @@ type Repo interface {
 	FindOneWhitelist(filter entities.WhitelistFilter) (*entities.Whitelist, error)
 	FindOneRole(role string) (*entities.Role, error)
 }
-
-//func UseCase()  {
-//	uc := new UseCase
-//
-//	dbTx := uc.WhiteListRepo.BeginTx()
-//
-//	createEntity := uc.WhiteListRepo.Create(ctx, dbTx, entity)
-//
-//	dbTx
-//
-//}
