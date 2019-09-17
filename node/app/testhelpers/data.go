@@ -1,4 +1,4 @@
-package test_helpers
+package testhelpers
 
 import (
 	"gitlab.com/velo-labs/cen/node/app/entities"
