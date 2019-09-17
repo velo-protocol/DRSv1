@@ -28,7 +28,9 @@ func main() {
 	// Extensions
 	horizonClient := extensions.GetHorizonClient()
 	dbConn := extensions.ConnectDB()
-	defer dbConn.Close()
+	defer func() {
+		_ = dbConn.Close()
+	}()
 	extensions.DBMigration()
 
 	// Repo
