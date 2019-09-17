@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 #Builder stage
-FROM golang:1.12.7-alpine3.10 as builder
+FROM golang:1.12.7-alpine3.10 as development
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on
@@ -33,16 +33,34 @@ RUN wget https://raw.githubusercontent.com/eficode/wait-for/master/wait-for -O /
 COPY go.mod go.mod
 COPY go.sum go.sum
 
+# Copy src
 COPY node/app node/app
 COPY libs libs
 COPY grpc grpc
 
-CMD cd node/app && go build -o /go/bin/node.bin
+# Use CMD instead of RUN to allow command overwritability
+CMD cd node/app && fresh
+
+# ------------------------------------------------------------------------------
+# Build deployable image
+# ------------------------------------------------------------------------------
+FROM golang:1.12.7-alpine3.10 as build
+
+WORKDIR /go/src/gitlab.com/velo-labs/cen
+
+# Copy stuff from development stage
+COPY --from=development /go/src/gitlab.com/velo-labs/cen .
+
+# Update OS package and install Git
+RUN apk update && apk add git mercurial bzr && apk add build-base
+
+# Build the binary
+ENV GO111MODULE=on
+RUN cd node/app && go build -o /go/bin/node.bin
 
 # ------------------------------------------------------------------------------
 # Application image
 # ------------------------------------------------------------------------------
-
 FROM golang:1.12.7-alpine3.10
 
 RUN apk add --no-cache tini tzdata
@@ -51,12 +69,10 @@ RUN addgroup -g 211000 -S appgroup && adduser -u 211000 -S appuser -G appgroup
 # Set working directory
 WORKDIR /app
 
-#Get artifact from buiber stage
+#Get artifact from builder stage
 RUN mkdir -p migrations
-
-#Get artifact from buiber stage
-COPY --from=builder /go/bin/node.bin /app/node.bin
-COPY --from=builder /go/src/gitlab.com/velo-labs/cen/node/app/migrations/ migrations/
+COPY --from=build /go/bin/node.bin /app/node.bin
+COPY --from=build /go/src/gitlab.com/velo-labs/cen/node/app/migrations/ migrations/
 
 # Set Docker's entry point commands
 RUN chown -R appuser:appgroup /app
