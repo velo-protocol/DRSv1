@@ -5,3 +5,8 @@ type Whitelist struct {
 	StellarAddress string
 	Role string
 }
+
+type WhitelistFilter struct {
+	StellarAddress *string
+	Role *string
+}
