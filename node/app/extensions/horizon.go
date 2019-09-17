@@ -8,7 +8,7 @@ import (
 
 func GetHorizonClient() *horizonclient.Client {
 	horizonClient := horizonclient.Client{
-		HorizonURL: env.HorizonUrl,
+		HorizonURL: env.HorizonURL,
 		HTTP:       http.DefaultClient,
 	}
 

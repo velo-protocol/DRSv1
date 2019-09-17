@@ -15,12 +15,12 @@ import (
 func main() {
 	env.Init()
 	grpcServer := grpc.NewServer(
-		// TODO: Add auth, log, correlation, etc. middleware?
-		//grpc.UnaryInterceptor(
-		//	grpc_middleware.ChainUnaryServer(
-		//		// TODO: Each middleware goes here
-		//	),
-		//),
+	// TODO: Add auth, log, correlation, etc. middleware?
+	//grpc.UnaryInterceptor(
+	//	grpc_middleware.ChainUnaryServer(
+	//		// TODO: Each middleware goes here
+	//	),
+	//),
 	)
 
 	// Extensions

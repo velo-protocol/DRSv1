@@ -8,7 +8,7 @@ type repo struct {
 	HorizonClient horizonclient.ClientInterface
 }
 
-func Init(horizonClient horizonclient.ClientInterface) Repo{
+func Init(horizonClient horizonclient.ClientInterface) Repo {
 	return &repo{
 		HorizonClient: horizonClient,
 	}

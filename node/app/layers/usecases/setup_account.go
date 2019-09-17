@@ -7,7 +7,7 @@ import (
 	env "gitlab.com/velo-labs/cen/node/app/environments"
 )
 
-func (useCase *useCase) Setup(
+func (useCase *useCase) SetupAccount(
 	issuerCreationTx string,
 	peggedValue string,
 	peggedCurrency string,
@@ -28,7 +28,7 @@ func (useCase *useCase) Setup(
 		return nil, errors.New("issuer creation tx must send 3 XLM to the DRS address")
 	}
 
-	if txe.Tx.Operations[0].Body.PaymentOp.Destination.Address() != env.DrsAddress {
+	if txe.Tx.Operations[0].Body.PaymentOp.Destination.Address() != env.DrsPublicKey {
 		return nil, errors.New("issuer creation tx must send 3 XLM to the DRS address as a destination")
 	}
 
@@ -37,7 +37,7 @@ func (useCase *useCase) Setup(
 		return nil, errors.Wrap(err, "failed to submit issuer creation tx")
 	}
 
-	drsAccount, err := useCase.StellarRepo.LoadAccount(env.DrsAddress)
+	drsAccount, err := useCase.StellarRepo.LoadAccount(env.DrsPublicKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load DRS Account")
 	}

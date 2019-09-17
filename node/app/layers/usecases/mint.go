@@ -29,11 +29,11 @@ func (useCase *useCase) Mint(
 		return nil, errors.Wrap(err, "unable to extract asset from paymentOp")
 	}
 
-	if code != constants.VeloAbv && issuer != env.VeloIssuerAddress {
+	if code != constants.VeloAbv && issuer != env.VeloIssuerPublicKey {
 		return nil, errors.Wrap(err, "paymentOp not posting VELO to the drs")
 	}
 
-	if txe.Tx.Operations[0].Body.PaymentOp.Destination.Address() != env.DrsAddress {
+	if txe.Tx.Operations[0].Body.PaymentOp.Destination.Address() != env.DrsPublicKey {
 		return nil, errors.Wrap(err, "paymentOp not posting VELO to the drs")
 	}
 

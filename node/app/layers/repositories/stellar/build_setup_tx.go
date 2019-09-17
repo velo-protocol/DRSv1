@@ -102,7 +102,7 @@ func (repo *repo) BuildSetupTx(
 
 	addDrsIssuerSignerOp := txnbuild.SetOptions{
 		Signer: &txnbuild.Signer{
-			Address: env.DrsAddress,
+			Address: env.DrsPublicKey,
 			Weight:  oneThreshold,
 		},
 		SourceAccount: &horizon.Account{
