@@ -7,7 +7,7 @@ import (
 	models2 "gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
 
-func (r repo) FindOneRole(role string) (*entities.Role, error) {
+func (r *repo) FindOneRole(role string) (*entities.Role, error) {
 	var resultModel models2.RoleModel
 	if err := r.Conn.Where("code = ?", role).First(&resultModel).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
