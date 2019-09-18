@@ -8,17 +8,20 @@ type VeloOp struct {
 	Body OperationBody
 }
 
-func NewOperationBody(opType OperationType, value interface{}) (result OperationBody, err error) {
-	result.Type = opType
+func NewOperationBody(opType OperationType, value interface{}) (OperationBody, error) {
+	var opBody OperationBody
+	opBody.Type = opType
+
 	switch OperationType(opType) {
 	case OperationTypeWhiteList:
 		tv, ok := value.(WhiteListOp)
 		if !ok {
-			err = fmt.Errorf("invalid value, must be WhiteListOp")
-			return
+			return OperationBody{}, fmt.Errorf("invalid value, must be WhiteListOp")
 		}
-		result.WhiteListOp = &tv
+		opBody.WhiteListOp = &tv
+	default:
+		return OperationBody{}, fmt.Errorf("unknown operation type")
 	}
 	// TODO: case OperationTypeSetupAccount
-	return
+	return opBody, nil
 }

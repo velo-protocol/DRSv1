@@ -75,10 +75,22 @@
 
 
 ###Troubleshoot
-1. If `go mod download` or `go mod tidy` fail, try
+- If `go mod download` or `go mod tidy` fail, try
 ```bash
 brew install hg
 brew install bzr
 ```
 
+- To consume `cen/node`'s api via command line, it is recommended to use grpCurl.
+```bash
+grpcurl -plaintext \
+    -d '{"signedVeloTxXdr":"AAAA..."}' \
+    localhost:8080  grpc.VeloNode/SubmitVeloTx
+
+# if reflection api is not enabled, supply --proto flag
+grpcurl -plaintext \
+    -d '{"signedVeloTxXdr":"AAAA..."}' \
+    --proto ./grpc/velo_node.proto \
+    localhost:8080  grpc.VeloNode/SubmitVeloTx
+```
 
