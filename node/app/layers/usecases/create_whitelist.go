@@ -7,7 +7,6 @@ import (
 	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
-	"time"
 )
 
 func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) error {
@@ -44,7 +43,6 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	_, err = useCase.WhitelistRepo.CreateWhitelistTx(dbTx, &entities.Whitelist{
 		StellarPublicAddress: address,
 		RoleCode: string(role),
-		CreatedAt: time.Now(),
 	})
 	if err != nil {
 		return err
