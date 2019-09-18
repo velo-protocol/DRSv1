@@ -14,7 +14,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	role := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Role
 	address := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Address.Address()
 
-	regulatorExists, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhitelistFilter{
+	regulatorEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhitelistFilter{
 		StellarPublicAddress: pointer.ToString(pkSender),
 		RoleCode: pointer.ToString(string(vxdr.RoleRegulator)),
 	})
@@ -22,35 +22,24 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 		return err
 	}
 
-	if regulatorExists == nil {
+	if regulatorEntity == nil {
 		return errors.Wrap(constants.ErrRoleIsNotValid, constants.ErrCreateWhiteList.Error())
 	}
 
-	roleExists, err := useCase.WhitelistRepo.FindOneRole(string(role))
+	roleEntity, err := useCase.WhitelistRepo.FindOneRole(string(role))
 	if err != nil {
 		return err
 	}
 
-	if roleExists == nil {
+	if roleEntity == nil {
 		return errors.Wrap(constants.ErrRoleNotFound, constants.ErrCreateWhiteList.Error())
 	}
 
-	dbTx := useCase.WhitelistRepo.BeginTx()
-	if err != nil {
-		return errors.Wrap(constants.ErrorToBeginTransaction, constants.ErrCreateWhiteList.Error())
-	}
-
-	_, err = useCase.WhitelistRepo.CreateWhitelistTx(dbTx, &entities.Whitelist{
+	_, err = useCase.WhitelistRepo.CreateWhitelist(&entities.Whitelist{
 		StellarPublicAddress: address,
 		RoleCode: string(role),
 	})
 	if err != nil {
-		return err
-	}
-
-	err = useCase.WhitelistRepo.CommitTx(dbTx)
-	if err != nil {
-		dbTx.Rollback()
 		return err
 	}
 

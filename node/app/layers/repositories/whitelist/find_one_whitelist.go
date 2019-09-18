@@ -8,7 +8,7 @@ import (
 )
 
 func (r repo) FindOneWhitelist(filter entities.WhitelistFilter) (*entities.Whitelist, error) {
-	var resultModel models.WhitelistModel
+	var resultModel models.CreateWhiteList
 	if err := r.Conn.Where(makeFilterAttr(filter)).First(&resultModel).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil
@@ -21,8 +21,8 @@ func (r repo) FindOneWhitelist(filter entities.WhitelistFilter) (*entities.White
 	return &result, nil
 }
 
-func makeFilterAttr(filter entities.WhitelistFilter) (whitelistFilterAttr models.WhitelistModel) {
-	whitelistFilterAttr = models.WhitelistModel{}
+func makeFilterAttr(filter entities.WhitelistFilter) (whitelistFilterAttr models.CreateWhiteList) {
+	whitelistFilterAttr = models.CreateWhiteList{}
 
 	if filter.StellarPublicAddress != nil {
 		whitelistFilterAttr.StellarPublicAddress = filter.StellarPublicAddress

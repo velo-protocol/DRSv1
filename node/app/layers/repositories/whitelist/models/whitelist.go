@@ -6,14 +6,6 @@ import (
 )
 
 type CreateWhiteList struct {
-
-}
-
-type GetWhiteList struct{
-
-}
-
-type WhitelistModel struct {
 	ID                   *string `gorm:"primary_key"`
 	StellarPublicAddress *string
 	RoleCode             *string
@@ -22,13 +14,17 @@ type WhitelistModel struct {
 	DeletedAt            *time.Time
 }
 
-type WhitelistListModel []WhitelistModel
+type GetWhiteList struct{
 
-func (WhitelistModel) TableName() string {
+}
+
+type WhitelistListModel []CreateWhiteList
+
+func (CreateWhiteList) TableName() string {
 	return "whitelists"
 }
 
-func (m WhitelistModel) ToEntity() (entity entities.Whitelist) {
+func (m CreateWhiteList) ToEntity() (entity entities.Whitelist) {
 	return entities.Whitelist{
 		ID:                   *m.ID,
 		StellarPublicAddress: *m.StellarPublicAddress,

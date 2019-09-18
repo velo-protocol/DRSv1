@@ -1,2 +1,1 @@
-DROP "whitelists",
-DROP "roles";
+DROP TABLE whitelists; DROP TABLE roles;
