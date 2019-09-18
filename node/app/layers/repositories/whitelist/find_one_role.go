@@ -8,7 +8,7 @@ import (
 )
 
 func (r *repo) FindOneRole(role string) (*entities.Role, error) {
-	var resultModel models.RoleModel
+	var resultModel models.GetRole
 	if err := r.Conn.Where("code = ?", role).First(&resultModel).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil
