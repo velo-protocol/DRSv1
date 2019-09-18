@@ -6,15 +6,28 @@ import (
 	"github.com/stellar/go/strkey"
 )
 
+func PublicKeyToKeyPair(publicKey string) (*keypair.FromAddress, error) {
+	kp, err := keypair.Parse(publicKey)
+	if err != nil {
+		return nil, errors.New("unable to get keyPair from publicKey")
+	}
+
+	kpFromAddress, ok := kp.(*keypair.FromAddress)
+	if !ok {
+		return nil, errors.New("unable to cast KP to keypair.FromAddress")
+	}
+	return kpFromAddress, nil
+}
+
 func SecretKeyToKeyPair(secretKey string) (*keypair.Full, error) {
 	seedKey, err := stringToByte32(secretKey)
 	if err != nil {
-		return nil, errors.New("unable to convert secretKey key to byte")
+		return nil, errors.New("unable to convert secretKey to byte")
 	}
 
 	kp, err := keypair.FromRawSeed(seedKey)
 	if err != nil {
-		return nil, errors.New("unable to get keyPair from secretKey key")
+		return nil, errors.New("unable to get keyPair from secretKey")
 	}
 
 	return kp, nil
