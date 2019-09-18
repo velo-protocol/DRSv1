@@ -4,9 +4,8 @@ import "github.com/pkg/errors"
 
 var (
 	ErrCreateWhiteList = errors.New("can't create white list")
-
+	ErrUnauthorized = errors.New("unauthorized to perform an action")
 	ErrRoleNotFound = errors.New("role not found")
-	ErrRoleIsNotValid = errors.New("role is not valid")
 
 	ErrToSaveDatabase      = errors.New("can't save to database")
 	ErrToUpdateDatabase    = errors.New("can't update to database")

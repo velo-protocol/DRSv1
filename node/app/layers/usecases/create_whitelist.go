@@ -23,7 +23,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	}
 
 	if regulatorEntity == nil {
-		return errors.Wrap(constants.ErrRoleIsNotValid, constants.ErrCreateWhiteList.Error())
+		return errors.Wrap(constants.ErrUnauthorized, constants.ErrCreateWhiteList.Error())
 	}
 
 	roleEntity, err := useCase.WhitelistRepo.FindOneRole(string(role))
