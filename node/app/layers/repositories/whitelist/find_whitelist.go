@@ -24,12 +24,12 @@ func (r repo) FindOneWhitelist(filter entities.WhitelistFilter) (*entities.White
 func makeFilterAttr(filter entities.WhitelistFilter) (whitelistFilterAttr models.WhitelistModel) {
 	whitelistFilterAttr = models.WhitelistModel{}
 
-	if filter.StellarAddress != nil {
-		whitelistFilterAttr.StellarAddress = filter.StellarAddress
+	if filter.StellarPublicAddress != nil {
+		whitelistFilterAttr.StellarPublicAddress = filter.StellarPublicAddress
 	}
 
-	if filter.Role != nil {
-		whitelistFilterAttr.Role = filter.Role
+	if filter.RoleCode != nil {
+		whitelistFilterAttr.RoleCode = filter.RoleCode
 	}
 
 	return whitelistFilterAttr

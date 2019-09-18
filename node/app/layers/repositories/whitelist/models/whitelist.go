@@ -14,12 +14,12 @@ type GetWhiteList struct{
 }
 
 type WhitelistModel struct {
-	ID                *string `gorm:"primary_key"`
-	StellarAddress    *string
-	Role              *string
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
-	DeletedAt         *time.Time
+	ID                   *string `gorm:"primary_key"`
+	StellarPublicAddress *string
+	RoleCode             *string
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
+	DeletedAt            *time.Time
 }
 
 type WhitelistListModel []WhitelistModel
@@ -30,9 +30,9 @@ func (WhitelistModel) TableName() string {
 
 func (m WhitelistModel) ToEntity() (entity entities.Whitelist) {
 	return entities.Whitelist{
-		ID:                *m.ID,
-		StellarAddress:    *m.StellarAddress,
-		Role:              *m.Role,
+		ID:                   *m.ID,
+		StellarPublicAddress: *m.StellarPublicAddress,
+		RoleCode:             *m.RoleCode,
 	}
 }
 

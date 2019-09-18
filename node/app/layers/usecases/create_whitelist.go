@@ -7,6 +7,7 @@ import (
 	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
+	"time"
 )
 
 func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) error {
@@ -15,8 +16,8 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	address := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Address.Address()
 
 	regulatorExists, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhitelistFilter{
-		StellarAddress: pointer.ToString(pkSender),
-		Role: pointer.ToString(string(vxdr.RoleRegulator)),
+		StellarPublicAddress: pointer.ToString(pkSender),
+		RoleCode: pointer.ToString(string(vxdr.RoleRegulator)),
 	})
 	if err != nil {
 		return err
@@ -35,20 +36,21 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 		return errors.Wrap(constants.ErrRoleNotFound, constants.ErrCreateWhiteList.Error())
 	}
 
-	dbTx, err := useCase.WhitelistRepo.BeginTx()
+	dbTx := useCase.WhitelistRepo.BeginTx()
 	if err != nil {
 		return errors.Wrap(constants.ErrorToBeginTransaction, constants.ErrCreateWhiteList.Error())
 	}
 
 	_, err = useCase.WhitelistRepo.CreateWhitelistTx(dbTx, &entities.Whitelist{
-		StellarAddress: address,
-		Role: string(role),
+		StellarPublicAddress: address,
+		RoleCode: string(role),
+		CreatedAt: time.Now(),
 	})
 	if err != nil {
 		return err
 	}
 
-	_, err = useCase.WhitelistRepo.CommitTx(dbTx)
+	err = useCase.WhitelistRepo.CommitTx(dbTx)
 	if err != nil {
 		dbTx.Rollback()
 		return err

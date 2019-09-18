@@ -1,12 +1,17 @@
 package entities
 
+import "time"
+
 type Whitelist struct {
 	ID   string
-	StellarAddress string
-	Role string
+	StellarPublicAddress string
+	RoleCode string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 type WhitelistFilter struct {
-	StellarAddress *string
-	Role *string
+	StellarPublicAddress *string
+	RoleCode *string
 }
