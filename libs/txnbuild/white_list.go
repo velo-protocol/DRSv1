@@ -16,6 +16,11 @@ type SetUpCredit struct {
 	Role    string
 }
 
+type SetUpCredit struct {
+	Address string
+	Role    string
+}
+
 func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
 	var vXdrOp vxdr.WhiteListOp
 	err := vXdrOp.Address.SetAddress(whiteList.Address)
