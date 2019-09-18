@@ -5,11 +5,11 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/extensions"
 	grpcDelivery "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
-	_roleRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/role"
 	_stellarRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
 	_whitelistRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist"
 	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 )
@@ -50,6 +50,10 @@ func initServer(grpcServer *grpc.Server) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", env.Port))
 	if err != nil {
 		panic(err)
+	}
+
+	if env.EnableReflectionApi {
+		reflection.Register(grpcServer)
 	}
 
 	log.Printf("Server is starting at port %s", env.Port)

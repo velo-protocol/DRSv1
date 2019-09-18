@@ -18,7 +18,8 @@ var (
 	PostgresPassword string
 	PostgresDB       string
 
-	Port string
+	Port                string
+	EnableReflectionApi bool
 )
 
 // Init Initialize env variables
@@ -36,6 +37,7 @@ func Init() {
 	PostgresDB = requireEnv("POSTGRES_DB")
 
 	Port = "8080"
+	EnableReflectionApi = true
 }
 
 func requireEnv(envName string) string {

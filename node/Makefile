@@ -52,10 +52,19 @@ proto/gen:
 	protoc -I ./../grpc --go_out=plugins=grpc:./../grpc ./../grpc/*.proto
 
 mockgen/repo:
-	mockgen -source=./app/layers/repositories/$(m)/interface.go -destination=./app/layers/mocks/$(m)_repo.go -package mocks -mock_names Repo=Mock$(M)Repo
+	mockgen \
+		-source=./app/layers/repositories/$(m)/interface.go \
+		-destination=./app/layers/mocks/$(m)_repo.go \
+		-package mocks \
+		-mock_names Repo=Mock$(M)Repo \
+		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr
 
 mockgen/usecase:
-	mockgen -source=./app/layers/usecases/interface.go -destination=./app/layers/mocks/usecases.go -package mocks
+	mockgen
+		-source=./app/layers/usecases/interface.go \
+		-destination=./app/layers/mocks/usecases.go -package mocks \
+		-package mocks \
+		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr
 
 mockgen/all:
 	make mockgen/usecase

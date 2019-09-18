@@ -5,7 +5,9 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
+	xdr "gitlab.com/velo-labs/cen/libs/xdr"
 	entities "gitlab.com/velo-labs/cen/node/app/entities"
 	reflect "reflect"
 )
@@ -46,4 +48,18 @@ func (m *MockUseCase) SetupAccount(issuerCreationTx, peggedValue, peggedCurrency
 func (mr *MockUseCaseMockRecorder) SetupAccount(issuerCreationTx, peggedValue, peggedCurrency, assetName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupAccount", reflect.TypeOf((*MockUseCase)(nil).SetupAccount), issuerCreationTx, peggedValue, peggedCurrency, assetName)
+}
+
+// CreateWhiteList mocks base method
+func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *xdr.VeloTxEnvelope) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateWhiteList", ctx, veloTxEnvelope)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateWhiteList indicates an expected call of CreateWhiteList
+func (mr *MockUseCaseMockRecorder) CreateWhiteList(ctx, veloTxEnvelope interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhiteList", reflect.TypeOf((*MockUseCase)(nil).CreateWhiteList), ctx, veloTxEnvelope)
 }
