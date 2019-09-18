@@ -6,8 +6,8 @@ import (
 )
 
 type Repo interface {
-	BeginTx() (*gorm.DB, error)
-	CommitTx(dbtx *gorm.DB) (bool, error)
+	BeginTx() (*gorm.DB)
+	CommitTx(dbtx *gorm.DB) (error)
 
 	CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error)
 	CreateWhitelist(whitelist *entities.Whitelist) (*entities.Whitelist, error)
