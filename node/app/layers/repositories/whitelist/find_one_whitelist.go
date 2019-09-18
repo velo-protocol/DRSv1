@@ -7,7 +7,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
 
-func (r repo) FindOneWhitelist(filter entities.WhitelistFilter) (*entities.Whitelist, error) {
+func (r repo) FindOneWhitelist(filter entities.WhiteListFilter) (*entities.WhiteList, error) {
 	var resultModel models.GetWhiteList
 	if err := r.Conn.Where(makeFilterAttr(filter)).First(&resultModel).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -21,11 +21,11 @@ func (r repo) FindOneWhitelist(filter entities.WhitelistFilter) (*entities.White
 	return &result, nil
 }
 
-func makeFilterAttr(filter entities.WhitelistFilter) (whitelistFilterAttr models.GetWhiteList) {
-	whitelistFilterAttr = models.GetWhiteList{}
+func makeFilterAttr(filter entities.WhiteListFilter) (whitelistFilterAttr models.GetWhiteListFilter) {
+	whitelistFilterAttr = models.GetWhiteListFilter{}
 
-	if filter.StellarPublicAddress != nil {
-		whitelistFilterAttr.StellarPublicAddress = filter.StellarPublicAddress
+	if filter.StellarPublicKey != nil {
+		whitelistFilterAttr.StellarPublicKey = filter.StellarPublicKey
 	}
 
 	if filter.RoleCode != nil {

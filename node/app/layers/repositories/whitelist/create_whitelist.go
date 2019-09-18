@@ -7,23 +7,23 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
 
-func createWhitelist(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error) {
-	createWhiteListModel := models.CreateWhiteList{
-		StellarPublicAddress: &whitelist.StellarPublicAddress,
-		RoleCode: &whitelist.RoleCode,
+func createWhitelist(dbTx *gorm.DB, whitelist *entities.WhiteList) (*entities.WhiteList, error) {
+	createWhiteListModel := &models.CreateWhiteList{
+		StellarPublicKey: whitelist.StellarPublicKey,
+		RoleCode:         whitelist.RoleCode,
 	}
 
-	if err := dbTx.Save(&createWhiteListModel).Error; err != nil {
+	if err := dbTx.Save(createWhiteListModel).Error; err != nil {
 		return nil, verrors.InternalError{Message: err.Error()}
 	}
 
 	return whitelist, nil
 }
 
-func (r *repo) CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error) {
+func (r *repo) CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.WhiteList) (*entities.WhiteList, error) {
 	return createWhitelist(dbTx, whitelist)
 }
 
-func (r *repo) CreateWhitelist(whitelist *entities.Whitelist) (*entities.Whitelist, error) {
+func (r *repo) CreateWhitelist(whitelist *entities.WhiteList) (*entities.WhiteList, error) {
 	return createWhitelist(r.Conn, whitelist)
 }

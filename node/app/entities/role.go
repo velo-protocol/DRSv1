@@ -1,7 +1,7 @@
 package entities
 
 type Role struct {
-	ID   string
+	ID   int
 	Name string
 	Code string
 }

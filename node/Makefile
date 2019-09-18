@@ -60,7 +60,7 @@ mockgen/repo:
 		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr
 
 mockgen/usecase:
-	mockgen
+	mockgen \
 		-source=./app/layers/usecases/interface.go \
 		-destination=./app/layers/mocks/usecases.go -package mocks \
 		-package mocks \

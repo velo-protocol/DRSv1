@@ -1,1 +1,2 @@
-DROP TABLE whitelists; DROP TABLE roles;
+DROP TABLE whitelists;
+DROP TABLE roles;

@@ -6,13 +6,13 @@ import (
 )
 
 type useCase struct {
-	StellarRepo stellar.Repo
+	StellarRepo   stellar.Repo
 	WhitelistRepo whitelist.Repo
 }
 
 func Init(stellarRepo stellar.Repo, whitelistRepo whitelist.Repo) UseCase {
 	return &useCase{
-		StellarRepo: stellarRepo,
+		StellarRepo:   stellarRepo,
 		WhitelistRepo: whitelistRepo,
 	}
 }

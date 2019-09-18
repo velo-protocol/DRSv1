@@ -6,12 +6,12 @@ import (
 )
 
 type Repo interface {
-	BeginTx() (*gorm.DB)
-	CommitTx(dbtx *gorm.DB) (error)
+	BeginTx() *gorm.DB
+	CommitTx(dbTx *gorm.DB) error
 
-	CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.Whitelist) (*entities.Whitelist, error)
-	CreateWhitelist(whitelist *entities.Whitelist) (*entities.Whitelist, error)
+	CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.WhiteList) (*entities.WhiteList, error)
+	CreateWhitelist(whitelist *entities.WhiteList) (*entities.WhiteList, error)
+	FindOneWhitelist(filter entities.WhiteListFilter) (*entities.WhiteList, error)
 
-	FindOneWhitelist(filter entities.WhitelistFilter) (*entities.Whitelist, error)
 	FindOneRole(role string) (*entities.Role, error)
 }
