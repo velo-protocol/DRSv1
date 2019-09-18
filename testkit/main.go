@@ -33,14 +33,4 @@ func main() {
 
 	log.Printf("Error: %s", err)
 	log.Printf("Velo tx xdr string: %s", veloTxB64)
-
-	veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-
-	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(veloTx.SourceAccount.GetAccountID())
-	//log.Printf("Error: %s, %s", string(txSenderKeyPair.Hint()), veloTx.TxEnvelope().Signatures[0].Hint)
-	log.Print(txSenderKeyPair.Hint() == veloTx.TxEnvelope().Signatures[0].Hint)
-	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
-		log.Printf("Error: %s", err)
-	}
-
 }
