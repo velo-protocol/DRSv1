@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"github.com/AlekSi/pointer"
 	"github.com/pkg/errors"
 	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
@@ -9,30 +10,49 @@ import (
 )
 
 func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) error {
-	roleExists, err := useCase.WhitelistRepo.FindOneRole(whitelistEntity.Role)
+	pkSender := veloTxEnvelope.VeloTx.SourceAccount.Address()
+	role := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Role
+	address := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Address.Address()
+
+	regulatorExists, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhitelistFilter{
+		StellarAddress: pointer.ToString(pkSender),
+		Role: pointer.ToString(string(vxdr.RoleRegulator)),
+	})
 	if err != nil {
-		return nil, err
+		return err
+	}
+
+	if regulatorExists == nil {
+		return errors.Wrap(constants.ErrRoleIsNotValid, constants.ErrCreateWhiteList.Error())
+	}
+
+	roleExists, err := useCase.WhitelistRepo.FindOneRole(string(role))
+	if err != nil {
+		return err
 	}
 
 	if roleExists == nil {
-		return nil, errors.Wrap(constants.ErrRoleNotFound, constants.ErrCreateWhiteList.Error())
+		return errors.Wrap(constants.ErrRoleNotFound, constants.ErrCreateWhiteList.Error())
 	}
 
 	dbTx, err := useCase.WhitelistRepo.BeginTx()
 	if err != nil {
-		return nil, errors.Wrap(constants.ErrorToBeginTransaction, constants.ErrCreateWhiteList.Error())
+		return errors.Wrap(constants.ErrorToBeginTransaction, constants.ErrCreateWhiteList.Error())
 	}
 
-	entity, err := useCase.WhitelistRepo.CreateWhitelistTx(dbTx, &whitelistEntity)
+	_, err = useCase.WhitelistRepo.CreateWhitelistTx(dbTx, &entities.Whitelist{
+		StellarAddress: address,
+		Role: string(role),
+	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	_, err = useCase.WhitelistRepo.CommitTx(dbTx)
 	if err != nil {
 		dbTx.Rollback()
-		return nil, err
+		return err
 	}
 
-	return &entity.ID, nil
+	return nil
 }
