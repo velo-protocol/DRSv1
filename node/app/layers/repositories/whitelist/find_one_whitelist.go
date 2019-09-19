@@ -2,7 +2,7 @@ package whitelist
 
 import (
 	"github.com/jinzhu/gorm"
-	"gitlab.com/velo-labs/cen/libs/errors"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
@@ -14,7 +14,7 @@ func (r repo) FindOneWhitelist(filter entities.WhiteListFilter) (*entities.White
 			return nil, nil
 		}
 
-		return nil, verrors.InternalError{Message: err.Error()}
+		return nil, constants.ErrToGetDataFromDatabase
 	}
 
 	result := resultModel.ToEntity()
