@@ -3,11 +3,16 @@ package models
 import (
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
+	"time"
 )
 
 type CreateWhiteList struct {
 	StellarPublicKey string
 	RoleCode         string
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	DeletedAt        *time.Time
+
 }
 
 func (CreateWhiteList) TableName() string {
