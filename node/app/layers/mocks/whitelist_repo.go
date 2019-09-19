@@ -6,6 +6,9 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
+	gorm "github.com/jinzhu/gorm"
+	entities "gitlab.com/velo-labs/cen/node/app/entities"
+	reflect "reflect"
 )
 
 // MockWhiteListRepo is a mock of Repo interface
@@ -29,4 +32,92 @@ func NewMockWhiteListRepo(ctrl *gomock.Controller) *MockWhiteListRepo {
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockWhiteListRepo) EXPECT() *MockWhiteListRepoMockRecorder {
 	return m.recorder
+}
+
+// BeginTx mocks base method
+func (m *MockWhiteListRepo) BeginTx() *gorm.DB {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BeginTx")
+	ret0, _ := ret[0].(*gorm.DB)
+	return ret0
+}
+
+// BeginTx indicates an expected call of BeginTx
+func (mr *MockWhiteListRepoMockRecorder) BeginTx() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BeginTx", reflect.TypeOf((*MockWhiteListRepo)(nil).BeginTx))
+}
+
+// CommitTx mocks base method
+func (m *MockWhiteListRepo) CommitTx(dbtx *gorm.DB) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CommitTx", dbtx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CommitTx indicates an expected call of CommitTx
+func (mr *MockWhiteListRepoMockRecorder) CommitTx(dbtx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitTx", reflect.TypeOf((*MockWhiteListRepo)(nil).CommitTx), dbtx)
+}
+
+// CreateWhitelistTx mocks base method
+func (m *MockWhiteListRepo) CreateWhitelistTx(dbTx *gorm.DB, whitelist *entities.WhiteList) (*entities.WhiteList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateWhitelistTx", dbTx, whitelist)
+	ret0, _ := ret[0].(*entities.WhiteList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateWhitelistTx indicates an expected call of CreateWhitelistTx
+func (mr *MockWhiteListRepoMockRecorder) CreateWhitelistTx(dbTx, whitelist interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhitelistTx", reflect.TypeOf((*MockWhiteListRepo)(nil).CreateWhitelistTx), dbTx, whitelist)
+}
+
+// CreateWhitelist mocks base method
+func (m *MockWhiteListRepo) CreateWhitelist(whitelist *entities.WhiteList) (*entities.WhiteList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateWhitelist", whitelist)
+	ret0, _ := ret[0].(*entities.WhiteList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateWhitelist indicates an expected call of CreateWhitelist
+func (mr *MockWhiteListRepoMockRecorder) CreateWhitelist(whitelist interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhitelist", reflect.TypeOf((*MockWhiteListRepo)(nil).CreateWhitelist), whitelist)
+}
+
+// FindOneWhitelist mocks base method
+func (m *MockWhiteListRepo) FindOneWhitelist(filter entities.WhiteListFilter) (*entities.WhiteList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOneWhitelist", filter)
+	ret0, _ := ret[0].(*entities.WhiteList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOneWhitelist indicates an expected call of FindOneWhitelist
+func (mr *MockWhiteListRepoMockRecorder) FindOneWhitelist(filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneWhitelist", reflect.TypeOf((*MockWhiteListRepo)(nil).FindOneWhitelist), filter)
+}
+
+// FindOneRole mocks base method
+func (m *MockWhiteListRepo) FindOneRole(role string) (*entities.Role, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOneRole", role)
+	ret0, _ := ret[0].(*entities.Role)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOneRole indicates an expected call of FindOneRole
+func (mr *MockWhiteListRepoMockRecorder) FindOneRole(role interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneRole", reflect.TypeOf((*MockWhiteListRepo)(nil).FindOneRole), role)
 }
