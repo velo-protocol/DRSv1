@@ -3,6 +3,7 @@ package whitelist_test
 import (
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
@@ -13,7 +14,7 @@ import (
 
 func TestRepo_CreateWhitelist(t *testing.T) {
 
-	expectedSqlCommand := fmt.Sprintf(`INSERT INTO "%s"`, constants.WhiteListTable)
+	expectedSQLCommand := fmt.Sprintf(`INSERT INTO "%s"`, constants.WhiteListTable)
 
 	t.Run("Happy", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
@@ -25,7 +26,7 @@ func TestRepo_CreateWhitelist(t *testing.T) {
 		}
 
 		sqlMock.ExpectBegin()
-		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSqlCommand)).
+		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSQLCommand)).
 			WillReturnResult(sqlmock.NewResult(0, 1))
 
 		dbTx := repo.BeginTx()
@@ -42,15 +43,15 @@ func TestRepo_CreateWhitelist(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
 		sqlMock.ExpectBegin()
-		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSqlCommand)).
-			WillReturnError(constants.ErrToSaveDatabase)
+		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSQLCommand)).
+			WillReturnError(errors.New(constants.ErrToSaveDatabase))
 
 		dbTx := repo.BeginTx()
 		result, err := repo.CreateWhitelistTx(dbTx, &entities.WhiteList{})
 
 		assert.Nil(t, result)
 		assert.Error(t, err)
-		assert.EqualError(t, constants.ErrToSaveDatabase, err.Error())
+		assert.EqualError(t, errors.New(constants.ErrToSaveDatabase), err.Error())
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})
 
@@ -58,14 +59,14 @@ func TestRepo_CreateWhitelist(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
 		sqlMock.ExpectBegin()
-		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSqlCommand)).
-			WillReturnError(constants.ErrToSaveDatabase)
+		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSQLCommand)).
+			WillReturnError(errors.New(constants.ErrToSaveDatabase))
 
 		result, err := repo.CreateWhitelist(&entities.WhiteList{})
 
 		assert.Nil(t, result)
 		assert.Error(t, err)
-		assert.EqualError(t, constants.ErrToSaveDatabase, err.Error())
+		assert.EqualError(t, errors.New(constants.ErrToSaveDatabase), err.Error())
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})
 }
