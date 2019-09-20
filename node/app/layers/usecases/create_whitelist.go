@@ -57,10 +57,10 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key value violates") {
 			return nerrors.ErrAlreadyExists{
-				Message: errors.Errorf(constants.ErrWhiteListAlreadyWhiteListed, txSenderPublicKey, string(vxdr.RoleRegulator)).Error(),
+				Message: errors.Errorf(constants.ErrWhiteListAlreadyWhiteListed, txSenderPublicKey, string(role)).Error(),
 			}
 		}
-		return nerrors.ErrInternal{Message: err.Error()}
+		return nerrors.ErrInternal{Message: constants.ErrToSaveDatabase}
 	}
 
 	return nil
