@@ -2,6 +2,7 @@ package whitelist
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
@@ -14,7 +15,7 @@ func (r *repo) FindOneRole(role string) (*entities.Role, error) {
 			return nil, nil
 		}
 
-		return nil, constants.ErrToGetDataFromDatabase
+		return nil, errors.New(constants.ErrToGetDataFromDatabase)
 	}
 
 	result := resultModel.ToEntity()

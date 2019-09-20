@@ -10,6 +10,7 @@ import (
 	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
 	"testing"
 )
@@ -90,7 +91,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			mockedUseCase.EXPECT().
 				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
-				Return(errors.New("some error has occurred"))
+				Return(nerrors.ErrInternal{Message: errors.New("some error has occurred").Error()})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 				SignedVeloTxXdr: veloTxB64,

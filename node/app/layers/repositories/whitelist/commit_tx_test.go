@@ -2,6 +2,7 @@ package whitelist_test
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"testing"
@@ -30,7 +31,7 @@ func TestRepo_CommitTx(t *testing.T) {
 
 		sqlMock.ExpectBegin()
 		sqlMock.ExpectCommit().
-			WillReturnError(constants.ErrToCommitTransaction)
+			WillReturnError(errors.New(constants.ErrToCommitTransaction))
 
 		dbTx := repo.BeginTx()
 		assert.NotNil(t, dbTx)
@@ -39,7 +40,7 @@ func TestRepo_CommitTx(t *testing.T) {
 		err := repo.CommitTx(dbTx)
 
 		assert.Error(t, err)
-		assert.EqualError(t, constants.ErrToCommitTransaction, err.Error())
+		assert.EqualError(t, errors.New(constants.ErrToCommitTransaction), err.Error())
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 
 	})

@@ -2,25 +2,31 @@ package usecases
 
 import (
 	"context"
+	"fmt"
 	"github.com/AlekSi/pointer"
 	"github.com/pkg/errors"
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
+	"gitlab.com/velo-labs/cen/node/app/errors"
+	"strings"
 )
 
-func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) error {
+func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) nerrors.NodeError {
 	txSenderPublicKey := veloTxEnvelope.VeloTx.SourceAccount.Address()
 	role := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Role
 	address := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Address.Address()
 
 	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
 	if err != nil {
-		return errors.Wrap(err, constants.ErrCreateWhiteList.Error())
+		return nerrors.ErrUnAuthenticated{Message: err.Error()}
+	}
+	if veloTxEnvelope.Signatures == nil {
+		return nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
 	}
 	if txSenderKeyPair.Hint() != veloTxEnvelope.Signatures[0].Hint {
-		return errors.Wrap(constants.ErrBadSignature, constants.ErrCreateWhiteList.Error())
+		return nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
 	}
 
 	regulatorEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhiteListFilter{
@@ -28,20 +34,20 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 		RoleCode:         pointer.ToString(string(vxdr.RoleRegulator)),
 	})
 	if err != nil {
-		return errors.Wrap(constants.ErrToGetDataFromDatabase, constants.ErrCreateWhiteList.Error())
+		return nerrors.ErrInternal{Message: err.Error()}
 	}
-
 	if regulatorEntity == nil {
-		return errors.Wrap(constants.ErrUnauthorized, constants.ErrCreateWhiteList.Error())
+		return nerrors.ErrPermissionDenied{
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "whitelist user"),
+		}
 	}
 
 	roleEntity, err := useCase.WhitelistRepo.FindOneRole(string(role))
 	if err != nil {
-		return errors.Wrap(constants.ErrToGetDataFromDatabase, constants.ErrCreateWhiteList.Error())
+		return nerrors.ErrInternal{Message: err.Error()}
 	}
-
 	if roleEntity == nil {
-		return errors.Wrap(constants.ErrRoleNotFound, constants.ErrCreateWhiteList.Error())
+		return nerrors.ErrNotFound{Message: constants.ErrRoleNotFound}
 	}
 
 	_, err = useCase.WhitelistRepo.CreateWhitelist(&entities.WhiteList{
@@ -49,7 +55,12 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 		RoleCode:         string(role),
 	})
 	if err != nil {
-		return errors.Wrap(constants.ErrToSaveDatabase, constants.ErrCreateWhiteList.Error())
+		if strings.Contains(err.Error(), "duplicate key value violates") {
+			return nerrors.ErrAlreadyExists{
+				Message: errors.Errorf(constants.ErrWhiteListAlreadyWhiteListed, txSenderPublicKey, string(vxdr.RoleRegulator)).Error(),
+			}
+		}
+		return nerrors.ErrInternal{Message: err.Error()}
 	}
 
 	return nil

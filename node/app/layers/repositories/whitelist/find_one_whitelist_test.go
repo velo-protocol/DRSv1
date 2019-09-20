@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/AlekSi/pointer"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
@@ -14,7 +15,7 @@ import (
 
 func TestRepo_FindOneWhitelist(t *testing.T) {
 
-	expectedSqlCommand := fmt.Sprintf(`SELECT * FROM "%s"`, constants.WhiteListTable)
+	expectedSQLCommand := fmt.Sprintf(`SELECT * FROM "%s"`, constants.WhiteListTable)
 
 	t.Run("Happy", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
@@ -32,7 +33,7 @@ func TestRepo_FindOneWhitelist(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"id", "stellar_public_key", "role_code"}).
 			AddRow(expectedResult.ID, expectedResult.StellarPublicKey, expectedResult.RoleCode)
 
-		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSqlCommand)).
+		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSQLCommand)).
 			WithArgs(filter.StellarPublicKey).
 			WillReturnRows(rows)
 
@@ -53,7 +54,7 @@ func TestRepo_FindOneWhitelist(t *testing.T) {
 			StellarPublicKey: pointer.ToString("GDP3LU4CM3L2PQRNAEMKZPJ5BEE7I3XYO4VUQQISFGBTT6URPW4VFCIK"),
 		}
 
-		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSqlCommand)).
+		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSQLCommand)).
 			WithArgs(filter.StellarPublicKey).
 			WillReturnRows(&sqlmock.Rows{})
 
@@ -68,14 +69,14 @@ func TestRepo_FindOneWhitelist(t *testing.T) {
 	t.Run("Error ", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
-		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSqlCommand)).
-			WillReturnError(constants.ErrToGetDataFromDatabase)
+		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSQLCommand)).
+			WillReturnError(errors.New(constants.ErrToGetDataFromDatabase))
 
 		result, err := repo.FindOneWhitelist(entities.WhiteListFilter{})
 
 		assert.Nil(t, result)
 		assert.Error(t, err)
-		assert.EqualError(t, constants.ErrToGetDataFromDatabase, err.Error())
+		assert.EqualError(t, errors.New(constants.ErrToGetDataFromDatabase), err.Error())
 
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})

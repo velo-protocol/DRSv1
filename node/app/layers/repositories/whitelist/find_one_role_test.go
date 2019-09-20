@@ -3,6 +3,7 @@ package whitelist_test
 import (
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
@@ -13,7 +14,7 @@ import (
 
 func TestRepo_FindOneRole(t *testing.T) {
 
-	expectedSqlCommand := fmt.Sprintf(`SELECT * FROM "%s"`, constants.RoleTable)
+	expectedSQLCommand := fmt.Sprintf(`SELECT * FROM "%s"`, constants.RoleTable)
 
 	t.Run("Happy", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
@@ -27,7 +28,7 @@ func TestRepo_FindOneRole(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"id", "name", "code"}).
 			AddRow(expectedResult.ID, expectedResult.Name, expectedResult.Code)
 
-		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSqlCommand)).
+		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSQLCommand)).
 			WithArgs(string(vxdr.RoleTrustedPartner)).
 			WillReturnRows(rows)
 
@@ -44,7 +45,7 @@ func TestRepo_FindOneRole(t *testing.T) {
 	t.Run("Happy - Record not found ", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
-		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSqlCommand)).
+		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSQLCommand)).
 			WithArgs(string(vxdr.RoleTrustedPartner)).
 			WillReturnRows(&sqlmock.Rows{})
 
@@ -59,15 +60,15 @@ func TestRepo_FindOneRole(t *testing.T) {
 	t.Run("Error ", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
-		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSqlCommand)).
+		sqlMock.ExpectQuery(regexp.QuoteMeta(expectedSQLCommand)).
 			WithArgs(string(vxdr.RoleTrustedPartner)).
-			WillReturnError(constants.ErrToGetDataFromDatabase)
+			WillReturnError(errors.New(constants.ErrToGetDataFromDatabase))
 
 		result, err := repo.FindOneRole(string(vxdr.RoleTrustedPartner))
 
 		assert.Nil(t, result)
 		assert.Error(t, err)
-		assert.EqualError(t, constants.ErrToGetDataFromDatabase, err.Error())
+		assert.EqualError(t, errors.New(constants.ErrToGetDataFromDatabase), err.Error())
 
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})

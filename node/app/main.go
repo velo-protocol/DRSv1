@@ -52,7 +52,7 @@ func initServer(grpcServer *grpc.Server) {
 		panic(err)
 	}
 
-	if env.EnableReflectionApi {
+	if env.EnableReflectionAPI {
 		reflection.Register(grpcServer)
 	}
 

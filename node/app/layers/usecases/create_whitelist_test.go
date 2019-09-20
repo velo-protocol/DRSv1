@@ -2,7 +2,9 @@ package usecases
 
 import (
 	"context"
+	"fmt"
 	"github.com/golang/mock/gomock"
+	"github.com/pkg/errors"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	vconvert "gitlab.com/velo-labs/cen/libs/convert"
@@ -41,25 +43,25 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		defer finish()
 
 		findWhiteListEntity := entities.WhiteList{
-			ID: "e13d778c-d2c8-452b-8ead-368d43447fcd",
+			ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
 			StellarPublicKey: publicKey1,
-			RoleCode: string(vxdr.RoleRegulator),
+			RoleCode:         string(vxdr.RoleRegulator),
 		}
 
 		roleEntity := entities.Role{
-			ID: 1,
+			ID:   1,
 			Name: "Price feeder",
 			Code: "PRICE_FEEDER",
 		}
 
 		createWhitelistEntity := entities.WhiteList{
 			StellarPublicKey: publicKey2,
-			RoleCode: string(vxdr.RolePriceFeeder),
+			RoleCode:         string(vxdr.RolePriceFeeder),
 		}
 
 		filter := entities.WhiteListFilter{
 			StellarPublicKey: &stellarPublicAddress,
-			RoleCode: &roleCode,
+			RoleCode:         &roleCode,
 		}
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
@@ -84,7 +86,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.NoError(t, err)
+		assert.Nil(t, err)
 	})
 
 	t.Run("Error - invalid signatures", func(t *testing.T) {
@@ -107,7 +109,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.EqualError(t, err, "can't create white list: bad signature")
+		assert.Contains(t, err.GRPCError().Error(), constants.ErrSignatureNotMatchSourceAccount)
 	})
 
 	t.Run("Error - can't query on whitelist table", func(t *testing.T) {
@@ -116,10 +118,10 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		filter := entities.WhiteListFilter{
 			StellarPublicKey: &stellarPublicAddress,
-			RoleCode: &roleCode,
+			RoleCode:         &roleCode,
 		}
 
-		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, constants.ErrToGetDataFromDatabase)
+		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
 		veloTxB64, _ := (&vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -137,7 +139,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.EqualError(t, err, "can't create white list: can't get data from database")
+		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
 	})
 
 	t.Run("Error - pass query on whitelist table and can't query on role table", func(t *testing.T) {
@@ -145,18 +147,18 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		defer finish()
 
 		findWhiteListEntity := entities.WhiteList{
-			ID: "e13d778c-d2c8-452b-8ead-368d43447fcd",
+			ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
 			StellarPublicKey: publicKey1,
-			RoleCode: string(vxdr.RoleRegulator),
+			RoleCode:         string(vxdr.RoleRegulator),
 		}
 
 		filter := entities.WhiteListFilter{
 			StellarPublicKey: &stellarPublicAddress,
-			RoleCode: &roleCode,
+			RoleCode:         &roleCode,
 		}
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, constants.ErrToGetDataFromDatabase)
+		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
 		veloTxB64, _ := (&vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -174,7 +176,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.EqualError(t, err, "can't create white list: can't get data from database")
+		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
 	})
 
 	t.Run("Error - source account don't have regulator role", func(t *testing.T) {
@@ -183,7 +185,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		filter := entities.WhiteListFilter{
 			StellarPublicKey: &stellarPublicAddress,
-			RoleCode: &roleCode,
+			RoleCode:         &roleCode,
 		}
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, nil)
@@ -204,7 +206,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.EqualError(t, err, "can't create white list: unauthorized to perform an action")
+		assert.Contains(t, err.GRPCError().Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "whitelist user"))
 	})
 
 	t.Run("Error - send whitelist to save but fill invalid role", func(t *testing.T) {
@@ -212,18 +214,18 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		defer finish()
 
 		findWhiteListEntity := entities.WhiteList{
-			ID: "e13d778c-d2c8-452b-8ead-368d43447fcd",
+			ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
 			StellarPublicKey: publicKey1,
-			RoleCode: string(vxdr.RoleRegulator),
+			RoleCode:         string(vxdr.RoleRegulator),
 		}
 
 		filter := entities.WhiteListFilter{
 			StellarPublicKey: &stellarPublicAddress,
-			RoleCode: &roleCode,
+			RoleCode:         &roleCode,
 		}
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, constants.ErrToGetDataFromDatabase)
+		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
 		veloTxB64, _ := (&vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -241,7 +243,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.EqualError(t, err, "can't create white list: can't get data from database")
+		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
 	})
 
 	t.Run("Error - can't save whitelist table", func(t *testing.T) {
@@ -249,30 +251,30 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		defer finish()
 
 		findWhiteListEntity := entities.WhiteList{
-			ID: "e13d778c-d2c8-452b-8ead-368d43447fcd",
+			ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
 			StellarPublicKey: publicKey1,
-			RoleCode: string(vxdr.RoleRegulator),
+			RoleCode:         string(vxdr.RoleRegulator),
 		}
 
 		roleEntity := entities.Role{
-			ID: 1,
+			ID:   1,
 			Name: "Price feeder",
 			Code: "PRICE_FEEDER",
 		}
 
 		createWhitelistEntity := entities.WhiteList{
 			StellarPublicKey: publicKey2,
-			RoleCode: string(vxdr.RolePriceFeeder),
+			RoleCode:         string(vxdr.RolePriceFeeder),
 		}
 
 		filter := entities.WhiteListFilter{
 			StellarPublicKey: &stellarPublicAddress,
-			RoleCode: &roleCode,
+			RoleCode:         &roleCode,
 		}
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
 		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
-		mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, constants.ErrToSaveDatabase)
+		mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, errors.New(constants.ErrToSaveDatabase))
 
 		veloTxB64, _ := (&vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -290,7 +292,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.EqualError(t, err, "can't create white list: can't save to database")
+		assert.Contains(t, err.GRPCError().Error(), constants.ErrToSaveDatabase)
 	})
 
 }

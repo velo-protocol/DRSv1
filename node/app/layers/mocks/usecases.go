@@ -9,6 +9,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	xdr "gitlab.com/velo-labs/cen/libs/xdr"
 	entities "gitlab.com/velo-labs/cen/node/app/entities"
+	errors "gitlab.com/velo-labs/cen/node/app/errors"
 	reflect "reflect"
 )
 
@@ -51,10 +52,10 @@ func (mr *MockUseCaseMockRecorder) SetupAccount(issuerCreationTx, peggedValue, p
 }
 
 // CreateWhiteList mocks base method
-func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *xdr.VeloTxEnvelope) error {
+func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *xdr.VeloTxEnvelope) errors.NodeError {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateWhiteList", ctx, veloTxEnvelope)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(errors.NodeError)
 	return ret0
 }
 

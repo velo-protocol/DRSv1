@@ -2,6 +2,7 @@ package whitelist
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
@@ -14,7 +15,7 @@ func createWhitelist(dbTx *gorm.DB, whitelist *entities.WhiteList) (*entities.Wh
 	}
 
 	if err := dbTx.Save(createWhiteListModel).Error; err != nil {
-		return nil, constants.ErrToSaveDatabase
+		return nil, errors.New(constants.ErrToSaveDatabase)
 	}
 
 	return whitelist, nil
