@@ -21,11 +21,11 @@ func TestSetUpCredit_BuildXDR(t *testing.T) {
 		assert.Equal(t, xdr.Int64(10000000), veloXdrOp.Body.SetupCreditOp.PeggedValue)
 		assert.Equal(t, "vTHB", veloXdrOp.Body.SetupCreditOp.AssetCode)
 	})
-	t.Run("error, failed to parse pegged value", func(t *testing.T) {
+	t.Run("error, validation fail", func(t *testing.T) {
 		_, err := (&SetupCredit{
 			PeggedCurrency: "THB",
-			PeggedValue:    "BAD_VALUE",
-			AssetCode:      "vTHB",
+			PeggedValue:    "1.00",
+			AssetCode:      "",
 		}).BuildXDR()
 
 		assert.Error(t, err)
@@ -74,6 +74,24 @@ func TestSetUpCredit_Validate(t *testing.T) {
 
 		assert.NoError(t, err)
 	})
+	t.Run("error, empty asset code", func(t *testing.T) {
+		err := (&SetupCredit{
+			PeggedCurrency: "THB1",
+			PeggedValue:    "1.00",
+			AssetCode:      "",
+		}).Validate()
+
+		assert.Errorf(t, err, "assetCode parameter must not be blank")
+	})
+	t.Run("error, empty pegged value", func(t *testing.T) {
+		err := (&SetupCredit{
+			PeggedCurrency: "THB1",
+			PeggedValue:    "",
+			AssetCode:      "vTHB1",
+		}).Validate()
+
+		assert.Errorf(t, err, "peggedValue parameter must not be blank")
+	})
 	t.Run("error, empty pegged currency", func(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "",
@@ -81,69 +99,60 @@ func TestSetUpCredit_Validate(t *testing.T) {
 			AssetCode:      "vTHB1",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "peggedCurrency parameter must not be blank")
 	})
-	t.Run("error, pegged currency too long", func(t *testing.T) {
-		err := (&SetupCredit{
-			PeggedCurrency: "1234567890XXX",
-			PeggedValue:    "1.00",
-			AssetCode:      "vTHB",
-		}).Validate()
-
-		assert.Error(t, err)
-	})
-	t.Run("error, pegged currency cannot have special character", func(t *testing.T) {
-		err := (&SetupCredit{
-			PeggedCurrency: "_THB",
-			PeggedValue:    "1.00",
-			AssetCode:      "vTHB",
-		}).Validate()
-
-		assert.Error(t, err)
-	})
-	t.Run("error, empty asset name", func(t *testing.T) {
+	t.Run("error, pegged value must be a number", func(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB1",
-			PeggedValue:    "1.00",
-			AssetCode:      "",
+			PeggedValue:    "1.0000XXX",
+			AssetCode:      "vTHB1",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "peggedValue parameter is not a number")
 	})
-	t.Run("error, asset name too long", func(t *testing.T) {
+	t.Run("error, pegged value must be a number", func(t *testing.T) {
+		err := (&SetupCredit{
+			PeggedCurrency: "THB1",
+			PeggedValue:    "-1.000",
+			AssetCode:      "vTHB1",
+		}).Validate()
+
+		assert.Errorf(t, err, "peggedValue must be greater than zero")
+	})
+	t.Run("error, invalid format of asset code, asset code too long", func(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB1",
 			PeggedValue:    "1.00",
 			AssetCode:      "1234567890XXX",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "invalid format of asset name")
 	})
-	t.Run("error, asset name cannot have special character", func(t *testing.T) {
+	t.Run("error, invalid format of asset code, asset code cannot have special character", func(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB1",
 			PeggedValue:    "1.00",
 			AssetCode:      "_vTHB",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "invalid format of asset name")
 	})
-	t.Run("error, pegged value must be number", func(t *testing.T) {
+	t.Run("error, invalid format of pegged currency, pegged currency too long", func(t *testing.T) {
 		err := (&SetupCredit{
-			PeggedCurrency: "THB1",
-			PeggedValue:    "1.00XXX",
+			PeggedCurrency: "1234567890XXX",
+			PeggedValue:    "1.00",
 			AssetCode:      "vTHB",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "invalid format of pegged currency")
 	})
-	t.Run("error, pegged value must be greater than zero", func(t *testing.T) {
+	t.Run("error, invalid format of pegged currency, pegged currency cannot have special character", func(t *testing.T) {
 		err := (&SetupCredit{
-			PeggedCurrency: "THB1",
-			PeggedValue:    "-1.00",
+			PeggedCurrency: "_THB",
+			PeggedValue:    "1.00",
 			AssetCode:      "vTHB",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "invalid format of pegged currency")
 	})
 }

@@ -13,6 +13,10 @@ type WhiteList struct {
 
 
 func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
+	if err := whiteList.Validate(); err != nil {
+		return vxdr.VeloOp{}, err
+	}
+
 	var vXdrOp vxdr.WhiteListOp
 	err := vXdrOp.Address.SetAddress(whiteList.Address)
 	if err != nil {
@@ -20,9 +24,6 @@ func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
 	}
 
 	vXdrOp.Role = vxdr.Role(whiteList.Role)
-	if !vXdrOp.Role.IsValid() {
-		return vxdr.VeloOp{}, errors.New("failed to set white list role")
-	}
 
 	body, err := vxdr.NewOperationBody(vxdr.OperationTypeWhiteList, vXdrOp)
 	if err != nil {
@@ -53,7 +54,7 @@ func (whiteList *WhiteList) Validate() error {
 		return errors.New("role parameter cannot be blank")
 	}
 
-	if whiteList.Address == "" || !strkey.IsValidEd25519PublicKey(whiteList.Address) {
+	if !strkey.IsValidEd25519PublicKey(whiteList.Address) {
 		return errors.Errorf("%s is not a valid stellar public key", whiteList.Address)
 	}
 

@@ -138,7 +138,7 @@ func TransactionFromXDR(veloTxBase64 string) (VeloTx, error) {
 	var veloXdrEnvelope vxdr.VeloTxEnvelope
 	err := xdr.SafeUnmarshalBase64(veloTxBase64, &veloXdrEnvelope)
 	if err != nil {
-		return VeloTx{}, errors.Wrap(err, "unable to unmarshal velo transaction envelope")
+		return VeloTx{}, errors.Wrap(err, "the XDR message cannot be decoded")
 	}
 
 	var veloTx VeloTx
