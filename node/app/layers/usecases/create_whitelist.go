@@ -38,7 +38,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	}
 	if regulatorEntity == nil {
 		return nerrors.ErrPermissionDenied{
-			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "whitelist user"),
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList),
 		}
 	}
 

@@ -207,7 +207,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
-		assert.Contains(t, err.GRPCError().Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "whitelist user"))
+		assert.Contains(t, err.GRPCError().Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
 	})
 
 	t.Run("Error - send whitelist to save but fill invalid role", func(t *testing.T) {

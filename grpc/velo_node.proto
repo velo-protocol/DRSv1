@@ -13,4 +13,5 @@ message VeloTxRequest {
 
 message VeloTxReply {
     string signedStellarTxXdr = 1;
+    string message = 2;
 }
