@@ -20,6 +20,8 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 	switch veloTxEnvelope.VeloTx.VeloOp.Body.Type {
 	case vxdr.OperationTypeWhiteList:
 		return handler.handleWhiteListOperation(ctx, veloTxEnvelope)
+	case vxdr.OperationTypeSetupCredit:
+		return handler.handleSetupCreditOperation(ctx, veloTxEnvelope)
 	default: // this case should never occur, if the cen/libs and cen/node is aligned
 		return nil, nerrors.ErrInvalidArgument{
 			Message: constants.ErrUnknownVeloOperationType,
@@ -41,4 +43,19 @@ func (handler *handler) handleWhiteListOperation(ctx context.Context, veloTxEnve
 	}
 
 	return &spec.VeloTxReply{SignedStellarTxXdr: ""}, nil
+}
+
+func (handler *handler) handleSetupCreditOperation(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) (*spec.VeloTxReply, error) {
+	if veloTxEnvelope.VeloTx.VeloOp.Body.SetupCreditOp == nil {
+		return nil, nerrors.ErrInvalidArgument{
+			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, "setupCredit"),
+		}.GRPCError()
+	}
+
+	signedStellarTxXdr, err := handler.UseCase.SetupCredit(ctx, veloTxEnvelope)
+	if err != nil {
+		return nil, err.GRPCError()
+	}
+
+	return &spec.VeloTxReply{SignedStellarTxXdr: *signedStellarTxXdr}, nil
 }

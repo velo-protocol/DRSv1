@@ -7,6 +7,7 @@ import (
 
 type NodeError interface {
 	GRPCError() error
+	Error() string
 }
 
 type ErrInvalidArgument struct {

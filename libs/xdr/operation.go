@@ -19,9 +19,14 @@ func NewOperationBody(opType OperationType, value interface{}) (OperationBody, e
 			return OperationBody{}, fmt.Errorf("invalid value, must be WhiteListOp")
 		}
 		opBody.WhiteListOp = &tv
+	case OperationTypeSetupCredit:
+		tv, ok := value.(SetupCreditOp)
+		if !ok {
+			return OperationBody{}, fmt.Errorf("invalid value, must be SetupCreditOp")
+		}
+		opBody.SetupCreditOp = &tv
 	default:
 		return OperationBody{}, fmt.Errorf("unknown operation type")
 	}
-	// TODO: case OperationTypeSetupAccount
 	return opBody, nil
 }

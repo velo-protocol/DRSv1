@@ -3,16 +3,10 @@ package usecases
 import (
 	"context"
 	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 )
 
 type UseCase interface {
-	SetupAccount(
-		issuerCreationTx string,
-		peggedValue string,
-		peggedCurrency string,
-		assetName string,
-	) (*entities.Credit, error)
+	SetupCredit(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) (*string, nerrors.NodeError)
 	CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) nerrors.NodeError
 }

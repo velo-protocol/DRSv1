@@ -6,11 +6,12 @@ import (
 )
 
 var (
-	DrsPublicKey        string
-	DrsPrivateKey       string
-	VeloIssuerPublicKey string
-	NetworkPassphrase   string
-	HorizonURL          string
+	DrsPublicKey                string
+	DrsSecretKey                string
+	VeloIssuerPublicKey         string
+	NetworkPassphrase           string
+	HorizonURL                  string
+	StellarTxTimeBoundInMinutes int64
 
 	PostgresHost     string
 	PostgresPort     string
@@ -25,10 +26,11 @@ var (
 // Init Initialize env variables
 func Init() {
 	DrsPublicKey = requireEnv("DRS_PUBLIC_KEY")
-	DrsPrivateKey = requireEnv("DRS_SECRET_KEY")
+	DrsSecretKey = requireEnv("DRS_SECRET_KEY")
 	VeloIssuerPublicKey = requireEnv("VELO_ISSUER_PUBLIC_KEY")
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
 	HorizonURL = requireEnv("HORIZON_URL")
+	StellarTxTimeBoundInMinutes = 15
 
 	PostgresHost = requireEnv("POSTGRES_HOST")
 	PostgresPort = requireEnv("POSTGRES_PORT")

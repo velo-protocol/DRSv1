@@ -15,7 +15,7 @@ func (r repo) FindOneWhitelist(filter entities.WhiteListFilter) (*entities.White
 			return nil, nil
 		}
 
-		return nil, errors.New(constants.ErrToGetDataFromDatabase)
+		return nil, errors.Wrap(err, constants.ErrToGetDataFromDatabase)
 	}
 
 	result := resultModel.ToEntity()

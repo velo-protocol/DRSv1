@@ -62,7 +62,7 @@ mockgen/repo:
 mockgen/usecase:
 	mockgen \
 		-source=./app/layers/usecases/interface.go \
-		-destination=./app/layers/mocks/usecases.go -package mocks \
+		-destination=./app/layers/mocks/usecases.go \
 		-package mocks \
 		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors
 
