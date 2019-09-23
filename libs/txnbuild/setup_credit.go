@@ -10,7 +10,7 @@ import (
 type SetupCredit struct {
 	PeggedValue    string
 	PeggedCurrency string
-	AssetName      string
+	AssetCode      string
 }
 
 func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
@@ -21,7 +21,7 @@ func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
 
 	// xdr op
 	vXdrOp := vxdr.SetupCreditOp{
-		AssetName:      setupCredit.AssetName,
+		AssetCode:      setupCredit.AssetCode,
 		PeggedValue:    peggedValue,
 		PeggedCurrency: setupCredit.PeggedCurrency,
 	}
@@ -42,13 +42,13 @@ func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 
 	setupCredit.PeggedValue = amount.String(setupCreditOp.PeggedValue)
 	setupCredit.PeggedCurrency = setupCreditOp.PeggedCurrency
-	setupCredit.AssetName = setupCreditOp.AssetName
+	setupCredit.AssetCode = setupCreditOp.AssetCode
 
 	return nil
 }
 
 func (setupCredit *SetupCredit) Validate() error {
-	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.AssetName); !matched {
+	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.AssetCode); !matched {
 		return errors.New("invalid format of asset name")
 	}
 

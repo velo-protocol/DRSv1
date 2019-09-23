@@ -25,5 +25,5 @@ type WhiteListOp struct {
 type SetupCreditOp struct {
 	PeggedValue    xdr.Int64
 	PeggedCurrency string
-	AssetName      string
+	AssetCode      string
 }

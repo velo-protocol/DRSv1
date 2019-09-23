@@ -116,7 +116,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 				VeloOp: &vtxnbuild.SetupCredit{
 					PeggedValue:    "1.00",
 					PeggedCurrency: "THB",
-					AssetName:      "vTHB",
+					AssetCode:      "vTHB",
 				},
 			}).BuildSignEncode(kp1)
 
@@ -143,7 +143,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 				VeloOp: &vtxnbuild.SetupCredit{
 					PeggedValue:    "1.00",
 					PeggedCurrency: "THB",
-					AssetName:      "vTHB",
+					AssetCode:      "vTHB",
 				},
 			}).BuildSignEncode(kp1)
 
