@@ -1,5 +1,8 @@
-xdr:
-	go run main.go
+xdr/whitelist:
+	go run ./whitelist_op/main.go
+
+xdr/setup-credit:
+	go run ./setup_credit_op/main.go
 
 submit/velotx:
 	grpcurl -plaintext \
