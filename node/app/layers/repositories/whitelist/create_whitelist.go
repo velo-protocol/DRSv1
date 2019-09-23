@@ -2,7 +2,6 @@ package whitelist
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist/models"
 )
