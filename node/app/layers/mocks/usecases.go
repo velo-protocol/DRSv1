@@ -8,7 +8,6 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	xdr "gitlab.com/velo-labs/cen/libs/xdr"
-	entities "gitlab.com/velo-labs/cen/node/app/entities"
 	errors "gitlab.com/velo-labs/cen/node/app/errors"
 	reflect "reflect"
 )
@@ -36,19 +35,19 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 	return m.recorder
 }
 
-// SetupAccount mocks base method
-func (m *MockUseCase) SetupAccount(issuerCreationTx, peggedValue, peggedCurrency, assetName string) (*entities.Credit, error) {
+// SetupCredit mocks base method
+func (m *MockUseCase) SetupCredit(ctx context.Context, veloTxEnvelope *xdr.VeloTxEnvelope) (*string, errors.NodeError) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetupAccount", issuerCreationTx, peggedValue, peggedCurrency, assetName)
-	ret0, _ := ret[0].(*entities.Credit)
-	ret1, _ := ret[1].(error)
+	ret := m.ctrl.Call(m, "SetupCredit", ctx, veloTxEnvelope)
+	ret0, _ := ret[0].(*string)
+	ret1, _ := ret[1].(errors.NodeError)
 	return ret0, ret1
 }
 
-// SetupAccount indicates an expected call of SetupAccount
-func (mr *MockUseCaseMockRecorder) SetupAccount(issuerCreationTx, peggedValue, peggedCurrency, assetName interface{}) *gomock.Call {
+// SetupCredit indicates an expected call of SetupCredit
+func (mr *MockUseCaseMockRecorder) SetupCredit(ctx, veloTxEnvelope interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupAccount", reflect.TypeOf((*MockUseCase)(nil).SetupAccount), issuerCreationTx, peggedValue, peggedCurrency, assetName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockUseCase)(nil).SetupCredit), ctx, veloTxEnvelope)
 }
 
 // CreateWhiteList mocks base method

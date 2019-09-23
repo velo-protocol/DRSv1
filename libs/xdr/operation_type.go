@@ -7,17 +7,23 @@ import (
 type OperationType int32
 
 const (
-	OperationTypeWhiteList OperationType = 0
-	// TODO: OperationTypeSetupAccount OperationType = 1
+	OperationTypeWhiteList   OperationType = 0
+	OperationTypeSetupCredit OperationType = 1
 )
 
 type OperationBody struct {
-	Type        OperationType
-	WhiteListOp *WhiteListOp
-	// TODO: SetupAccountOp *SetupAccountOp
+	Type          OperationType
+	WhiteListOp   *WhiteListOp
+	SetupCreditOp *SetupCreditOp
 }
 
 type WhiteListOp struct {
 	Address xdr.AccountId
 	Role    Role
+}
+
+type SetupCreditOp struct {
+	PeggedValue    xdr.Int64
+	PeggedCurrency string
+	AssetName      string
 }

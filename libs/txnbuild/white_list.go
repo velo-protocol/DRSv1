@@ -11,26 +11,22 @@ type WhiteList struct {
 	Role    string
 }
 
-type SetUpCredit struct {
-	Address string
-	Role    string
-}
 
 func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
 	var vXdrOp vxdr.WhiteListOp
 	err := vXdrOp.Address.SetAddress(whiteList.Address)
 	if err != nil {
-		return vxdr.VeloOp{}, errors.Wrap(err, "failed to set whiteList address")
+		return vxdr.VeloOp{}, errors.Wrap(err, "failed to set white list address")
 	}
 
 	vXdrOp.Role = vxdr.Role(whiteList.Role)
 	if !vXdrOp.Role.IsValid() {
-		return vxdr.VeloOp{}, errors.New("failed to set whiteList role")
+		return vxdr.VeloOp{}, errors.New("failed to set white list role")
 	}
 
 	body, err := vxdr.NewOperationBody(vxdr.OperationTypeWhiteList, vXdrOp)
 	if err != nil {
-		return vxdr.VeloOp{}, errors.Wrap(err, "failed to build XDR OperationBody")
+		return vxdr.VeloOp{}, errors.Wrap(err, "failed to build XDR operation body")
 	}
 
 	return vxdr.VeloOp{Body: body}, nil
@@ -39,7 +35,7 @@ func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
 func (whiteList *WhiteList) FromXDR(vXdrOp vxdr.VeloOp) error {
 	whiteListOp := vXdrOp.Body.WhiteListOp
 	if whiteListOp == nil {
-		return errors.New("error parsing whiteList operation from xdr")
+		return errors.New("error parsing white list operation from xdr")
 	}
 
 	whiteList.Role = string(whiteListOp.Role)

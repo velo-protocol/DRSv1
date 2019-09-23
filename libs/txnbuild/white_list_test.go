@@ -1,6 +1,7 @@
 package vtxnbuild
 
 import (
+	"github.com/stellar/go/xdr"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"testing"
@@ -38,10 +39,16 @@ func TestWhiteList_BuildXDR(t *testing.T) {
 
 func TestWhiteList_FromXDR(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		veloXdrOp, _ := (&WhiteList{
-			Address: publicKey1,
-			Role:    string(vxdr.RoleRegulator),
-		}).BuildXDR()
+		var account xdr.AccountId
+		_ = account.SetAddress(publicKey1)
+		veloXdrOp := vxdr.VeloOp{
+			Body: vxdr.OperationBody{
+				WhiteListOp: &vxdr.WhiteListOp{
+					Address: account,
+					Role:    vxdr.RoleRegulator,
+				},
+			},
+		}
 
 		var newVeloWhiteListOp WhiteList
 		err := newVeloWhiteListOp.FromXDR(veloXdrOp)
@@ -51,8 +58,14 @@ func TestWhiteList_FromXDR(t *testing.T) {
 		assert.Equal(t, string(vxdr.RoleRegulator), newVeloWhiteListOp.Role)
 	})
 	t.Run("error, empty WhiteListOp", func(t *testing.T) {
+		veloXdrOp := vxdr.VeloOp{
+			Body: vxdr.OperationBody{
+				WhiteListOp: nil,
+			},
+		}
+
 		var newVeloWhiteListOp WhiteList
-		err := newVeloWhiteListOp.FromXDR(vxdr.VeloOp{})
+		err := newVeloWhiteListOp.FromXDR(veloXdrOp)
 		assert.Error(t, err)
 	})
 }

@@ -1,4 +1,4 @@
-package usecases
+package usecases_test
 
 import (
 	"context"
@@ -7,12 +7,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
+	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
 	"testing"
 )
 
@@ -83,7 +84,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Nil(t, err)
@@ -106,7 +107,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrSignatureNotMatchSourceAccount)
@@ -131,12 +132,12 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
+		}).BuildSignEncode(kp1)
 
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
@@ -173,7 +174,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
@@ -203,7 +204,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "whitelist user"))
@@ -240,7 +241,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
@@ -289,7 +290,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
 		envelope := veloTx.TxEnvelope()
 
-		useCase := Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrToSaveDatabase)

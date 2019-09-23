@@ -5,7 +5,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"regexp"

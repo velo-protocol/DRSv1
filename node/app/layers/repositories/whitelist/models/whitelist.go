@@ -12,7 +12,6 @@ type CreateWhiteList struct {
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 	DeletedAt        *time.Time
-
 }
 
 func (CreateWhiteList) TableName() string {

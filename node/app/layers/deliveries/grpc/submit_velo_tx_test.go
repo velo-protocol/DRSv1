@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"errors"
+	"github.com/AlekSi/pointer"
 	"github.com/golang/mock/gomock"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
@@ -91,7 +91,61 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			mockedUseCase.EXPECT().
 				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
-				Return(nerrors.ErrInternal{Message: errors.New("some error has occurred").Error()})
+				Return(nerrors.ErrInternal{Message: "some error has occurred"})
+
+			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.Error(t, err)
+		})
+	})
+
+	t.Run("must be able to handle setup credit operation", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.SetupCredit{
+					PeggedValue:    "1.00",
+					PeggedCurrency: "THB",
+					AssetName:      "vTHB",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
+				Return(pointer.ToString("AAAAA...="), nil)
+
+			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.NoError(t, err)
+			assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
+		})
+		t.Run("error, use case return error", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.SetupCredit{
+					PeggedValue:    "1.00",
+					PeggedCurrency: "THB",
+					AssetName:      "vTHB",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
+				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 				SignedVeloTxXdr: veloTxB64,

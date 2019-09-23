@@ -49,17 +49,17 @@ func (mr *MockWhiteListRepoMockRecorder) BeginTx() *gomock.Call {
 }
 
 // CommitTx mocks base method
-func (m *MockWhiteListRepo) CommitTx(dbtx *gorm.DB) error {
+func (m *MockWhiteListRepo) CommitTx(dbTx *gorm.DB) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CommitTx", dbtx)
+	ret := m.ctrl.Call(m, "CommitTx", dbTx)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CommitTx indicates an expected call of CommitTx
-func (mr *MockWhiteListRepoMockRecorder) CommitTx(dbtx interface{}) *gomock.Call {
+func (mr *MockWhiteListRepoMockRecorder) CommitTx(dbTx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitTx", reflect.TypeOf((*MockWhiteListRepo)(nil).CommitTx), dbtx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitTx", reflect.TypeOf((*MockWhiteListRepo)(nil).CommitTx), dbTx)
 }
 
 // CreateWhitelistTx mocks base method
