@@ -58,7 +58,7 @@ func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole 
 	fmt.Println("##### End Build WhiteList Operation #####")
 }
 
-func buildB64SetupCreditOp(txSourceAccount, peggedCurrency, peggedValue, assetName string, secretKey *keypair.Full) {
+func buildB64SetupCreditOp(txSourceAccount, peggedCurrency, peggedValue, assetCode string, secretKey *keypair.Full) {
 	fmt.Println("##### Start Build Setup Credit Operation #####")
 
 	veloTxB64, err := (&vtxnbuild.VeloTx{
@@ -68,7 +68,7 @@ func buildB64SetupCreditOp(txSourceAccount, peggedCurrency, peggedValue, assetNa
 		VeloOp: &vtxnbuild.SetupCredit{
 			PeggedValue:    peggedValue,
 			PeggedCurrency: peggedCurrency,
-			AssetName:      assetName,
+			AssetCode:      assetCode,
 		},
 	}).BuildSignEncode(secretKey)
 

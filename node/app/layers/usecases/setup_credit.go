@@ -118,13 +118,13 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "assetCode",
-				Value: []byte(setupCreditOp.AssetName),
+				Value: []byte(setupCreditOp.AssetCode),
 			},
 			// Create trust line between distributor ans issuer account
 			&txnbuild.ChangeTrust{
 				Limit: constants.MaxTrustlineLimit,
 				Line: txnbuild.CreditAsset{
-					Code:   setupCreditOp.AssetName,
+					Code:   setupCreditOp.AssetCode,
 					Issuer: issuerKp.Address(),
 				},
 				SourceAccount: &horizon.Account{
