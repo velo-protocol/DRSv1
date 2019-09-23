@@ -30,9 +30,11 @@ func main() {
 	// vxdr.RoleRegulator      Role = "REGULATOR"
 	buildB64WhitelistOp(publicKey1, publicKey2, vxdr.RoleTrustedPartner, kp1)
 
-	decodeB64VeloTx("AAAAAGqNwzi4rQDI2eTalxx56rODZdWROenUGE4mxojW0+y7AAAAAAAAAAEAAAAAtRdjMD9LOpHwyX4gB3qQki+O1VIWOgJ9CKnXfORHzloAAAAJUkVHVUxBVE9SAAAAAAAAAdbT7LsAAABAK1dEk1kZUbZ2ORyAsfLqmoE6XGaBaB41vy18udY95bnhg58+n5FrRrOJwzmWmW86qLhSJ0ZwocLjQ2JevmbEAA==")
+	buildB64SetupCreditOp(publicKey1, "THB", "1", "vTHB", kp1)
 
-	compareVeloTxSigner("AAAAAGqNwzi4rQDI2eTalxx56rODZdWROenUGE4mxojW0+y7AAAAAAAAAAEAAAAAtRdjMD9LOpHwyX4gB3qQki+O1VIWOgJ9CKnXfORHzloAAAAJUkVHVUxBVE9SAAAAAAAAAdbT7LsAAABAK1dEk1kZUbZ2ORyAsfLqmoE6XGaBaB41vy18udY95bnhg58+n5FrRrOJwzmWmW86qLhSJ0ZwocLjQ2JevmbEAA==", publicKey1)
+	decodeB64VeloTx("AAAAAGqNwzi4rQDI2eTalxx56rODZdWROenUGE4mxojW0+y7AAAAAQAAAAAAAAABAAAAAACYloAAAAADVEhCAAAAAAR2VEhCAAAAAdbT7LsAAABAVmoek8shsDnBLATJupu2ACmVrk8olEj+r3QOhY78ARvIXZA1F9Se5hw1/GArw8q9sI3JxR521ZEDQzBIZj0HAg==")
+
+	compareVeloTxSigner("AAAAAGqNwzi4rQDI2eTalxx56rODZdWROenUGE4mxojW0+y7AAAAAQAAAAAAAAABAAAAAACYloAAAAADVEhCAAAAAAR2VEhCAAAAAdbT7LsAAABAVmoek8shsDnBLATJupu2ACmVrk8olEj+r3QOhY78ARvIXZA1F9Se5hw1/GArw8q9sI3JxR521ZEDQzBIZj0HAg==", publicKey1)
 }
 
 func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole vxdr.Role, secretKey *keypair.Full) {
@@ -56,8 +58,26 @@ func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole 
 	fmt.Println("##### End Build WhiteList Operation #####")
 }
 
-func buildB64SetupCreditOp() {
-	// TODO: Add more
+func buildB64SetupCreditOp(txSourceAccount, peggedCurrency, peggedValue, assetName string, secretKey *keypair.Full) {
+	fmt.Println("##### Start Build Setup Credit Operation #####")
+
+	veloTxB64, err := (&vtxnbuild.VeloTx{
+		SourceAccount: &txnbuild.SimpleAccount{
+			AccountID: txSourceAccount,
+		},
+		VeloOp: &vtxnbuild.SetupCredit{
+			PeggedValue:    peggedValue,
+			PeggedCurrency: peggedCurrency,
+			AssetName:      assetName,
+		},
+	}).BuildSignEncode(secretKey)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
+
+	fmt.Println("##### End Build Setup Credit Operation #####")
 }
 
 func decodeB64VeloTx(base64VeloTx string) {
