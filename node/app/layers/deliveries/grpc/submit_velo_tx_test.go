@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"github.com/AlekSi/pointer"
 	"github.com/golang/mock/gomock"
 	"github.com/stellar/go/txnbuild"
@@ -10,6 +11,7 @@ import (
 	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
 	"testing"
@@ -74,6 +76,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, "", reply.SignedStellarTxXdr)
+			assert.Equal(t, fmt.Sprintf(constants.ReplyWhiteListSuccess, publicKey2, vxdr.RoleTrustedPartner), reply.Message)
 		})
 		t.Run("error, use case return error", func(t *testing.T) {
 			mockedUseCase, finish := newMockedUseCase()
@@ -127,6 +130,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
+			assert.Equal(t, constants.ReplySetupCreditSuccess, reply.Message)
 		})
 		t.Run("error, use case return error", func(t *testing.T) {
 			mockedUseCase, finish := newMockedUseCase()

@@ -40,7 +40,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTxEnvelope *vxdr.Ve
 	}
 	if trustedPartnerEntity == nil {
 		return nil, nerrors.ErrPermissionDenied{
-			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "setup credit"),
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
 		}
 	}
 
@@ -178,7 +178,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			},
 		},
 		Network:    env.NetworkPassphrase,
-		Timebounds: txnbuild.NewTimeout(int64(env.StellarTxTimeBoundInMinutes * 60)), // seconds
+		Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes * 60), // seconds
 	}
 
 	signedTxXdr, err := tx.BuildSignEncode(drsKp, distributorKp, issuerKp)
