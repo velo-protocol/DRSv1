@@ -19,6 +19,22 @@ func TestWhiteList_BuildXDR(t *testing.T) {
 		assert.Equal(t, vxdr.RoleRegulator, veloXdrOp.Body.WhiteListOp.Role)
 		assert.Equal(t, publicKey1, veloXdrOp.Body.WhiteListOp.Address.Address())
 	})
+	t.Run("error, address cannot be blank", func(t *testing.T) {
+		_, err := (&WhiteList{
+			Address: "",
+			Role:    string(vxdr.RoleRegulator),
+		}).BuildXDR()
+
+		assert.Error(t, err)
+	})
+	t.Run("error, role cannot be blank", func(t *testing.T) {
+		_, err := (&WhiteList{
+			Address: publicKey1,
+			Role:    "",
+		}).BuildXDR()
+
+		assert.Error(t, err)
+	})
 	t.Run("error, bad address format", func(t *testing.T) {
 		_, err := (&WhiteList{
 			Address: "BAD_PK",
