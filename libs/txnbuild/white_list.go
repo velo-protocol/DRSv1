@@ -45,12 +45,20 @@ func (whiteList *WhiteList) FromXDR(vXdrOp vxdr.VeloOp) error {
 }
 
 func (whiteList *WhiteList) Validate() error {
+	if whiteList.Address == "" {
+		return errors.New("address parameter cannot be blank")
+	}
+
+	if whiteList.Role == "" {
+		return errors.New("role parameter cannot be blank")
+	}
+
 	if whiteList.Address == "" || !strkey.IsValidEd25519PublicKey(whiteList.Address) {
 		return errors.Errorf("%s is not a valid stellar public key", whiteList.Address)
 	}
 
 	if !vxdr.Role(whiteList.Role).IsValid() {
-		return errors.New("invalid role")
+		return errors.New("role specified does not exist")
 	}
 
 	return nil
