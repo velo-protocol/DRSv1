@@ -33,7 +33,7 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 func (handler *handler) handleWhiteListOperation(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) (*spec.VeloTxReply, error) {
 	if veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp == nil {
 		return nil, nerrors.ErrInvalidArgument{
-			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, "whitelist"),
+			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, constants.VeloOpWhiteList),
 		}.GRPCError()
 	}
 
@@ -42,13 +42,16 @@ func (handler *handler) handleWhiteListOperation(ctx context.Context, veloTxEnve
 		return nil, err.GRPCError()
 	}
 
-	return &spec.VeloTxReply{SignedStellarTxXdr: ""}, nil
+	op := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp
+	return &spec.VeloTxReply{
+		Message: fmt.Sprintf(constants.ReplyWhiteListSuccess, op.Address.Address(), op.Role),
+	}, nil
 }
 
 func (handler *handler) handleSetupCreditOperation(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) (*spec.VeloTxReply, error) {
 	if veloTxEnvelope.VeloTx.VeloOp.Body.SetupCreditOp == nil {
 		return nil, nerrors.ErrInvalidArgument{
-			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, "setupCredit"),
+			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, constants.VeloOpSetupCredit),
 		}.GRPCError()
 	}
 
@@ -57,5 +60,8 @@ func (handler *handler) handleSetupCreditOperation(ctx context.Context, veloTxEn
 		return nil, err.GRPCError()
 	}
 
-	return &spec.VeloTxReply{SignedStellarTxXdr: *signedStellarTxXdr}, nil
+	return &spec.VeloTxReply{
+		SignedStellarTxXdr: *signedStellarTxXdr,
+		Message:            constants.ReplySetupCreditSuccess,
+	}, nil
 }
