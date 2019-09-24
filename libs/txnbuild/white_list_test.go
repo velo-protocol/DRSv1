@@ -19,22 +19,15 @@ func TestWhiteList_BuildXDR(t *testing.T) {
 		assert.Equal(t, vxdr.RoleRegulator, veloXdrOp.Body.WhiteListOp.Role)
 		assert.Equal(t, publicKey1, veloXdrOp.Body.WhiteListOp.Address.Address())
 	})
-	t.Run("error, bad address format", func(t *testing.T) {
-		_, err := (&WhiteList{
-			Address: "BAD_PK",
-			Role:    string(vxdr.RoleRegulator),
-		}).BuildXDR()
-
-		assert.Error(t, err)
-	})
-	t.Run("error, invalid role", func(t *testing.T) {
+	t.Run("error, validation fail", func(t *testing.T) {
 		_, err := (&WhiteList{
 			Address: publicKey1,
-			Role:    "BAD_ROLE",
+			Role:    "",
 		}).BuildXDR()
 
 		assert.Error(t, err)
 	})
+
 }
 
 func TestWhiteList_FromXDR(t *testing.T) {
@@ -79,21 +72,31 @@ func TestWhiteList_Validate(t *testing.T) {
 
 		assert.NoError(t, err)
 	})
+
+	t.Run("error, address cannot be blank", func(t *testing.T) {
+		err := (&WhiteList{
+			Address: "",
+			Role:    string(vxdr.RoleRegulator),
+		}).Validate()
+
+		assert.Errorf(t, err, "address parameter cannot be blank")
+	})
+	t.Run("error, role cannot be blank", func(t *testing.T) {
+		err := (&WhiteList{
+			Address: publicKey1,
+			Role:    "",
+		}).Validate()
+
+		assert.Errorf(t, err, "role parameter cannot be blank")
+	})
+
 	t.Run("error, invalid public key format", func(t *testing.T) {
 		err := (&WhiteList{
 			Address: "BAD_PK",
 			Role:    string(vxdr.RoleRegulator),
 		}).Validate()
 
-		assert.Error(t, err)
-	})
-	t.Run("error, empty public key format", func(t *testing.T) {
-		err := (&WhiteList{
-			Address: "",
-			Role:    string(vxdr.RoleRegulator),
-		}).Validate()
-
-		assert.Error(t, err)
+		assert.Errorf(t, err, "%s is not a valid stellar public key", "BAD_PK")
 	})
 	t.Run("error, unknown role", func(t *testing.T) {
 		err := (&WhiteList{
@@ -101,6 +104,6 @@ func TestWhiteList_Validate(t *testing.T) {
 			Role:    "BAD_ROLE",
 		}).Validate()
 
-		assert.Error(t, err)
+		assert.Errorf(t, err, "role specified does not exist")
 	})
 }

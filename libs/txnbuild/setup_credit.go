@@ -10,10 +10,14 @@ import (
 type SetupCredit struct {
 	PeggedValue    string
 	PeggedCurrency string
-	AssetName      string
+	AssetCode      string
 }
 
 func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
+	if err := setupCredit.Validate(); err != nil {
+		return vxdr.VeloOp{}, err
+	}
+
 	peggedValue, err := amount.Parse(setupCredit.PeggedValue)
 	if err != nil {
 		return vxdr.VeloOp{}, errors.Wrap(err, "failed to parse pegged value")
@@ -21,7 +25,7 @@ func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
 
 	// xdr op
 	vXdrOp := vxdr.SetupCreditOp{
-		AssetName:      setupCredit.AssetName,
+		AssetCode:      setupCredit.AssetCode,
 		PeggedValue:    peggedValue,
 		PeggedCurrency: setupCredit.PeggedCurrency,
 	}
@@ -42,26 +46,36 @@ func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 
 	setupCredit.PeggedValue = amount.String(setupCreditOp.PeggedValue)
 	setupCredit.PeggedCurrency = setupCreditOp.PeggedCurrency
-	setupCredit.AssetName = setupCreditOp.AssetName
+	setupCredit.AssetCode = setupCreditOp.AssetCode
 
 	return nil
 }
 
 func (setupCredit *SetupCredit) Validate() error {
-	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.AssetName); !matched {
-		return errors.New("invalid format of asset name")
+	if setupCredit.AssetCode == "" {
+		return errors.New("assetCode parameter must not be blank")
 	}
-
-	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.PeggedCurrency); !matched {
-		return errors.New("invalid format of pegged currency")
+	if setupCredit.PeggedValue == "" {
+		return errors.New("peggedValue parameter must not be blank")
+	}
+	if setupCredit.PeggedCurrency == "" {
+		return errors.New("peggedCurrency parameter must not be blank")
 	}
 
 	peggedValue, err := amount.Parse(setupCredit.PeggedValue)
 	if err != nil {
-		return errors.New("pegged value must be number")
+		return errors.New("peggedValue parameter is not a number")
 	}
 	if peggedValue <= 0 {
-		return errors.New("pegged value must be greater than zero")
+		return errors.New("peggedValue must be greater than zero")
+	}
+
+	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.AssetCode); !matched {
+		return errors.New("invalid format of asset code")
+	}
+
+	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.PeggedCurrency); !matched {
+		return errors.New("invalid format of pegged currency")
 	}
 
 	return nil

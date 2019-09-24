@@ -30,7 +30,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 				VeloOp: &vtxnbuild.SetupCredit{
 					PeggedValue:    "1.00",
 					PeggedCurrency: "THB",
-					AssetName:      "vTHB",
+					AssetCode:      "vTHB",
 				},
 			}
 		}
@@ -134,7 +134,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		envelope := veloTx.TxEnvelope()
 
 		_, err := useCase.SetupCredit(context.Background(), envelope)
-		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, "setup credit"))
+		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit))
 		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
 	})
 
