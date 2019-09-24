@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/AlekSi/pointer"
-	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
@@ -13,19 +13,23 @@ import (
 	"strings"
 )
 
-func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) nerrors.NodeError {
-	txSenderPublicKey := veloTxEnvelope.VeloTx.SourceAccount.Address()
-	role := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Role
-	address := veloTxEnvelope.VeloTx.VeloOp.Body.WhiteListOp.Address.Address()
+func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.VeloTx) nerrors.NodeError {
+	if err := veloTx.VeloOp.Validate(); err != nil {
+		return nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+
+	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
+	role := veloTx.TxEnvelope().VeloTx.VeloOp.Body.WhiteListOp.Role
+	address := veloTx.TxEnvelope().VeloTx.VeloOp.Body.WhiteListOp.Address.Address()
 
 	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
 	if err != nil {
 		return nerrors.ErrUnAuthenticated{Message: err.Error()}
 	}
-	if veloTxEnvelope.Signatures == nil {
+	if veloTx.TxEnvelope().Signatures == nil {
 		return nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
 	}
-	if txSenderKeyPair.Hint() != veloTxEnvelope.Signatures[0].Hint {
+	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
 		return nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
 	}
 
@@ -58,7 +62,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *vxd
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key value violates") {
 			return nerrors.ErrAlreadyExists{
-				Message: errors.Errorf(constants.ErrWhiteListAlreadyWhiteListed, txSenderPublicKey, string(vxdr.RoleMap[role])).Error(),
+				Message: fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, txSenderPublicKey, vxdr.RoleMap[role]),
 			}
 		}
 		return nerrors.ErrInternal{Message: constants.ErrToSaveDatabase}

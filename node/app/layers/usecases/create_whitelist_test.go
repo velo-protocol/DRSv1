@@ -71,7 +71,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(&createWhitelistEntity, nil)
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -79,13 +79,12 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Nil(t, err)
 	})
@@ -94,7 +93,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		mockedWhiteListRepo, finish := newMockWhiteListRepo()
 		defer finish()
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -102,15 +101,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp2)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), constants.ErrSignatureNotMatchSourceAccount)
+		assert.Equal(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
 	})
 
 	t.Run("Error - can't query on whitelist table", func(t *testing.T) {
@@ -124,7 +122,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -132,15 +130,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
+		assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
 	})
 
 	t.Run("Error - pass query on whitelist table and can't query on role table", func(t *testing.T) {
@@ -161,7 +158,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
 		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -169,15 +166,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
+		assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
 	})
 
 	t.Run("Error - pass query on whitelist table and empty role on role table", func(t *testing.T) {
@@ -198,7 +194,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
 		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, nil)
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -206,15 +202,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), constants.ErrRoleNotFound)
+		assert.Equal(t, err.Error(), constants.ErrRoleNotFound)
 	})
 
 	t.Run("Error - source account don't have regulator role", func(t *testing.T) {
@@ -228,7 +223,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, nil)
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -236,15 +231,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
+		assert.Equal(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
 	})
 
 	t.Run("Error - send whitelist to save but fill invalid role", func(t *testing.T) {
@@ -265,7 +259,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
 		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -273,15 +267,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
+		assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
 	})
 
 	t.Run("Error - can't save whitelist table", func(t *testing.T) {
@@ -314,7 +307,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
 		mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, errors.New(constants.ErrToSaveDatabase))
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -322,15 +315,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), constants.ErrToSaveDatabase)
+		assert.Equal(t, err.Error(), constants.ErrToSaveDatabase)
 	})
 
 	t.Run("Error - can't save whitelist table, cause: already exits", func(t *testing.T) {
@@ -363,7 +355,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
 		mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, errors.New("duplicate key value violates unique constraint"))
 
-		veloTxB64, _ := (&vtxnbuild.VeloTx{
+		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
@@ -371,15 +363,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				Address: publicKey2,
 				Role:    string(vxdr.RolePriceFeeder),
 			},
-		}).BuildSignEncode(kp1, kp2)
-
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
 		useCase := usecases.Init(nil, mockedWhiteListRepo)
-		err := useCase.CreateWhiteList(context.Background(), envelope)
+		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.GRPCError().Error(), errors.Errorf(constants.ErrWhiteListAlreadyWhiteListed, publicKey1, string(vxdr.RoleMap[vxdr.RolePriceFeeder])).Error())
+		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey1, vxdr.RoleMap[vxdr.RolePriceFeeder]))
 	})
 
 }

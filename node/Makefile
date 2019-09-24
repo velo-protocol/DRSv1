@@ -64,7 +64,7 @@ mockgen/usecase:
 		-source=./app/layers/usecases/interface.go \
 		-destination=./app/layers/mocks/usecases.go \
 		-package mocks \
-		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors
+		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
 
 mockgen/all:
 	make mockgen/usecase

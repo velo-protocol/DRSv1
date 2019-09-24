@@ -7,7 +7,7 @@ package mocks
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	xdr "gitlab.com/velo-labs/cen/libs/xdr"
+	txnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
 	errors "gitlab.com/velo-labs/cen/node/app/errors"
 	reflect "reflect"
 )
@@ -36,30 +36,30 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 }
 
 // SetupCredit mocks base method
-func (m *MockUseCase) SetupCredit(ctx context.Context, veloTxEnvelope *xdr.VeloTxEnvelope) (*string, errors.NodeError) {
+func (m *MockUseCase) SetupCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetupCredit", ctx, veloTxEnvelope)
+	ret := m.ctrl.Call(m, "SetupCredit", ctx, veloTx)
 	ret0, _ := ret[0].(*string)
 	ret1, _ := ret[1].(errors.NodeError)
 	return ret0, ret1
 }
 
 // SetupCredit indicates an expected call of SetupCredit
-func (mr *MockUseCaseMockRecorder) SetupCredit(ctx, veloTxEnvelope interface{}) *gomock.Call {
+func (mr *MockUseCaseMockRecorder) SetupCredit(ctx, veloTx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockUseCase)(nil).SetupCredit), ctx, veloTxEnvelope)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockUseCase)(nil).SetupCredit), ctx, veloTx)
 }
 
 // CreateWhiteList mocks base method
-func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTxEnvelope *xdr.VeloTxEnvelope) errors.NodeError {
+func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTx *txnbuild.VeloTx) errors.NodeError {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateWhiteList", ctx, veloTxEnvelope)
+	ret := m.ctrl.Call(m, "CreateWhiteList", ctx, veloTx)
 	ret0, _ := ret[0].(errors.NodeError)
 	return ret0
 }
 
 // CreateWhiteList indicates an expected call of CreateWhiteList
-func (mr *MockUseCaseMockRecorder) CreateWhiteList(ctx, veloTxEnvelope interface{}) *gomock.Call {
+func (mr *MockUseCaseMockRecorder) CreateWhiteList(ctx, veloTx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhiteList", reflect.TypeOf((*MockUseCase)(nil).CreateWhiteList), ctx, veloTxEnvelope)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhiteList", reflect.TypeOf((*MockUseCase)(nil).CreateWhiteList), ctx, veloTx)
 }
