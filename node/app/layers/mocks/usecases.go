@@ -63,3 +63,17 @@ func (mr *MockUseCaseMockRecorder) CreateWhiteList(ctx, veloTx interface{}) *gom
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhiteList", reflect.TypeOf((*MockUseCase)(nil).CreateWhiteList), ctx, veloTx)
 }
+
+// UpdatePrice mocks base method
+func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) errors.NodeError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePrice", ctx, veloTx)
+	ret0, _ := ret[0].(errors.NodeError)
+	return ret0
+}
+
+// UpdatePrice indicates an expected call of UpdatePrice
+func (mr *MockUseCaseMockRecorder) UpdatePrice(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePrice", reflect.TypeOf((*MockUseCase)(nil).UpdatePrice), ctx, veloTx)
+}

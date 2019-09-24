@@ -23,6 +23,8 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 		return handler.handleWhiteListOperation(ctx, &veloTx)
 	case vxdr.OperationTypeSetupCredit:
 		return handler.handleSetupCreditOperation(ctx, &veloTx)
+	case vxdr.OperationTypePriceUpdate:
+		return handler.handlePriceUpdateOperation(ctx, &veloTx)
 	default: // this case should never occur, if the cen/libs and cen/node is aligned
 		return nil, nerrors.ErrInvalidArgument{
 			Message: constants.ErrUnknownVeloOperationType,
@@ -65,5 +67,23 @@ func (handler *handler) handleSetupCreditOperation(ctx context.Context, veloTx *
 	return &spec.VeloTxReply{
 		SignedStellarTxXdr: *signedStellarTxXdr,
 		Message:            constants.ReplySetupCreditSuccess,
+	}, nil
+}
+
+func (handler *handler) handlePriceUpdateOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
+	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp
+	if op == nil {
+		return nil, nerrors.ErrInvalidArgument{
+			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, constants.VeloOpPriceUpdate),
+		}.GRPCError()
+	}
+
+	err := handler.UseCase.UpdatePrice(ctx, veloTx)
+	if err != nil {
+		return nil, err.GRPCError()
+	}
+
+	return &spec.VeloTxReply{
+		Message: constants.ReplyPriceUpdateSuccess,
 	}, nil
 }
