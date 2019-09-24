@@ -17,6 +17,7 @@ require (
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/pkg/errors v0.8.1
+	github.com/shopspring/decimal v0.0.0-20190905144223-a36b5d85f337
 	github.com/stellar/go v0.0.0-20190911183112-4775aaf681c1
 	github.com/stretchr/testify v1.4.0
 	google.golang.org/grpc v1.19.0
