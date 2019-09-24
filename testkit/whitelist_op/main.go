@@ -11,14 +11,14 @@ import (
 )
 
 func main() {
-	buildB64WhitelistOp(helper.PublicKey1, helper.PublicKey2, vxdr.RoleTrustedPartner, helper.KP1)
+	veloTxB64 := buildB64WhitelistOp(helper.PublicKeyRegulator, helper.PublicKeyTP, vxdr.RoleTrustedPartner, helper.KPRegulator)
 
-	helper.DecodeB64VeloTx("AAAAAGqNwzi4rQDI2eTalxx56rODZdWROenUGE4mxojW0+y7AAAAAQAAAAAAAAABAAAAAACYloAAAAADVEhCAAAAAAR2VEhCAAAAAdbT7LsAAABAVmoek8shsDnBLATJupu2ACmVrk8olEj+r3QOhY78ARvIXZA1F9Se5hw1/GArw8q9sI3JxR521ZEDQzBIZj0HAg==")
-	helper.CompareVeloTxSigner("AAAAAGqNwzi4rQDI2eTalxx56rODZdWROenUGE4mxojW0+y7AAAAAQAAAAAAAAABAAAAAACYloAAAAADVEhCAAAAAAR2VEhCAAAAAdbT7LsAAABAVmoek8shsDnBLATJupu2ACmVrk8olEj+r3QOhY78ARvIXZA1F9Se5hw1/GArw8q9sI3JxR521ZEDQzBIZj0HAg==", helper.PublicKey1)
+	helper.DecodeB64VeloTx(veloTxB64)
+	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyRegulator)
 
 }
 
-func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole vxdr.Role, secretKey *keypair.Full) {
+func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole vxdr.Role, secretKey *keypair.Full) string {
 	fmt.Println("##### Start Build WhiteList Operation #####")
 
 	veloTxB64, err := (&vtxnbuild.VeloTx{
@@ -37,4 +37,6 @@ func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole 
 	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
 
 	fmt.Println("##### End Build WhiteList Operation #####")
+
+	return veloTxB64
 }
