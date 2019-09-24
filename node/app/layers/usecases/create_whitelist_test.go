@@ -180,6 +180,43 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrToGetDataFromDatabase)
 	})
 
+	t.Run("Error - pass query on whitelist table and empty role on role table", func(t *testing.T) {
+		mockedWhiteListRepo, finish := newMockWhiteListRepo()
+		defer finish()
+
+		findWhiteListEntity := entities.WhiteList{
+			ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
+			StellarPublicKey: publicKey1,
+			RoleCode:         string(vxdr.RoleRegulator),
+		}
+
+		filter := entities.WhiteListFilter{
+			StellarPublicKey: &stellarPublicAddress,
+			RoleCode:         &roleCode,
+		}
+
+		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
+		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, nil)
+
+		veloTxB64, _ := (&vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RolePriceFeeder),
+			},
+		}).BuildSignEncode(kp1, kp2)
+
+		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
+		envelope := veloTx.TxEnvelope()
+
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		err := useCase.CreateWhiteList(context.Background(), envelope)
+
+		assert.Contains(t, err.GRPCError().Error(), constants.ErrRoleNotFound)
+	})
+
 	t.Run("Error - source account don't have regulator role", func(t *testing.T) {
 		mockedWhiteListRepo, finish := newMockWhiteListRepo()
 		defer finish()
@@ -294,6 +331,55 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		err := useCase.CreateWhiteList(context.Background(), envelope)
 
 		assert.Contains(t, err.GRPCError().Error(), constants.ErrToSaveDatabase)
+	})
+
+	t.Run("Error - can't save whitelist table, cause: already exits", func(t *testing.T) {
+		mockedWhiteListRepo, finish := newMockWhiteListRepo()
+		defer finish()
+
+		findWhiteListEntity := entities.WhiteList{
+			ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
+			StellarPublicKey: publicKey1,
+			RoleCode:         string(vxdr.RoleRegulator),
+		}
+
+		roleEntity := entities.Role{
+			ID:   1,
+			Name: "Price feeder",
+			Code: "PRICE_FEEDER",
+		}
+
+		createWhitelistEntity := entities.WhiteList{
+			StellarPublicKey: publicKey2,
+			RoleCode:         string(vxdr.RolePriceFeeder),
+		}
+
+		filter := entities.WhiteListFilter{
+			StellarPublicKey: &stellarPublicAddress,
+			RoleCode:         &roleCode,
+		}
+
+		mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
+		mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
+		mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, errors.New("duplicate key value violates unique constraint"))
+
+		veloTxB64, _ := (&vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RolePriceFeeder),
+			},
+		}).BuildSignEncode(kp1, kp2)
+
+		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
+		envelope := veloTx.TxEnvelope()
+
+		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		err := useCase.CreateWhiteList(context.Background(), envelope)
+
+		assert.Contains(t, err.GRPCError().Error(), errors.Errorf(constants.ErrWhiteListAlreadyWhiteListed, publicKey1, string(vxdr.RoleMap[vxdr.RolePriceFeeder])).Error())
 	})
 
 }

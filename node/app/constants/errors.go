@@ -3,7 +3,7 @@ package constants
 var (
 	ErrCreateWhiteList          = "can't create white list"
 	ErrUnauthorized             = "unauthorized to perform an action"
-	ErrRoleNotFound             = "role not found"
+	ErrRoleNotFound             = "role specified does not exists"
 	ErrBadSignature             = "bad signature"
 	ErrSignatureNotFound        = "signature not found"
 	ErrUnknownVeloOperationType = "unknown velo operation type"
