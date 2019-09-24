@@ -76,7 +76,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, "", reply.SignedStellarTxXdr)
-			assert.Equal(t, fmt.Sprintf(constants.ReplyWhiteListSuccess, publicKey2, vxdr.RoleTrustedPartner), reply.Message)
+			assert.Equal(t, fmt.Sprintf(constants.ReplyWhiteListSuccess, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]), reply.Message)
 		})
 		t.Run("error, use case return error", func(t *testing.T) {
 			mockedUseCase, finish := newMockedUseCase()
@@ -150,6 +150,61 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			mockedUseCase.EXPECT().
 				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
+
+			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.Error(t, err)
+		})
+	})
+
+	t.Run("must be able to handle price update operation", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.PriceUpdate{
+					Asset:                       "VELO",
+					Currency:                    "THB",
+					PriceInCurrencyPerAssetUnit: "1",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				UpdatePrice(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				Return(nil)
+
+			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.NoError(t, err)
+			assert.Equal(t, constants.ReplyPriceUpdateSuccess, reply.Message)
+		})
+
+		t.Run("error, use case return error", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.PriceUpdate{
+					Asset:                       "VELO",
+					Currency:                    "THB",
+					PriceInCurrencyPerAssetUnit: "1",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				UpdatePrice(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				Return(nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 				SignedVeloTxXdr: veloTxB64,
