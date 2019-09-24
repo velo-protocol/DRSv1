@@ -80,10 +80,22 @@ func TestVeloTx_Build(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("error, invalid public key format, the key must start with G", func(t *testing.T) {
+	t.Run("error, source account cannot be nil", func(t *testing.T) {
+		veloTx := VeloTx{
+			SourceAccount: nil,
+			VeloOp: &WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleTrustedPartner),
+			},
+		}
+
+		err := veloTx.Build()
+		assert.Error(t, err)
+	})
+	t.Run("error, source account cannot be blank", func(t *testing.T) {
 		veloTx := VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
-				AccountID: "BAD_PUBLIC_KEY",
+				AccountID: "",
 			},
 			VeloOp: &WhiteList{
 				Address: publicKey2,
@@ -94,11 +106,10 @@ func TestVeloTx_Build(t *testing.T) {
 		err := veloTx.Build()
 		assert.Error(t, err)
 	})
-
-	t.Run("error, invalid public key format", func(t *testing.T) {
+	t.Run("error, bad source account", func(t *testing.T) {
 		veloTx := VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
-				AccountID: "G_BAD_PUBLIC_KEY",
+				AccountID: "BAD_PUBLIC_KY",
 			},
 			VeloOp: &WhiteList{
 				Address: publicKey2,
