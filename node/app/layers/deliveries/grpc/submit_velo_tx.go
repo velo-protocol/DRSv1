@@ -13,7 +13,9 @@ import (
 func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxRequest) (*spec.VeloTxReply, error) {
 	veloTx, err := vtxnbuild.TransactionFromXDR(req.GetSignedVeloTxXdr())
 	if err != nil {
-		return nil, err
+		return nil, nerrors.ErrInvalidArgument{
+			Message: err.Error(),
+		}.GRPCError()
 	}
 
 	veloTxEnvelope := veloTx.TxEnvelope()

@@ -78,5 +78,9 @@ func (setupCredit *SetupCredit) Validate() error {
 		return errors.New("invalid format of pegged currency")
 	}
 
+	if !vxdr.Currency(setupCredit.PeggedCurrency).IsValid() {
+		return errors.Errorf("the pegged currency %s does not exist", setupCredit.PeggedCurrency)
+	}
+
 	return nil
 }
