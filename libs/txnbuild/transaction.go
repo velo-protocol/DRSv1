@@ -157,6 +157,6 @@ func TransactionFromXDR(veloTxBase64 string) (VeloTx, error) {
 	return veloTx, nil
 }
 
-func (veloTx *VeloTx) TxEnvelope() *vxdr.VeloTxEnvelope{
+func (veloTx *VeloTx) TxEnvelope() *vxdr.VeloTxEnvelope {
 	return veloTx.veloXdrEnvelope
 }

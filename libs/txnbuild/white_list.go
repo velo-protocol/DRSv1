@@ -11,7 +11,6 @@ type WhiteList struct {
 	Role    string
 }
 
-
 func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
 	if err := whiteList.Validate(); err != nil {
 		return vxdr.VeloOp{}, err

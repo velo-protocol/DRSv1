@@ -17,6 +17,8 @@ func operationFromXDR(vXdrOp vxdr.VeloOp) (VeloOp, error) {
 		newVeloOp = &WhiteList{}
 	case vxdr.OperationTypeSetupCredit:
 		newVeloOp = &SetupCredit{}
+	case vxdr.OperationTypePriceUpdate:
+		newVeloOp = &PriceUpdate{}
 	}
 
 	err := newVeloOp.FromXDR(vXdrOp)

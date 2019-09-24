@@ -25,6 +25,12 @@ func NewOperationBody(opType OperationType, value interface{}) (OperationBody, e
 			return OperationBody{}, fmt.Errorf("invalid value, must be SetupCreditOp")
 		}
 		opBody.SetupCreditOp = &tv
+	case OperationTypePriceUpdate:
+		tv, ok := value.(PriceUpdateOp)
+		if !ok {
+			return OperationBody{}, fmt.Errorf("invalid value, must be PriceUpdateOp")
+		}
+		opBody.PriceUpdateOp = &tv
 	default:
 		return OperationBody{}, fmt.Errorf("unknown operation type")
 	}
