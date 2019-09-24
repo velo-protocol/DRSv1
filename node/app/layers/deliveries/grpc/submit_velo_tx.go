@@ -45,7 +45,7 @@ func (handler *handler) handleWhiteListOperation(ctx context.Context, veloTx *vt
 	}
 
 	return &spec.VeloTxReply{
-		Message: fmt.Sprintf(constants.ReplyWhiteListSuccess, op.Address.Address(), op.Role),
+		Message: fmt.Sprintf(constants.ReplyWhiteListSuccess, op.Address.Address(), vxdr.RoleMap[op.Role]),
 	}, nil
 }
 
