@@ -70,3 +70,4 @@ mockgen/all:
 	make mockgen/usecase
 	make mockgen/repo m=stellar M=Stellar
 	make mockgen/repo m=whitelist M=WhiteList
+	make mockgen/repo m=Price M=Price
