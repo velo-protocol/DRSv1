@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/hash"
 	"github.com/stellar/go/keypair"
+	"github.com/stellar/go/strkey"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stellar/go/xdr"
 	"gitlab.com/velo-labs/cen/libs/xdr"
@@ -33,12 +34,17 @@ func (veloTx *VeloTx) Build() error {
 	// reset veloXdrOp
 	veloTx.veloXdrTx = vxdr.VeloTx{}
 
-	// Assign account id
-	accountID := veloTx.SourceAccount.GetAccountID()
-	// Public keys start with 'G'
-	if accountID[0] != 'G' {
-		return errors.New("invalid public key for transaction source account")
+	if veloTx.SourceAccount == nil {
+		return errors.New("sourceAccount cannot be blank")
 	}
+	accountID := veloTx.SourceAccount.GetAccountID()
+	if accountID == "" {
+		return errors.New("sourceAccount cannot be blank")
+	}
+	if !strkey.IsValidEd25519PublicKey(accountID) {
+		return errors.New("invalid sourceAccount format")
+	}
+
 	_, err := keypair.Parse(accountID)
 	if err != nil {
 		return err
