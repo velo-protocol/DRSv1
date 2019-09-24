@@ -12,9 +12,9 @@ import (
 	"testing"
 )
 
-func TestRepo_CreateWhitelist(t *testing.T) {
+var expectedSQLCommand = fmt.Sprintf(`INSERT INTO "%s"`, constants.WhiteListTable)
 
-	expectedSQLCommand := fmt.Sprintf(`INSERT INTO "%s"`, constants.WhiteListTable)
+func TestRepo_CreateWhitelistTx(t *testing.T) {
 
 	t.Run("Happy", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
@@ -39,7 +39,7 @@ func TestRepo_CreateWhitelist(t *testing.T) {
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})
 
-	t.Run("Error - Call with DB transaction method", func(t *testing.T) {
+	t.Run("Error - cannot save to database", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
 		sqlMock.ExpectBegin()
@@ -55,7 +55,34 @@ func TestRepo_CreateWhitelist(t *testing.T) {
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})
 
-	t.Run("Error - Call default DB connection method", func(t *testing.T) {
+}
+
+func TestRepo_CreateWhitelist(t *testing.T) {
+
+	t.Run("Happy", func(t *testing.T) {
+		sqlMock, repo := initRepoTest()
+
+		expectedResult := &entities.WhiteList{
+			ID:               "8008e30d-33a9-4e6f-a544-283b52788f2a",
+			StellarPublicKey: "GA54PTUVTYZNT4RO5BJDHW5EX5YCMIZQOW62ZZCQYUDUXBAINS3L6PU3",
+			RoleCode:         string(vxdr.RoleTrustedPartner),
+		}
+
+		sqlMock.ExpectBegin()
+		sqlMock.ExpectExec(regexp.QuoteMeta(expectedSQLCommand)).
+			WillReturnResult(sqlmock.NewResult(0, 1))
+		sqlMock.ExpectCommit()
+
+		result, err := repo.CreateWhitelist(expectedResult)
+
+		assert.NoError(t, err)
+		assert.Equal(t, expectedResult.ID, result.ID)
+		assert.Equal(t, expectedResult.StellarPublicKey, result.StellarPublicKey)
+		assert.Equal(t, expectedResult.RoleCode, result.RoleCode)
+		assert.NoError(t, sqlMock.ExpectationsWereMet())
+	})
+
+	t.Run("Error - cannot save to database", func(t *testing.T) {
 		sqlMock, repo := initRepoTest()
 
 		sqlMock.ExpectBegin()
@@ -69,4 +96,5 @@ func TestRepo_CreateWhitelist(t *testing.T) {
 		assert.EqualError(t, errors.New(constants.ErrToSaveDatabase), err.Error())
 		assert.NoError(t, sqlMock.ExpectationsWereMet())
 	})
+
 }
