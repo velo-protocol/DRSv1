@@ -4,6 +4,9 @@ xdr/whitelist:
 xdr/setup-credit:
 	go run ./setup_credit_op/main.go
 
+xdr/price-update:
+	go run ./price_update_op/main.go
+
 submit/velotx:
 	grpcurl -plaintext \
 		-d '{"signedVeloTxXdr":"$(xdr)"}' \
