@@ -13,3 +13,9 @@ func (role Role) IsValid() bool {
 		role == RoleTrustedPartner ||
 		role == RoleRegulator
 }
+
+var RoleMap = map[Role]string{
+	RoleTrustedPartner: "Trusted Partner",
+	RolePriceFeeder:    "Price Feeder",
+	RoleRegulator:      "Regulator",
+}
