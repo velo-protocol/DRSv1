@@ -10,6 +10,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
@@ -18,16 +19,20 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/utils"
 )
 
-func (useCase *useCase) SetupCredit(ctx context.Context, veloTxEnvelope *vxdr.VeloTxEnvelope) (*string, nerrors.NodeError) {
-	txSenderPublicKey := veloTxEnvelope.VeloTx.SourceAccount.Address()
+func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
+	if err := veloTx.VeloOp.Validate(); err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+
+	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
 	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
 	if err != nil {
 		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
 	}
-	if veloTxEnvelope.Signatures == nil {
+	if veloTx.TxEnvelope().Signatures == nil {
 		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
 	}
-	if txSenderKeyPair.Hint() != veloTxEnvelope.Signatures[0].Hint {
+	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
 		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
 	}
 
@@ -49,7 +54,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTxEnvelope *vxdr.Ve
 		return nil, nerrors.ErrNotFound{Message: err.Error()}
 	}
 
-	signedTx, err := buildSetupTx(trustedPartnerAccount, veloTxEnvelope.VeloTx.VeloOp.Body.SetupCreditOp)
+	signedTx, err := buildSetupTx(trustedPartnerAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp)
 	if err != nil {
 		return nil, nerrors.ErrInternal{Message: err.Error()}
 	}

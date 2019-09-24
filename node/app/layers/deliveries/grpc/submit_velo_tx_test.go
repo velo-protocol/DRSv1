@@ -67,7 +67,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			}).BuildSignEncode(kp1)
 
 			mockedUseCase.EXPECT().
-				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
+				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(nil)
 
 			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
@@ -93,7 +93,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			}).BuildSignEncode(kp1)
 
 			mockedUseCase.EXPECT().
-				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
+				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
@@ -121,7 +121,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			}).BuildSignEncode(kp1)
 
 			mockedUseCase.EXPECT().
-				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
+				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(pointer.ToString("AAAAA...="), nil)
 
 			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
@@ -148,7 +148,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			}).BuildSignEncode(kp1)
 
 			mockedUseCase.EXPECT().
-				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vxdr.VeloTxEnvelope{})).
+				SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{

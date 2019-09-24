@@ -43,7 +43,6 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		veloTx := getMockVeloTx()
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
-		veloTxEnvelope := veloTx.TxEnvelope()
 
 		testHelper.MockWhiteListRepo.EXPECT().
 			FindOneWhitelist(entities.WhiteListFilter{
@@ -62,7 +61,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 				Sequence:  "1",
 			}, nil)
 
-		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTxEnvelope)
+		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
 		assert.NotNil(t, signedStellarTxXdr)
 	})
@@ -74,9 +73,8 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		veloTx := getMockVeloTx()
 		_ = veloTx.Build()
 		_ = veloTx.Sign()
-		veloTxEnvelope := veloTx.TxEnvelope()
 
-		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTxEnvelope)
+		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTx)
 
 		assert.Nil(t, signedStellarTxXdr)
 		assert.NotNil(t, err)
@@ -90,9 +88,8 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		veloTx := getMockVeloTx()
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp2)
-		veloTxEnvelope := veloTx.TxEnvelope()
 
-		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTxEnvelope)
+		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTx)
 
 		assert.Nil(t, signedStellarTxXdr)
 		assert.NotNil(t, err)
@@ -110,11 +107,11 @@ func TestUseCase_SetupCredit(t *testing.T) {
 			}).
 			Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
 
-		veloTxB64, _ := getMockVeloTx().BuildSignEncode(kp1)
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
-		_, err := useCase.SetupCredit(context.Background(), envelope)
+		_, err := useCase.SetupCredit(context.Background(), veloTx)
 		assert.Contains(t, err.Error(), constants.ErrToGetDataFromDatabase)
 	})
 
@@ -129,11 +126,11 @@ func TestUseCase_SetupCredit(t *testing.T) {
 			}).
 			Return(nil, nil)
 
-		veloTxB64, _ := getMockVeloTx().BuildSignEncode(kp1)
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
-		_, err := useCase.SetupCredit(context.Background(), envelope)
+		_, err := useCase.SetupCredit(context.Background(), veloTx)
 		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit))
 		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
 	})
@@ -151,17 +148,17 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		testHelper.MockStellarRepo.EXPECT().
 			LoadAccount(publicKey1).
-			Return(nil, errors.New("some error has occured"))
+			Return(nil, errors.New("some error has occurred"))
 
-		veloTxB64, _ := getMockVeloTx().BuildSignEncode(kp1)
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
-		_, err := useCase.SetupCredit(context.Background(), envelope)
+		_, err := useCase.SetupCredit(context.Background(), veloTx)
 		assert.IsType(t, nerrors.ErrNotFound{}, err)
 	})
 
-	t.Run("Error - fail to build tx (bad tp account format)", func(t *testing.T) {
+	t.Run("Error - fail to build tx, bad tp account format", func(t *testing.T) {
 		useCase, testHelper, mockCtrl := initUseCaseTest(t)
 		defer mockCtrl.Finish()
 
@@ -178,11 +175,11 @@ func TestUseCase_SetupCredit(t *testing.T) {
 				AccountID: "GBAD_ACCOUNT",
 			}, nil)
 
-		veloTxB64, _ := getMockVeloTx().BuildSignEncode(kp1)
-		veloTx, _ := vtxnbuild.TransactionFromXDR(veloTxB64)
-		envelope := veloTx.TxEnvelope()
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
 
-		_, err := useCase.SetupCredit(context.Background(), envelope)
+		_, err := useCase.SetupCredit(context.Background(), veloTx)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
