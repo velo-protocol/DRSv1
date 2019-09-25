@@ -52,18 +52,18 @@ func (priceUpdate *PriceUpdate) FromXDR(vXdrOp vxdr.VeloOp) error {
 
 func (priceUpdate *PriceUpdate) Validate() error {
 	if priceUpdate.Asset == "" {
-		return errors.New("asset parameter cannot be blank")
+		return errors.New("asset must not be blank")
 	}
 	if priceUpdate.Currency == "" {
-		return errors.New("currency parameter cannot be blank")
+		return errors.New("currency must not be blank")
 	}
 	if priceUpdate.PriceInCurrencyPerAssetUnit == "" {
-		return errors.New("priceInCurrencyPerAssetUnit parameter cannot be blank")
+		return errors.New("priceInCurrencyPerAssetUnit must not be blank")
 	}
 
 	priceInCurrencyPerAssetUnit, err := amount.Parse(priceUpdate.PriceInCurrencyPerAssetUnit)
 	if err != nil {
-		return errors.New("priceInCurrencyPerAssetUnit parameter is not a number")
+		return errors.New("invalid priceInCurrencyPerAssetUnit format")
 	}
 	if priceInCurrencyPerAssetUnit <= 0 {
 		return errors.New("priceInCurrencyPerAssetUnit must be greater than zero")
