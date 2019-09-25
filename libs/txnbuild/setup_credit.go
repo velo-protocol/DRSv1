@@ -53,29 +53,29 @@ func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 
 func (setupCredit *SetupCredit) Validate() error {
 	if setupCredit.AssetCode == "" {
-		return errors.New("assetCode parameter cannot be blank")
+		return errors.New("assetCode must not be blank")
 	}
 	if setupCredit.PeggedValue == "" {
-		return errors.New("peggedValue parameter cannot be blank")
+		return errors.New("peggedValue must not be blank")
 	}
 	if setupCredit.PeggedCurrency == "" {
-		return errors.New("peggedCurrency parameter cannot be blank")
+		return errors.New("peggedCurrency must not be blank")
 	}
 
 	peggedValue, err := amount.Parse(setupCredit.PeggedValue)
 	if err != nil {
-		return errors.New("peggedValue parameter is not a number")
+		return errors.New("invalid peggedValue format")
 	}
 	if peggedValue <= 0 {
 		return errors.New("peggedValue must be greater than zero")
 	}
 
 	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.AssetCode); !matched {
-		return errors.New("invalid format of asset code")
+		return errors.New("invalid assetCode format")
 	}
 
 	if !vxdr.Currency(setupCredit.PeggedCurrency).IsValid() {
-		return errors.Errorf("the pegged currency %s does not exist", setupCredit.PeggedCurrency)
+		return errors.Errorf("peggedCurrency %s does not exist", setupCredit.PeggedCurrency)
 	}
 
 	return nil
