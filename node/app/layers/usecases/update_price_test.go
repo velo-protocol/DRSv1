@@ -163,8 +163,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		veloTx := getMockVeloTx()
-		err := veloTx.Build()
-		assert.NoError(t, err)
+		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
 		testHelper.MockWhiteListRepo.EXPECT().
@@ -186,7 +185,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 
 		testHelper.MockPriceRepo.EXPECT().CreatePriceEntry(createPriceEntry).Return(nil, errors.New("some error has occurred"))
 
-		err = useCase.UpdatePrice(context.Background(), veloTx)
+		err := useCase.UpdatePrice(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
