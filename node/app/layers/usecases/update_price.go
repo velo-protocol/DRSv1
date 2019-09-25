@@ -40,7 +40,7 @@ func (useCase *useCase) UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloT
 	}
 	if priceFeederEntity == nil {
 		return nerrors.ErrPermissionDenied{
-			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpPriceFeeder),
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpPriceUpdate),
 		}
 	}
 

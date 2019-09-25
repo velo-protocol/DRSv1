@@ -151,7 +151,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		_ = veloTx.Sign(kp1)
 
 		err := useCase.UpdatePrice(context.Background(), veloTx)
-		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpPriceFeeder))
+		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpPriceUpdate))
 		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
 	})
 
