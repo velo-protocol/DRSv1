@@ -11,6 +11,7 @@ import (
 type testHelper struct {
 	MockWhiteListRepo *mocks.MockWhiteListRepo
 	MockStellarRepo   *mocks.MockStellarRepo
+	MockPriceRepo     *mocks.MockPriceRepo
 }
 
 var (
@@ -33,8 +34,9 @@ func initUseCaseTest(t *testing.T) (usecases.UseCase, *testHelper, *gomock.Contr
 
 	testHelper.MockWhiteListRepo = mocks.NewMockWhiteListRepo(mockCtrl)
 	testHelper.MockStellarRepo = mocks.NewMockStellarRepo(mockCtrl)
+	testHelper.MockPriceRepo = mocks.NewMockPriceRepo(mockCtrl)
 
-	useCase := usecases.Init(testHelper.MockStellarRepo, testHelper.MockWhiteListRepo)
+	useCase := usecases.Init(testHelper.MockStellarRepo, testHelper.MockWhiteListRepo, testHelper.MockPriceRepo)
 
 	return useCase, testHelper, mockCtrl
 }

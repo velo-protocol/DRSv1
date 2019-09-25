@@ -5,6 +5,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/extensions"
 	grpcDelivery "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
+	_priceRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/price"
 	_stellarRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
 	_whitelistRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/whitelist"
 	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
@@ -36,9 +37,10 @@ func main() {
 	// Repo
 	stellarRepo := _stellarRepo.Init(horizonClient)
 	whitelistRepo := _whitelistRepo.InitRepo(dbConn)
+	priceRepo := _priceRepo.InitRepo(dbConn)
 
 	// Use Cases
-	useCase := usecases.Init(stellarRepo, whitelistRepo)
+	useCase := usecases.Init(stellarRepo, whitelistRepo, priceRepo)
 
 	// Deliveries
 	grpcDelivery.Init(grpcServer, useCase)
