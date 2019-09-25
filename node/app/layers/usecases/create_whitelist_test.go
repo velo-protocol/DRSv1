@@ -83,7 +83,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Nil(t, err)
@@ -105,7 +105,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp2)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
@@ -134,7 +134,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
@@ -170,7 +170,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
@@ -206,7 +206,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), constants.ErrRoleNotFound)
@@ -235,7 +235,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
@@ -271,7 +271,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
@@ -319,7 +319,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Equal(t, err.Error(), constants.ErrToSaveDatabase)
@@ -367,7 +367,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		useCase := usecases.Init(nil, mockedWhiteListRepo)
+		useCase := usecases.Init(nil, mockedWhiteListRepo, nil)
 		err := useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey1, vxdr.RoleMap[vxdr.RolePriceFeeder]))

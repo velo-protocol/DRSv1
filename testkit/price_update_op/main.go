@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	veloTxB64 := buildB64PriceUpdateOp(helper.PublicKeyTP, "VELO", "THB", "1", helper.KPTP)
+	veloTxB64 := buildB64PriceUpdateOp(helper.PublicKeyTP, "VELO", "THB", "1.1234567", helper.KPTP)
 
 	helper.DecodeB64VeloTx(veloTxB64)
 	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyRegulator)

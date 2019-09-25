@@ -35,31 +35,31 @@ func (m *MockPriceRepo) EXPECT() *MockPriceRepoMockRecorder {
 }
 
 // CreatePriceEntryTx mocks base method
-func (m *MockPriceRepo) CreatePriceEntryTx(dbTx *gorm.DB, whitelist *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error) {
+func (m *MockPriceRepo) CreatePriceEntryTx(dbTx *gorm.DB, priceEntry *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreatePriceEntryTx", dbTx, whitelist)
+	ret := m.ctrl.Call(m, "CreatePriceEntryTx", dbTx, priceEntry)
 	ret0, _ := ret[0].(*entities.CreatePriceEntry)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreatePriceEntryTx indicates an expected call of CreatePriceEntryTx
-func (mr *MockPriceRepoMockRecorder) CreatePriceEntryTx(dbTx, whitelist interface{}) *gomock.Call {
+func (mr *MockPriceRepoMockRecorder) CreatePriceEntryTx(dbTx, priceEntry interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePriceEntryTx", reflect.TypeOf((*MockPriceRepo)(nil).CreatePriceEntryTx), dbTx, whitelist)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePriceEntryTx", reflect.TypeOf((*MockPriceRepo)(nil).CreatePriceEntryTx), dbTx, priceEntry)
 }
 
 // CreatePriceEntry mocks base method
-func (m *MockPriceRepo) CreatePriceEntry(whitelist *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error) {
+func (m *MockPriceRepo) CreatePriceEntry(priceEntry *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreatePriceEntry", whitelist)
+	ret := m.ctrl.Call(m, "CreatePriceEntry", priceEntry)
 	ret0, _ := ret[0].(*entities.CreatePriceEntry)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreatePriceEntry indicates an expected call of CreatePriceEntry
-func (mr *MockPriceRepoMockRecorder) CreatePriceEntry(whitelist interface{}) *gomock.Call {
+func (mr *MockPriceRepoMockRecorder) CreatePriceEntry(priceEntry interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePriceEntry", reflect.TypeOf((*MockPriceRepo)(nil).CreatePriceEntry), whitelist)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePriceEntry", reflect.TypeOf((*MockPriceRepo)(nil).CreatePriceEntry), priceEntry)
 }

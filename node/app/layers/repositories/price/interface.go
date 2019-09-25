@@ -6,6 +6,6 @@ import (
 )
 
 type Repo interface {
-	CreatePriceEntryTx(dbTx *gorm.DB, whitelist *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error)
-	CreatePriceEntry(whitelist *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error)
+	CreatePriceEntryTx(dbTx *gorm.DB, priceEntry *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error)
+	CreatePriceEntry(priceEntry *entities.CreatePriceEntry) (*entities.CreatePriceEntry, error)
 }
