@@ -41,8 +41,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		veloTx := getMockVeloTx()
-		err := veloTx.Build()
-		assert.NoError(t, err)
+		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
 		testHelper.MockWhiteListRepo.EXPECT().
@@ -64,11 +63,11 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 
 		testHelper.MockPriceRepo.EXPECT().CreatePriceEntry(createPriceEntry).Return(createPriceEntry, nil)
 
-		err = useCase.UpdatePrice(context.Background(), veloTx)
+		err := useCase.UpdatePrice(context.Background(), veloTx)
 		assert.NoError(t, err)
 	})
 
-	t.Run("Error - invalid argument empty asset", func(t *testing.T) {
+	t.Run("Error - velo op validation fail", func(t *testing.T) {
 		useCase, _, mockCtrl := initUseCaseTest(t)
 		defer mockCtrl.Finish()
 
@@ -85,6 +84,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 
 		err := useCase.UpdatePrice(context.Background(), veloTx)
 		assert.Error(t, err)
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
 	})
 
 	t.Run("Error - VeloTx missing signer", func(t *testing.T) {
@@ -99,6 +99,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), constants.ErrSignatureNotFound)
+		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
 	})
 
 	t.Run("Error - VeloTx wrong signer", func(t *testing.T) {
@@ -113,6 +114,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
+		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
 	})
 
 	t.Run("Error - can't query on whitelist table", func(t *testing.T) {
@@ -133,6 +135,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		err := useCase.UpdatePrice(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), constants.ErrToGetDataFromDatabase)
+		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
 	t.Run("Error - this user has no permission", func(t *testing.T) {
