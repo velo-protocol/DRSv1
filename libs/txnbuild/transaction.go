@@ -35,11 +35,11 @@ func (veloTx *VeloTx) Build() error {
 	veloTx.veloXdrTx = vxdr.VeloTx{}
 
 	if veloTx.SourceAccount == nil {
-		return errors.New("sourceAccount cannot be blank")
+		return errors.New("sourceAccount must not be blank")
 	}
 	accountID := veloTx.SourceAccount.GetAccountID()
 	if accountID == "" {
-		return errors.New("sourceAccount cannot be blank")
+		return errors.New("sourceAccount must not be blank")
 	}
 	if !strkey.IsValidEd25519PublicKey(accountID) {
 		return errors.New("invalid sourceAccount format")
