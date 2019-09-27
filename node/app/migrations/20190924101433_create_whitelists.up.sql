@@ -30,6 +30,6 @@ ALTER TABLE public.whitelists ADD CONSTRAINT whitelists_fk FOREIGN KEY ("role_co
 
 INSERT INTO public.roles
  (name, code, created_at, updated_at) VALUES
-('KYC checker', 'REGULATOR', current_timestamp, current_timestamp),
+('Regulator', 'REGULATOR', current_timestamp, current_timestamp),
 ('Trusted partner', 'TRUSTED_PARTNER', current_timestamp, current_timestamp),
 ('Price feeder', 'PRICE_FEEDER', current_timestamp, current_timestamp);
