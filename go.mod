@@ -14,6 +14,7 @@ require (
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/jinzhu/gorm v1.9.10
+	github.com/mitchellh/mapstructure v0.0.0-20150613213606-2caf8efc9366
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/pkg/errors v0.8.1
