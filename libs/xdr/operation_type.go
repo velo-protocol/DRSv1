@@ -20,8 +20,9 @@ type OperationBody struct {
 }
 
 type WhiteListOp struct {
-	Address xdr.AccountId
-	Role    Role
+	Address  xdr.AccountId
+	Role     Role
+	Currency Currency
 }
 
 type SetupCreditOp struct {
