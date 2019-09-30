@@ -7,9 +7,6 @@ docker/local/fast:
 docker/local/app:
 	docker-compose -f resources/docker/docker-compose.yaml up --build cen
 
-docker/local/db:
-	docker-compose -f resources/docker/docker-compose.yaml up -d postgres-cen-db pgadmin
-
 docker/local/logs:
 	docker-compose -f resources/docker/docker-compose.yaml logs -f
 

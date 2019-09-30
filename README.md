@@ -25,7 +25,6 @@
 |   |   |   `-- env.go
 |   |   |-- extensions
 |   |   |   |-- horizon.go
-|   |   |   `-- postgres.go
 |   |   |-- layers
 |   |   |   |-- deliveries
 |   |   |   |   `-- grpc
@@ -62,8 +61,6 @@
 |   |   `-- main.go
 |   |-- resources
 |   |   `-- docker
-|   |       |-- postgres
-|   |       |   `-- initdb.sh
 |   |       `-- docker-compose.yaml
 |   |-- tmp
 |   |-- Dockerfile

@@ -11,9 +11,14 @@ const (
 	SecretKey2 = "SCHQI345PYWHM2APNR4MN433HNCBS7VDUROOZKTYHZUBBTHI2YHNCJ4G"
 	PublicKey3 = "GBGHQCINPG2257EN35E7EZA3D36KVXGSRNOVRCL6ERSWH2BIYQ5YUZKV"
 	SecretKey3 = "SC6FARDSIVUTEYEYZ4KTO54RK5J5KRB2EW4JQ7QA5UFD3ZMYALTCYN5Y"
+
+	DrsPublicKey = "GCQCXIDTFMIL4VOAXWUQNRAMC46TTJDHZ3DDJVD32ND7B4OKANIUKB5N"
+	DrsSecretKey = "SDE374OE44ZU73KAUFYPNMQEUGCDIJLTIIUZ4W2MKWBPPAK36ID26ECU"
 )
 
 var (
-	Kp1, _ = vconvert.SecretKeyToKeyPair(SecretKey1)
-	Kp2, _ = vconvert.SecretKeyToKeyPair(SecretKey2)
+	Kp1, _   = vconvert.SecretKeyToKeyPair(SecretKey1)
+	Kp2, _   = vconvert.SecretKeyToKeyPair(SecretKey2)
+	Kp3, _   = vconvert.SecretKeyToKeyPair(SecretKey3)
+	DrsKp, _ = vconvert.SecretKeyToKeyPair(SecretKey3)
 )

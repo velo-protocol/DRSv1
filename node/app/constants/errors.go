@@ -12,11 +12,4 @@ var (
 	ErrSignatureNotMatchSourceAccount = "the signature and source account does not match"
 	ErrFormatSignerNotHavePermission  = "the signer is not found or does not have sufficient permission to perform %s"
 	ErrWhiteListAlreadyWhiteListed    = "the address %s has already been whitelisted for the role %s"
-
-	ErrToGetDataFromDatabase = "can't get data from database"
-	ErrToSaveDatabase        = "can't save to database"
-	ErrToUpdateDatabase      = "can't update to database"
-	ErrToBeginTransaction    = "can't start database transaction"
-	ErrToCommitTransaction   = "can't commit database transaction"
-	ErrToDeleteRecord        = "can't delete record"
 )

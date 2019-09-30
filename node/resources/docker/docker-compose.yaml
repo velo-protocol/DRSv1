@@ -5,9 +5,9 @@ services:
     build:
       context: ../../..
       dockerfile: node/Dockerfile
-      target: development
+#      target: development
     container_name: cen-node
-    command:  sh -c 'wait-for postgres-cen-db:5432 --timeout=60 && cd node/app && fresh'
+    command:  sh -c 'cd node/app && fresh'
     volumes:
       - ../../..:/go/src/gitlab.com/velo-labs/cen
       - $GOPATH/pkg/mod:/go/pkg/mod # to avoid re-"go mod download" on every build
@@ -19,20 +19,3 @@ services:
       DRS_SECRET_KEY: "SDE374OE44ZU73KAUFYPNMQEUGCDIJLTIIUZ4W2MKWBPPAK36ID26ECU"
       VELO_ISSUER_PUBLIC_KEY: "GCV3Q6QZZUG7RWPIQ5CZ5MOW3KBBCQYT64EIQX6GVKDQL27WOYNDQD3G"
       NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
-      POSTGRES_HOST: postgres-cen-db
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cen_db
-
-  postgres-cen-db:
-    image: "postgres:11.5-alpine"
-    container_name: postgres-cen-db
-    volumes:
-      - ./postgres/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
-      - ./postgres/db:/var/lib/postgresql/data
-    restart: 'always'
-    expose:
-      - 5432
-    ports:
-      - "5432:5432"

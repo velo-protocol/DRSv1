@@ -13,12 +13,6 @@ var (
 	HorizonURL                  string
 	StellarTxTimeBoundInMinutes int64
 
-	PostgresHost     string
-	PostgresPort     string
-	PostgresUser     string
-	PostgresPassword string
-	PostgresDB       string
-
 	Port                string
 	EnableReflectionAPI bool
 )
@@ -31,12 +25,6 @@ func Init() {
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
 	HorizonURL = requireEnv("HORIZON_URL")
 	StellarTxTimeBoundInMinutes = 15
-
-	PostgresHost = requireEnv("POSTGRES_HOST")
-	PostgresPort = requireEnv("POSTGRES_PORT")
-	PostgresUser = requireEnv("POSTGRES_USER")
-	PostgresPassword = requireEnv("POSTGRES_PASSWORD")
-	PostgresDB = requireEnv("POSTGRES_DB")
 
 	Port = "8080"
 	EnableReflectionAPI = true

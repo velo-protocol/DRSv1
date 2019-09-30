@@ -72,7 +72,6 @@ WORKDIR /app
 #Get artifact from builder stage
 RUN mkdir -p migrations
 COPY --from=build /go/bin/node.bin /app/node.bin
-COPY --from=build /go/src/gitlab.com/velo-labs/cen/node/app/migrations/ migrations/
 
 # Set Docker's entry point commands
 RUN chown -R appuser:appgroup /app
