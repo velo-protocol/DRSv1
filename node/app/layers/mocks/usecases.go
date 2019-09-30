@@ -51,11 +51,12 @@ func (mr *MockUseCaseMockRecorder) SetupCredit(ctx, veloTx interface{}) *gomock.
 }
 
 // CreateWhiteList mocks base method
-func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTx *txnbuild.VeloTx) errors.NodeError {
+func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateWhiteList", ctx, veloTx)
-	ret0, _ := ret[0].(errors.NodeError)
-	return ret0
+	ret0, _ := ret[0].(*string)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
 }
 
 // CreateWhiteList indicates an expected call of CreateWhiteList
