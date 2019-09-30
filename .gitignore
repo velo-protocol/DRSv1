@@ -3,7 +3,6 @@ node/app/tmp
 node/app/app
 coverage.out
 .coverage.txt
-node/resources/docker/postgres/db
 
 # IntelliJ project files
 .idea

@@ -2,8 +2,6 @@ package usecases
 
 import (
 	"context"
-	"fmt"
-	"github.com/AlekSi/pointer"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
 	"github.com/stellar/go/keypair"
@@ -13,52 +11,52 @@ import (
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 )
 
 func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
-	if err := veloTx.VeloOp.Validate(); err != nil {
-		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
-	}
-
-	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
-	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
-	if err != nil {
-		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
-	}
-	if veloTx.TxEnvelope().Signatures == nil {
-		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
-	}
-	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
-		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
-	}
-
-	trustedPartnerEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhiteListFilter{
-		StellarPublicKey: pointer.ToString(txSenderPublicKey),
-		RoleCode:         pointer.ToString(string(vxdr.RoleTrustedPartner)),
-	})
-	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
-	}
-	if trustedPartnerEntity == nil {
-		return nil, nerrors.ErrPermissionDenied{
-			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
-		}
-	}
-
-	trustedPartnerAccount, err := useCase.StellarRepo.GetAccount(trustedPartnerEntity.StellarPublicKey)
-	if err != nil {
-		return nil, nerrors.ErrNotFound{Message: err.Error()}
-	}
-
-	signedTx, err := buildSetupTx(trustedPartnerAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp)
-	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
-	}
-
-	return &signedTx, nil
+	return nil, nil
+	//if err := veloTx.VeloOp.Validate(); err != nil {
+	//	return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	//}
+	//
+	//txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
+	//txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
+	//if err != nil {
+	//	return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	//}
+	//if veloTx.TxEnvelope().Signatures == nil {
+	//	return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
+	//}
+	//if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
+	//	return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
+	//}
+	//
+	//trustedPartnerEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhiteListFilter{
+	//	StellarPublicKey: pointer.ToString(txSenderPublicKey),
+	//	RoleCode:         pointer.ToString(string(vxdr.RoleTrustedPartner)),
+	//})
+	//if err != nil {
+	//	return nil, nerrors.ErrInternal{Message: err.Error()}
+	//}
+	//if trustedPartnerEntity == nil {
+	//	return nil, nerrors.ErrPermissionDenied{
+	//		Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
+	//	}
+	//}
+	//
+	//trustedPartnerAccount, err := useCase.StellarRepo.GetAccount(trustedPartnerEntity.StellarPublicKey)
+	//if err != nil {
+	//	return nil, nerrors.ErrNotFound{Message: err.Error()}
+	//}
+	//
+	//signedTx, err := buildSetupTx(trustedPartnerAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp)
+	//if err != nil {
+	//	return nil, nerrors.ErrInternal{Message: err.Error()}
+	//}
+	//
+	//return &signedTx, nil
 }
 
 func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp) (setupTxB64 string, err error) {

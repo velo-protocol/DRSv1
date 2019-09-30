@@ -9,17 +9,15 @@ import (
 )
 
 type testHelper struct {
-	MockWhiteListRepo *mocks.MockWhiteListRepo
-	MockStellarRepo   *mocks.MockStellarRepo
-	MockPriceRepo     *mocks.MockPriceRepo
+	MockStellarRepo *mocks.MockStellarRepo
 }
 
 var (
-	publicKey1 = "GDU5DE2ZKAZ4BPIQ34ZXSJAIVGFF75SPYTCEHWR7PFNBG5SNDNTMGZFB"
-	secretKey1 = "SCOPQ6WGCOO6SDUXOF6TUEOW2EE3DYT335JEBTTRQ4OGIBWZKBBPBSPY"
+	publicKey1 = testhelpers.PublicKey1
+	secretKey1 = testhelpers.SecretKey1
 
-	publicKey2 = "GCA4XQDOYKPA57ZSWOAJMR2ACWK3MHGUYRX5NYEVSPHJTTFRVZCWZOUU"
-	secretKey2 = "SCHHUC4WW7DST4TTNTOZ744F546DNKFXGMRFQPPR2MLZGFRHNGW3SXEI"
+	publicKey2 = testhelpers.PublicKey2
+	secretKey2 = testhelpers.SecretKey2
 
 	drsPublicKey = "GCQCXIDTFMIL4VOAXWUQNRAMC46TTJDHZ3DDJVD32ND7B4OKANIUKB5N"
 	drsSecretKey = "SDE374OE44ZU73KAUFYPNMQEUGCDIJLTIIUZ4W2MKWBPPAK36ID26ECU"
@@ -32,11 +30,9 @@ func initUseCaseTest(t *testing.T) (usecases.UseCase, *testHelper, *gomock.Contr
 
 	mockCtrl := gomock.NewController(t)
 
-	testHelper.MockWhiteListRepo = mocks.NewMockWhiteListRepo(mockCtrl)
 	testHelper.MockStellarRepo = mocks.NewMockStellarRepo(mockCtrl)
-	testHelper.MockPriceRepo = mocks.NewMockPriceRepo(mockCtrl)
 
-	useCase := usecases.Init(testHelper.MockStellarRepo, testHelper.MockWhiteListRepo, testHelper.MockPriceRepo)
+	useCase := usecases.Init(testHelper.MockStellarRepo)
 
 	return useCase, testHelper, mockCtrl
 }
