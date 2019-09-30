@@ -6,12 +6,12 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 )
 
-func (repo *repo) LoadAccount(stellarAddress string) (*horizon.Account, error) {
+func (repo *repo) GetAccount(stellarAddress string) (*horizon.Account, error) {
 	account, err := repo.HorizonClient.AccountDetail(horizonclient.AccountRequest{
 		AccountID: stellarAddress,
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "fail to get account details")
+		return nil, errors.Wrapf(err, "fail to get account detail of %s", stellarAddress)
 	}
 
 	return &account, nil
