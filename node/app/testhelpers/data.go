@@ -1,11 +1,19 @@
 package testhelpers
 
 import (
-	"gitlab.com/velo-labs/cen/node/app/entities"
+	vconvert "gitlab.com/velo-labs/cen/libs/convert"
 )
 
-func GetCreditEntity() entities.Credit {
-	return entities.Credit{
-		CreditOwnerAddress: GetRandStellarAccount().Address(),
-	}
-}
+const (
+	PublicKey1 = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"
+	SecretKey1 = "SBR25NMQRKQ4RLGNV5XB3MMQB4ADVYSMPGVBODQVJE7KPTDR6KGK3XMX"
+	PublicKey2 = "GC2ROYZQH5FTVEPQZF7CAB32SCJC7DWVKILDUAT5BCU5O7HEI7HFUB25"
+	SecretKey2 = "SCHQI345PYWHM2APNR4MN433HNCBS7VDUROOZKTYHZUBBTHI2YHNCJ4G"
+	PublicKey3 = "GBGHQCINPG2257EN35E7EZA3D36KVXGSRNOVRCL6ERSWH2BIYQ5YUZKV"
+	SecretKey3 = "SC6FARDSIVUTEYEYZ4KTO54RK5J5KRB2EW4JQ7QA5UFD3ZMYALTCYN5Y"
+)
+
+var (
+	Kp1, _ = vconvert.SecretKeyToKeyPair(SecretKey1)
+	Kp2, _ = vconvert.SecretKeyToKeyPair(SecretKey2)
+)

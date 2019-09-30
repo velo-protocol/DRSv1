@@ -55,7 +55,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 			}, nil)
 
 		testHelper.MockStellarRepo.EXPECT().
-			LoadAccount(publicKey1).
+			GetAccount(publicKey1).
 			Return(&horizon.Account{
 				AccountID: publicKey1,
 				Sequence:  "1",
@@ -147,7 +147,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 			Return(&entities.WhiteList{StellarPublicKey: publicKey1}, nil)
 
 		testHelper.MockStellarRepo.EXPECT().
-			LoadAccount(publicKey1).
+			GetAccount(publicKey1).
 			Return(nil, errors.New("some error has occurred"))
 
 		veloTx := getMockVeloTx()
@@ -170,7 +170,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 			Return(&entities.WhiteList{StellarPublicKey: publicKey1}, nil)
 
 		testHelper.MockStellarRepo.EXPECT().
-			LoadAccount(publicKey1).
+			GetAccount(publicKey1).
 			Return(&horizon.Account{
 				AccountID: "GBAD_ACCOUNT",
 			}, nil)

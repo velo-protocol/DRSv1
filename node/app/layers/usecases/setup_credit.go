@@ -16,7 +16,6 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
-	"gitlab.com/velo-labs/cen/node/app/utils"
 )
 
 func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
@@ -49,7 +48,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 		}
 	}
 
-	trustedPartnerAccount, err := useCase.StellarRepo.LoadAccount(trustedPartnerEntity.StellarPublicKey)
+	trustedPartnerAccount, err := useCase.StellarRepo.GetAccount(trustedPartnerEntity.StellarPublicKey)
 	if err != nil {
 		return nil, nerrors.ErrNotFound{Message: err.Error()}
 	}
@@ -63,7 +62,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 }
 
 func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp) (setupTxB64 string, err error) {
-	drsKp, err := utils.KpFromSeedString(env.DrsSecretKey)
+	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to derived KP from seed key")
 	}
