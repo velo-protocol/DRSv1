@@ -66,11 +66,12 @@ func (mr *MockUseCaseMockRecorder) CreateWhiteList(ctx, veloTx interface{}) *gom
 }
 
 // UpdatePrice mocks base method
-func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) errors.NodeError {
+func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePrice", ctx, veloTx)
-	ret0, _ := ret[0].(errors.NodeError)
-	return ret0
+	ret0, _ := ret[0].(*string)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
 }
 
 // UpdatePrice indicates an expected call of UpdatePrice

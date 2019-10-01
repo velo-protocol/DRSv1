@@ -79,12 +79,13 @@ func (handler *handler) handlePriceUpdateOperation(ctx context.Context, veloTx *
 		}.GRPCError()
 	}
 
-	err := handler.UseCase.UpdatePrice(ctx, veloTx)
+	signedStellarTxXdr, err := handler.UseCase.UpdatePrice(ctx, veloTx)
 	if err != nil {
 		return nil, err.GRPCError()
 	}
 
 	return &spec.VeloTxReply{
-		Message: constants.ReplyPriceUpdateSuccess,
+		SignedStellarTxXdr: *signedStellarTxXdr,
+		Message:            constants.ReplyPriceUpdateSuccess,
 	}, nil
 }
