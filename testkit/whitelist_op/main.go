@@ -11,14 +11,13 @@ import (
 )
 
 func main() {
-	veloTxB64 := buildB64WhitelistOp(helper.PublicKeyRegulator, helper.PublicKeyTP, vxdr.RoleTrustedPartner, helper.KPRegulator)
+	veloTxB64 := buildB64WhitelistOp(helper.PublicKeyFirstRegulator, helper.PublicKeyPF, vxdr.RolePriceFeeder, "THB", helper.KPFirstRegulator)
 
 	helper.DecodeB64VeloTx(veloTxB64)
-	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyRegulator)
-
+	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
 }
 
-func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole vxdr.Role, secretKey *keypair.Full) string {
+func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole vxdr.Role, currency string, secretKey *keypair.Full) string {
 	fmt.Println("##### Start Build WhiteList Operation #####")
 
 	veloTxB64, err := (&vtxnbuild.VeloTx{
@@ -26,8 +25,9 @@ func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole 
 			AccountID: txSourceAccount,
 		},
 		VeloOp: &vtxnbuild.WhiteList{
-			Address: opSourceAccount,
-			Role:    string(whiteListRole),
+			Address:  opSourceAccount,
+			Role:     string(whiteListRole),
+			Currency: currency,
 		},
 	}).BuildSignEncode(secretKey)
 

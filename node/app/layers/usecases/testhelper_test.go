@@ -8,8 +8,10 @@ import (
 	"testing"
 )
 
-type testHelper struct {
-	MockStellarRepo *mocks.MockStellarRepo
+type helper struct {
+	useCase         usecases.UseCase
+	mockStellarRepo *mocks.MockStellarRepo
+	mockController  *gomock.Controller
 }
 
 var (
@@ -19,20 +21,25 @@ var (
 	publicKey2 = testhelpers.PublicKey2
 	secretKey2 = testhelpers.SecretKey2
 
-	drsPublicKey = "GCQCXIDTFMIL4VOAXWUQNRAMC46TTJDHZ3DDJVD32ND7B4OKANIUKB5N"
-	drsSecretKey = "SDE374OE44ZU73KAUFYPNMQEUGCDIJLTIIUZ4W2MKWBPPAK36ID26ECU"
+	drsPublicKey = testhelpers.DrsPublicKey
+	drsSecretKey = testhelpers.DrsSecretKey
+
+	kp1 = testhelpers.Kp1
+	kp2 = testhelpers.Kp2
+	kp3 = testhelpers.Kp3
+
+	drsAccountDataEnity = testhelpers.DrsAccountDataEntity
 )
 
-func initUseCaseTest(t *testing.T) (usecases.UseCase, *testHelper, *gomock.Controller) {
+func initTest(t *testing.T) helper {
 	testhelpers.InitEnv()
 
-	testHelper := new(testHelper)
-
 	mockCtrl := gomock.NewController(t)
+	mockStellarRepo := mocks.NewMockStellarRepo(mockCtrl)
 
-	testHelper.MockStellarRepo = mocks.NewMockStellarRepo(mockCtrl)
-
-	useCase := usecases.Init(testHelper.MockStellarRepo)
-
-	return useCase, testHelper, mockCtrl
+	return helper{
+		useCase:         usecases.Init(mockStellarRepo),
+		mockStellarRepo: mockStellarRepo,
+		mockController:  mockCtrl,
+	}
 }

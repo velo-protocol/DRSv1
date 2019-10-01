@@ -8,6 +8,6 @@ import (
 
 type UseCase interface {
 	SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError)
-	CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.VeloTx) nerrors.NodeError
+	CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError)
 	UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloTx) nerrors.NodeError
 }

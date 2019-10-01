@@ -12,7 +12,7 @@ func NewOperationBody(opType OperationType, value interface{}) (OperationBody, e
 	var opBody OperationBody
 	opBody.Type = opType
 
-	switch OperationType(opType) {
+	switch opType {
 	case OperationTypeWhiteList:
 		tv, ok := value.(WhiteListOp)
 		if !ok {

@@ -7,8 +7,9 @@ import (
 )
 
 type WhiteList struct {
-	Address string
-	Role    string
+	Address  string
+	Role     string
+	Currency string
 }
 
 func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
@@ -23,6 +24,9 @@ func (whiteList *WhiteList) BuildXDR() (vxdr.VeloOp, error) {
 	}
 
 	vXdrOp.Role = vxdr.Role(whiteList.Role)
+	if whiteList.Currency != "" {
+		vXdrOp.Currency = vxdr.Currency(whiteList.Currency)
+	}
 
 	body, err := vxdr.NewOperationBody(vxdr.OperationTypeWhiteList, vXdrOp)
 	if err != nil {
@@ -40,6 +44,7 @@ func (whiteList *WhiteList) FromXDR(vXdrOp vxdr.VeloOp) error {
 
 	whiteList.Role = string(whiteListOp.Role)
 	whiteList.Address = whiteListOp.Address.Address()
+	whiteList.Currency = string(whiteListOp.Currency)
 
 	return nil
 }
@@ -59,6 +64,12 @@ func (whiteList *WhiteList) Validate() error {
 
 	if !vxdr.Role(whiteList.Role).IsValid() {
 		return errors.New("role specified does not exist")
+	}
+
+	if whiteList.Currency != "" {
+		if !vxdr.Currency(whiteList.Currency).IsValid() {
+			return errors.Errorf("currency %s does not exist", whiteList.Currency)
+		}
 	}
 
 	return nil

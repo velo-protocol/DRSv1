@@ -1,10 +1,10 @@
 package stellar
 
 import (
-	"encoding/base64"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
+	"gitlab.com/velo-labs/cen/node/app/utils"
 )
 
 func (repo *repo) GetAccountDecodedData(stellarAddress string) (map[string]string, error) {
@@ -16,11 +16,10 @@ func (repo *repo) GetAccountDecodedData(stellarAddress string) (map[string]strin
 	}
 
 	for key, encodedValue := range account.Data {
-		decodedValue, err := base64.StdEncoding.DecodeString(encodedValue)
+		account.Data[key], err = utils.DecodeBase64(encodedValue)
 		if err != nil {
 			return nil, errors.Wrap(err, fmt.Sprintf(`fail to decode data "%s"`, key))
 		}
-		account.Data[key] = string(decodedValue)
 	}
 	return account.Data, nil
 }
