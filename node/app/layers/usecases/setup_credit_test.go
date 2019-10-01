@@ -128,7 +128,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
 	})
 
-	t.Run("Error - can't get whitelist", func(t *testing.T) {
+	t.Run("Error - fail to get tx sender account", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
