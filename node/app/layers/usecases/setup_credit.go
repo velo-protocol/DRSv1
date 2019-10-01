@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
 	"github.com/stellar/go/keypair"
@@ -13,53 +14,86 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/utils"
+	"strings"
 )
 
 func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
-	return nil, nil
-	//if err := veloTx.VeloOp.Validate(); err != nil {
-	//	return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
-	//}
-	//
-	//txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
-	//txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
-	//if err != nil {
-	//	return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
-	//}
-	//if veloTx.TxEnvelope().Signatures == nil {
-	//	return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
-	//}
-	//if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
-	//	return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
-	//}
-	//
-	//trustedPartnerEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhiteListFilter{
-	//	StellarPublicKey: pointer.ToString(txSenderPublicKey),
-	//	RoleCode:         pointer.ToString(string(vxdr.RoleTrustedPartner)),
-	//})
-	//if err != nil {
-	//	return nil, nerrors.ErrInternal{Message: err.Error()}
-	//}
-	//if trustedPartnerEntity == nil {
-	//	return nil, nerrors.ErrPermissionDenied{
-	//		Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
-	//	}
-	//}
-	//
-	//trustedPartnerAccount, err := useCase.StellarRepo.GetAccount(trustedPartnerEntity.StellarPublicKey)
-	//if err != nil {
-	//	return nil, nerrors.ErrNotFound{Message: err.Error()}
-	//}
-	//
-	//signedTx, err := buildSetupTx(trustedPartnerAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp)
-	//if err != nil {
-	//	return nil, nerrors.ErrInternal{Message: err.Error()}
-	//}
-	//
-	//return &signedTx, nil
+	if err := veloTx.VeloOp.Validate(); err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+
+	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
+	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
+	if err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+	if veloTx.TxEnvelope().Signatures == nil {
+		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
+	}
+	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
+		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
+	}
+
+	// get tx sender account
+	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
+	if err != nil {
+		return nil, nerrors.ErrNotFound{
+			Message: errors.Wrap(err, "fail to get tx sender account").Error(),
+		}
+	}
+
+	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
+	if err != nil {
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get data of drs account").Error(),
+		}
+	}
+
+	// validate trusted partner role
+	trustedPartnerList, err := useCase.StellarRepo.GetAccountData(drsAccountData.TrustedPartnerListAddress)
+	if err != nil {
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get data of trusted partner list account").Error(),
+		}
+	}
+
+	trustedPartnerMetaEncodedAddress, ok := trustedPartnerList[txSenderKeyPair.Address()]
+	if !ok {
+		return nil, nerrors.ErrPermissionDenied{
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
+		}
+	}
+
+	trustedPartnerMetaAddress, err := utils.DecodeBase64(trustedPartnerMetaEncodedAddress)
+	if err != nil {
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrapf(err, `fail to decode data "%s`, trustedPartnerMetaEncodedAddress).Error(),
+		}
+	}
+
+	// get trusted partner meta
+	trustedPartnerMeta, err := useCase.StellarRepo.GetAccountData(trustedPartnerMetaAddress)
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: err.Error()}
+	}
+
+	for key, _ := range trustedPartnerMeta {
+		assetDetail := strings.Split(key, "_")
+		if assetDetail[0] == veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode {
+			return nil, nerrors.ErrInternal{Message: fmt.Sprintf("asset code %s has already been used", veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode)}
+		}
+	}
+
+	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: trustedPartnerMetaAddress})
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: err.Error()}
+	}
+
+	return &signedTx, nil
 }
 
-func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp) (setupTxB64 string, err error) {
+func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp, trustedPartnerMetaAddress *txnbuild.SimpleAccount) (setupTxB64 string, err error) {
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to derived KP from seed key")
@@ -81,20 +115,20 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			// Trusted Party must pay tx fee to DRS
 			&txnbuild.Payment{
 				Destination:   drsKp.Address(),
-				Amount:        "5.5",
+				Amount:        "6",
 				Asset:         txnbuild.NativeAsset{},
 				SourceAccount: trustedPartnerAccount,
 			},
 			// Create issuer & distributor account
 			&txnbuild.CreateAccount{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: drsKp.Address(),
 				},
 				Destination: issuerKp.Address(),
 				Amount:      "3.5",
 			},
 			&txnbuild.CreateAccount{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: drsKp.Address(),
 				},
 				Destination: distributorKp.Address(),
@@ -102,21 +136,21 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			},
 			// Add metadata to issuer
 			&txnbuild.ManageData{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "peggedValue",
 				Value: []byte(amount.String(setupCreditOp.PeggedValue)),
 			},
 			&txnbuild.ManageData{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "peggedCurrency",
 				Value: []byte(setupCreditOp.PeggedCurrency),
 			},
 			&txnbuild.ManageData{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "assetCode",
@@ -129,7 +163,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Code:   setupCreditOp.AssetCode,
 					Issuer: issuerKp.Address(),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: distributorKp.Address(),
 				},
 			},
@@ -139,7 +173,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Address: trustedPartnerAccount.GetAccountID(),
 					Weight:  txnbuild.Threshold(1),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 			},
@@ -148,7 +182,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Address: env.DrsPublicKey,
 					Weight:  txnbuild.Threshold(1),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 			},
@@ -158,7 +192,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Address: trustedPartnerAccount.GetAccountID(),
 					Weight:  txnbuild.Threshold(1),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: distributorKp.Address(),
 				},
 			},
@@ -168,15 +202,29 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 				LowThreshold:    txnbuild.NewThreshold(2),
 				MediumThreshold: txnbuild.NewThreshold(2),
 				HighThreshold:   txnbuild.NewThreshold(2),
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 			},
 			&txnbuild.SetOptions{
 				MasterWeight: txnbuild.NewThreshold(0),
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: distributorKp.Address(),
 				},
+			},
+			// Add meta data to trusted partner
+			&txnbuild.Payment{
+				Destination: trustedPartnerMetaAddress.AccountID,
+				Amount:      "0.5",
+				Asset:       txnbuild.NativeAsset{},
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: drsKp.Address(),
+				},
+			},
+			&txnbuild.ManageData{
+				Name:          setupCreditOp.AssetCode + "_" + issuerKp.Address(),
+				Value:         []byte(distributorKp.Address()),
+				SourceAccount: trustedPartnerMetaAddress,
 			},
 		},
 		Network:    env.NetworkPassphrase,
