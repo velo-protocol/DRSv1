@@ -2,11 +2,14 @@ package usecases_test
 
 import (
 	"context"
+	"encoding/base64"
+	"github.com/pkg/errors"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	vconvert "gitlab.com/velo-labs/cen/libs/convert"
 	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	"testing"
 )
@@ -14,9 +17,11 @@ import (
 func TestUseCase_SetupCredit(t *testing.T) {
 	var (
 		kp1, _ = vconvert.SecretKeyToKeyPair(secretKey1)
-		//kp2, _ = vconvert.SecretKeyToKeyPair(secretKey2)
+		kp2, _ = vconvert.SecretKeyToKeyPair(secretKey2)
 
-		trustedPartnerListAddress = "GATOCTTV6EUBWHEXHRDK4GT63GIZJWLM6NT4YPOVKURSUTDU3PN6V6PK"
+		trustedPartnerListAddress = publicKey2
+		trustedPartnerMetaAddress = publicKey3
+		trustedPartnerMetaEncoded = base64.StdEncoding.EncodeToString([]byte(publicKey3))
 
 		getMockVeloTx = func() *vtxnbuild.VeloTx {
 			return &vtxnbuild.VeloTx{
@@ -33,15 +38,15 @@ func TestUseCase_SetupCredit(t *testing.T) {
 	)
 
 	t.Run("success", func(t *testing.T) {
-		useCase, testHelper, mockCtrl := initUseCaseTest(t)
-		defer mockCtrl.Finish()
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := getMockVeloTx()
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
 		// get tx sender account
-		testHelper.MockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccount(publicKey1).
 			Return(&horizon.Account{
 				AccountID: publicKey1,
@@ -49,7 +54,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 			}, nil)
 
 		// get drs account data
-		testHelper.MockStellarRepo.EXPECT().GetDrsAccountData().
+		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
 			Return(
 				&entities.DrsAccountData{
 					TrustedPartnerListAddress: trustedPartnerListAddress,
@@ -57,68 +62,69 @@ func TestUseCase_SetupCredit(t *testing.T) {
 				nil)
 
 		// validate trusted partner role
-		testHelper.MockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
-			Return(map[string]string{publicKey1: "R0FPQVVZSEg1SkxPSDJGVUVEWlpMSlQyRkdCN1NPWlE2TkdVRUJGUE9WR1JBR0s3VFJGTDJVVFI="}, nil)
+		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
+			Return(map[string]string{publicKey1: trustedPartnerMetaEncoded}, nil)
 
-		testHelper.MockStellarRepo.EXPECT().GetAccountData("GAOAUYHH5JLOH2FUEDZZLJT2FGB7SOZQ6NGUEBFPOVGRAGK7TRFL2UTR").
+		// get trusted partner meta
+		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerMetaAddress).
 			Return(map[string]string{"SGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": "R0RXQUZZM1pRSlZEQ0tOVVVOTFZHNTVOVkZCRFpWVlBZRFNGWlIzRURQTEtJWkwzNDRKWkxUNlU="}, nil)
 
-		signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTx)
+		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
 		assert.NotNil(t, signedStellarTxXdr)
 	})
-	//
-	//t.Run("Error - VeloTx missing signer", func(t *testing.T) {
-	//	useCase, _, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign()
-	//
-	//	signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTx)
-	//
-	//	assert.Nil(t, signedStellarTxXdr)
-	//	assert.NotNil(t, err)
-	//	assert.Contains(t, err.Error(), constants.ErrSignatureNotFound)
-	//})
-	//
-	//t.Run("Error - VeloTx wrong signer", func(t *testing.T) {
-	//	useCase, _, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp2)
-	//
-	//	signedStellarTxXdr, err := useCase.SetupCredit(context.Background(), veloTx)
-	//
-	//	assert.Nil(t, signedStellarTxXdr)
-	//	assert.NotNil(t, err)
-	//	assert.Contains(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
-	//})
-	//
-	//t.Run("Error - can't query on whitelist table", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	testHelper.MockWhiteListRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhiteListFilter{
-	//			StellarPublicKey: &publicKey1,
-	//			RoleCode:         pointer.ToString(string(vxdr.RoleTrustedPartner)),
-	//		}).
-	//		Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	_, err := useCase.SetupCredit(context.Background(), veloTx)
-	//	assert.Contains(t, err.Error(), constants.ErrToGetDataFromDatabase)
-	//})
-	//
+
+
+
+	t.Run("Error - VeloTx missing signer", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign()
+
+		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
+
+		assert.Nil(t, signedStellarTxXdr)
+		assert.NotNil(t, err)
+		assert.Contains(t, err.Error(), constants.ErrSignatureNotFound)
+	})
+
+	t.Run("Error - VeloTx wrong signer", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp2)
+
+		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
+
+		assert.Nil(t, signedStellarTxXdr)
+		assert.NotNil(t, err)
+		assert.Contains(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
+	})
+
+	t.Run("Error - can't query on whitelist on stellar", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(nil, errors.New("stellar error"))
+
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
+		assert.Nil(t, signedStellarTxXdr)
+		assert.Contains(t, err.Error(), "fail to get tx sender account")
+	})
+
 	//t.Run("Error - this user has no permission", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
+	//	helper := initTest(t)
 	//	defer mockCtrl.Finish()
 	//
 	//	testHelper.MockWhiteListRepo.EXPECT().
@@ -138,7 +144,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 	//})
 	//
 	//t.Run("Error - fail to load trusted partner account", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
+	//	helper := initTest(t)
 	//	defer mockCtrl.Finish()
 	//
 	//	testHelper.MockWhiteListRepo.EXPECT().
@@ -148,7 +154,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 	//		}).
 	//		Return(&entities.WhiteList{StellarPublicKey: publicKey1}, nil)
 	//
-	//	testHelper.MockStellarRepo.EXPECT().
+	//	helper.mockStellarRepo.EXPECT().
 	//		GetAccount(publicKey1).
 	//		Return(nil, errors.New("some error has occurred"))
 	//
@@ -161,7 +167,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 	//})
 	//
 	//t.Run("Error - fail to build tx, bad tp account format", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
+	//	helper := initTest(t)
 	//	defer mockCtrl.Finish()
 	//
 	//	testHelper.MockWhiteListRepo.EXPECT().
@@ -171,7 +177,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 	//		}).
 	//		Return(&entities.WhiteList{StellarPublicKey: publicKey1}, nil)
 	//
-	//	testHelper.MockStellarRepo.EXPECT().
+	//	helper.mockStellarRepo.EXPECT().
 	//		GetAccount(publicKey1).
 	//		Return(&horizon.Account{
 	//			AccountID: "GBAD_ACCOUNT",

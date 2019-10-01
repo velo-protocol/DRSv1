@@ -15,7 +15,6 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
-	"log"
 	"strings"
 )
 
@@ -39,18 +38,24 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 	// get tx sender account
 	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
 	if err != nil {
-		return nil, nerrors.ErrNotFound{Message: err.Error()}
+		return nil, nerrors.ErrNotFound{
+			Message: errors.Wrap(err, "fail to get tx sender account").Error(),
+		}
 	}
 
 	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get data of drs account").Error(),
+		}
 	}
 
 	// validate trusted partner role
 	trustedPartnerList, err := useCase.StellarRepo.GetAccountData(drsAccountData.TrustedPartnerListAddress)
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get data of trusted partner list account").Error(),
+		}
 	}
 
 	trustedPartnerMetaEncoded, ok := trustedPartnerList[txSenderKeyPair.Address()]
@@ -62,10 +67,10 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 
 	trustedPartnerMetaAddress, err := base64.StdEncoding.DecodeString(trustedPartnerMetaEncoded)
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: fmt.Sprintf(`%s: fail to decode data "%s"`, err.Error(), trustedPartnerMetaEncoded)}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrapf(err, `fail to decode data "%s`, trustedPartnerMetaEncoded).Error(),
+		}
 	}
-
-	log.Println(trustedPartnerMetaAddress)
 
 	// get trusted partner meta
 	trustedPartnerMeta, err := useCase.StellarRepo.GetAccountData(string(trustedPartnerMetaAddress))
@@ -80,7 +85,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 		}
 	}
 
-	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: trustedPartnerMetaEncoded})
+	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: string(trustedPartnerMetaAddress)})
 	if err != nil {
 		return nil, nerrors.ErrInternal{Message: err.Error()}
 	}
@@ -116,14 +121,14 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			},
 			// Create issuer & distributor account
 			&txnbuild.CreateAccount{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: drsKp.Address(),
 				},
 				Destination: issuerKp.Address(),
 				Amount:      "3.5",
 			},
 			&txnbuild.CreateAccount{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: drsKp.Address(),
 				},
 				Destination: distributorKp.Address(),
@@ -131,21 +136,21 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			},
 			// Add metadata to issuer
 			&txnbuild.ManageData{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "peggedValue",
 				Value: []byte(amount.String(setupCreditOp.PeggedValue)),
 			},
 			&txnbuild.ManageData{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "peggedCurrency",
 				Value: []byte(setupCreditOp.PeggedCurrency),
 			},
 			&txnbuild.ManageData{
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "assetCode",
@@ -158,7 +163,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Code:   setupCreditOp.AssetCode,
 					Issuer: issuerKp.Address(),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: distributorKp.Address(),
 				},
 			},
@@ -168,7 +173,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Address: trustedPartnerAccount.GetAccountID(),
 					Weight:  txnbuild.Threshold(1),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 			},
@@ -177,7 +182,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Address: env.DrsPublicKey,
 					Weight:  txnbuild.Threshold(1),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 			},
@@ -187,7 +192,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					Address: trustedPartnerAccount.GetAccountID(),
 					Weight:  txnbuild.Threshold(1),
 				},
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: distributorKp.Address(),
 				},
 			},
@@ -197,21 +202,24 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 				LowThreshold:    txnbuild.NewThreshold(2),
 				MediumThreshold: txnbuild.NewThreshold(2),
 				HighThreshold:   txnbuild.NewThreshold(2),
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: issuerKp.Address(),
 				},
 			},
 			&txnbuild.SetOptions{
 				MasterWeight: txnbuild.NewThreshold(0),
-				SourceAccount: &horizon.Account{
+				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: distributorKp.Address(),
 				},
 			},
+			// Add meta data to trusted partner
 			&txnbuild.Payment{
-				Destination:   drsKp.Address(),
-				Amount:        "0.5",
-				Asset:         txnbuild.NativeAsset{},
-				SourceAccount: trustedPartnerAccount,
+				Destination: trustedPartnerMetaAddress.AccountID,
+				Amount:      "0.5",
+				Asset:       txnbuild.NativeAsset{},
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: drsKp.Address(),
+				},
 			},
 			&txnbuild.ManageData{
 				Name:          setupCreditOp.AssetCode + "_" + issuerKp.Address(),
