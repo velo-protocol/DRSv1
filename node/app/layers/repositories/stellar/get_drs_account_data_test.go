@@ -1,6 +1,7 @@
 package stellar_test
 
 import (
+	"encoding/base64"
 	"errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
@@ -23,12 +24,12 @@ func TestRepo_GetDrsAccountData(t *testing.T) {
 			Return(horizon.Account{
 				AccountID: testhelpers.DrsPublicKey,
 				Data: map[string]string{
-					"TrustedPartnerList": "pk1",
-					"RegulatorList":      "pk2",
-					"PriceFeederList":    "pk3",
-					"Price[USD-VELO]":    "pk4",
-					"Price[THB-VELO]":    "pk5",
-					"Price[SGD-VELO]":    "pk6",
+					"TrustedPartnerList": base64.StdEncoding.EncodeToString([]byte("pk1")),
+					"RegulatorList":      base64.StdEncoding.EncodeToString([]byte("pk2")),
+					"PriceFeederList":    base64.StdEncoding.EncodeToString([]byte("pk3")),
+					"Price[USD-VELO]":    base64.StdEncoding.EncodeToString([]byte("pk4")),
+					"Price[THB-VELO]":    base64.StdEncoding.EncodeToString([]byte("pk5")),
+					"Price[SGD-VELO]":    base64.StdEncoding.EncodeToString([]byte("pk6")),
 				},
 			}, nil)
 
@@ -42,6 +43,7 @@ func TestRepo_GetDrsAccountData(t *testing.T) {
 			PriceUsdVeloAddress:       "pk4",
 			PriceThbVeloAddress:       "pk5",
 			PriceSgdVeloAddress:       "pk6",
+			Base64Decoded:             true,
 		}, *drsAccountData)
 
 		helper.mockedHorizonClient.

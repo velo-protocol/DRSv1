@@ -13,7 +13,7 @@ func main() {
 	veloTxB64 := buildB64PriceUpdateOp(helper.PublicKeyTP, "VELO", "THB", "1.1234567", helper.KPTP)
 
 	helper.DecodeB64VeloTx(veloTxB64)
-	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyRegulator)
+	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
 }
 
 func buildB64PriceUpdateOp(txSourceAccount, asset, currency, priceInCurrencyPerAssetUnit string, secretKey *keypair.Full) string {

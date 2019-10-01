@@ -7,6 +7,7 @@ package mocks
 import (
 	gomock "github.com/golang/mock/gomock"
 	horizon "github.com/stellar/go/protocols/horizon"
+	entities "gitlab.com/velo-labs/cen/node/app/entities"
 	reflect "reflect"
 )
 
@@ -95,6 +96,21 @@ func (m *MockStellarRepo) GetAccountDecodedData(stellarAddress string) (map[stri
 func (mr *MockStellarRepoMockRecorder) GetAccountDecodedData(stellarAddress interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedData", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedData), stellarAddress)
+}
+
+// GetDrsAccountData mocks base method
+func (m *MockStellarRepo) GetDrsAccountData() (*entities.DrsAccountData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDrsAccountData")
+	ret0, _ := ret[0].(*entities.DrsAccountData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDrsAccountData indicates an expected call of GetDrsAccountData
+func (mr *MockStellarRepoMockRecorder) GetDrsAccountData() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDrsAccountData", reflect.TypeOf((*MockStellarRepo)(nil).GetDrsAccountData))
 }
 
 // SubmitTransaction mocks base method

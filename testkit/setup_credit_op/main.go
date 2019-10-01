@@ -13,7 +13,7 @@ func main() {
 	veloTxB64 := buildB64SetupCreditOp(helper.PublicKeyTP, "THB", "1", "vTHB", helper.KPTP)
 
 	helper.DecodeB64VeloTx(veloTxB64)
-	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyRegulator)
+	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
 
 }
 

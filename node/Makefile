@@ -54,7 +54,7 @@ mockgen/repo:
 		-destination=./app/layers/mocks/$(m)_repo.go \
 		-package mocks \
 		-mock_names Repo=Mock$(M)Repo \
-		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr
+		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
 
 mockgen/usecase:
 	mockgen \

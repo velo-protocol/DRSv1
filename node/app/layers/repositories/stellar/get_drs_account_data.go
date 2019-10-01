@@ -1,11 +1,11 @@
 package stellar
 
 import (
-	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar/models"
 )
 
 func (repo *repo) GetDrsAccountData() (*entities.DrsAccountData, error) {
@@ -16,11 +16,6 @@ func (repo *repo) GetDrsAccountData() (*entities.DrsAccountData, error) {
 		return nil, errors.Wrap(err, "fail to get account detail of drs account")
 	}
 
-	drsAccountData := new(entities.DrsAccountData)
-	err = mapstructure.Decode(account.Data, drsAccountData)
-	if err != nil {
-		return nil, errors.Wrap(err, "fail to map drs account data to entity")
-	}
-
-	return drsAccountData, nil
+	drsAccountDataModel := models.DrsAccountData(account.Data)
+	return drsAccountDataModel.Entity()
 }
