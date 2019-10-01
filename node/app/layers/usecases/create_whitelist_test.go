@@ -1,27 +1,16 @@
 package usecases_test
 
 import (
+	"context"
+	"github.com/stellar/go/txnbuild"
+	"github.com/stretchr/testify/assert"
+	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 	"testing"
 )
 
 func TestUseCase_CreateWhiteList(t *testing.T) {
-	//const (
-	//	publicKey1 = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"
-	//	secretKey1 = "SBR25NMQRKQ4RLGNV5XB3MMQB4ADVYSMPGVBODQVJE7KPTDR6KGK3XMX"
-	//	publicKey2 = "GC2ROYZQH5FTVEPQZF7CAB32SCJC7DWVKILDUAT5BCU5O7HEI7HFUB25"
-	//	secretKey2 = "SCHQI345PYWHM2APNR4MN433HNCBS7VDUROOZKTYHZUBBTHI2YHNCJ4G"
-	//)
-	//
-	//var (
-	//	kp1, _ = vconvert.SecretKeyToKeyPair(secretKey1)
-	//	kp2, _ = vconvert.SecretKeyToKeyPair(secretKey2)
-	//
-	//	newMockWhiteListRepo = func() (*mocks.MockWhiteListRepo, func()) {
-	//		ctrl := gomock.NewController(t)
-	//		mockedWhiteListRepo := mocks.NewMockWhiteListRepo(ctrl)
-	//		return mockedWhiteListRepo, ctrl.Finish
-	//	}
-	//)
 	//
 	//stellarPublicAddress := publicKey1
 	//roleCode := string(vxdr.RoleRegulator)
@@ -76,27 +65,25 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 	//	assert.Nil(t, err)
 	//})
 	//
-	//t.Run("Error - invalid signatures", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp2)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
-	//})
+	t.Run("Error - invalid signatures", func(t *testing.T) {
+		testHelper := initTest(t)
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleRegulator),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp2)
+
+		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.EqualError(t, err, constants.ErrSignatureNotMatchSourceAccount)
+	})
 	//
 	//t.Run("Error - can't query on whitelist table", func(t *testing.T) {
 	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
