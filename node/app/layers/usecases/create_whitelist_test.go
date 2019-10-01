@@ -2,71 +2,103 @@ package usecases_test
 
 import (
 	"context"
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
 	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
+	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
 
 func TestUseCase_CreateWhiteList(t *testing.T) {
-	//
-	//stellarPublicAddress := publicKey1
-	//roleCode := string(vxdr.RoleRegulator)
-	//
-	//t.Run("Success", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	findWhiteListEntity := entities.WhiteList{
-	//		ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
-	//		StellarPublicKey: publicKey1,
-	//		RoleCode:         string(vxdr.RoleRegulator),
-	//	}
-	//
-	//	roleEntity := entities.Role{
-	//		ID:   1,
-	//		Name: "Price feeder",
-	//		Code: "PRICE_FEEDER",
-	//	}
-	//
-	//	createWhitelistEntity := entities.WhiteList{
-	//		StellarPublicKey: publicKey2,
-	//		RoleCode:         string(vxdr.RolePriceFeeder),
-	//	}
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
-	//
-	//	mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(&createWhitelistEntity, nil)
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Nil(t, err)
-	//})
-	//
+	t.Run("Error - whitelist op validation fail", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    "BAD_ROLE",
+			},
+		}
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
+	})
+	t.Run("Error - currency must not be blank for price feeder role", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RolePriceFeeder),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.EqualError(t, err, "currency must not be blank for price feeder role")
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
+	})
+	t.Run("Error - currency must not be blank for price feeder role", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address:  publicKey2,
+				Role:     string(vxdr.RoleRegulator),
+				Currency: string(vxdr.CurrencyTHB),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.EqualError(t, err, "currency must be blank for non-price feeder role")
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
+	})
+	t.Run("Error - signature not found", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleRegulator),
+			},
+		}
+		_ = veloTx.Build()
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.EqualError(t, err, constants.ErrSignatureNotFound)
+		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
+	})
 	t.Run("Error - invalid signatures", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -80,271 +112,427 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp2)
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrSignatureNotMatchSourceAccount)
+		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
 	})
-	//
-	//t.Run("Error - can't query on whitelist table", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
-	//})
-	//
-	//t.Run("Error - pass query on whitelist table and can't query on role table", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	findWhiteListEntity := entities.WhiteList{
-	//		ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
-	//		StellarPublicKey: publicKey1,
-	//		RoleCode:         string(vxdr.RoleRegulator),
-	//	}
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
-	//})
-	//
-	//t.Run("Error - pass query on whitelist table and empty role on role table", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	findWhiteListEntity := entities.WhiteList{
-	//		ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
-	//		StellarPublicKey: publicKey1,
-	//		RoleCode:         string(vxdr.RoleRegulator),
-	//	}
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, nil)
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), constants.ErrRoleNotFound)
-	//})
-	//
-	//t.Run("Error - source account don't have regulator role", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(nil, nil)
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
-	//})
-	//
-	//t.Run("Error - send whitelist to save but fill invalid role", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	findWhiteListEntity := entities.WhiteList{
-	//		ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
-	//		StellarPublicKey: publicKey1,
-	//		RoleCode:         string(vxdr.RoleRegulator),
-	//	}
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), constants.ErrToGetDataFromDatabase)
-	//})
-	//
-	//t.Run("Error - can't save whitelist table", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	findWhiteListEntity := entities.WhiteList{
-	//		ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
-	//		StellarPublicKey: publicKey1,
-	//		RoleCode:         string(vxdr.RoleRegulator),
-	//	}
-	//
-	//	roleEntity := entities.Role{
-	//		ID:   1,
-	//		Name: "Price feeder",
-	//		Code: "PRICE_FEEDER",
-	//	}
-	//
-	//	createWhitelistEntity := entities.WhiteList{
-	//		StellarPublicKey: publicKey2,
-	//		RoleCode:         string(vxdr.RolePriceFeeder),
-	//	}
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, errors.New(constants.ErrToSaveDatabase))
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Equal(t, err.Error(), constants.ErrToSaveDatabase)
-	//})
-	//
-	//t.Run("Error - can't save whitelist table, cause: already exits", func(t *testing.T) {
-	//	mockedWhiteListRepo, finish := newMockWhiteListRepo()
-	//	defer finish()
-	//
-	//	findWhiteListEntity := entities.WhiteList{
-	//		ID:               "e13d778c-d2c8-452b-8ead-368d43447fcd",
-	//		StellarPublicKey: publicKey1,
-	//		RoleCode:         string(vxdr.RoleRegulator),
-	//	}
-	//
-	//	roleEntity := entities.Role{
-	//		ID:   1,
-	//		Name: "Price feeder",
-	//		Code: "PRICE_FEEDER",
-	//	}
-	//
-	//	createWhitelistEntity := entities.WhiteList{
-	//		StellarPublicKey: publicKey2,
-	//		RoleCode:         string(vxdr.RolePriceFeeder),
-	//	}
-	//
-	//	filter := entities.WhiteListFilter{
-	//		StellarPublicKey: &stellarPublicAddress,
-	//		RoleCode:         &roleCode,
-	//	}
-	//
-	//	mockedWhiteListRepo.EXPECT().FindOneWhitelist(filter).Return(&findWhiteListEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().FindOneRole(string(vxdr.RolePriceFeeder)).Return(&roleEntity, nil)
-	//	mockedWhiteListRepo.EXPECT().CreateWhitelist(&createWhitelistEntity).Return(nil, errors.New("duplicate key value violates unique constraint"))
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.WhiteList{
-	//			Address: publicKey2,
-	//			Role:    string(vxdr.RolePriceFeeder),
-	//		},
-	//	}
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	useCase := usecases.Init(nil)
-	//	err := useCase.CreateWhiteList(context.Background(), veloTx)
-	//
-	//	assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey1, vxdr.RoleMap[vxdr.RolePriceFeeder]))
-	//})
+	t.Run("Error - tx sender account not found", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleRegulator),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(nil, errors.New("some error has occurred"))
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.IsType(t, nerrors.ErrNotFound{}, err)
+	})
+	t.Run("Error - fail to get drs account data", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleRegulator),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(nil, errors.New("some error has occurred"))
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.Contains(t, err.Error(), "fail to get data of drs account")
+		assert.IsType(t, nerrors.ErrInternal{}, err)
+	})
+	t.Run("Error - fail to get role list accounts", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleRegulator),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+			Return(nil, errors.New("some error has occurred"))
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.Contains(t, err.Error(), "fail to get role list accounts")
+		assert.IsType(t, nerrors.ErrInternal{}, err)
+	})
+	t.Run("Error - tx sender role validation fail", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    string(vxdr.RoleRegulator),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+			Return([]horizon.Account{
+				{
+					AccountID: drsAccountDataEnity.RegulatorListAddress,
+					Data:      map[string]string{},
+				},
+				{
+					AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+					Data:      map[string]string{},
+				},
+				{
+					AccountID: drsAccountDataEnity.PriceFeederListAddress,
+					Data:      map[string]string{},
+				},
+			}, nil)
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+		assert.EqualError(t, err, fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
+		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
+	})
+
+	t.Run("When role == REGULATOR", func(t *testing.T) {
+		t.Run("Success", func(t *testing.T) {
+			helper := initTest(t)
+			defer helper.mockController.Finish()
+
+			veloTx := &vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.WhiteList{
+					Address: publicKey2,
+					Role:    string(vxdr.RoleRegulator),
+				},
+			}
+			_ = veloTx.Build()
+			_ = veloTx.Sign(kp1)
+
+			helper.mockStellarRepo.EXPECT().
+				GetAccount(publicKey1).
+				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetDrsAccountData().
+				Return(&drsAccountDataEnity, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+				Return([]horizon.Account{
+					{
+						AccountID: drsAccountDataEnity.RegulatorListAddress,
+						Data: map[string]string{
+							publicKey1: base64.StdEncoding.EncodeToString([]byte("true")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+						Data:      map[string]string{},
+					},
+					{
+						AccountID: drsAccountDataEnity.PriceFeederListAddress,
+						Data:      map[string]string{},
+					},
+				}, nil)
+
+			signedTxXdr, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+			assert.NoError(t, err)
+			assert.NotNil(t, signedTxXdr)
+		})
+		t.Run("Error - public key 2 has already been whitelisted as a REGULATOR", func(t *testing.T) {
+			helper := initTest(t)
+			defer helper.mockController.Finish()
+
+			veloTx := &vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.WhiteList{
+					Address: publicKey2,
+					Role:    string(vxdr.RoleRegulator),
+				},
+			}
+			_ = veloTx.Build()
+			_ = veloTx.Sign(kp1)
+
+			helper.mockStellarRepo.EXPECT().
+				GetAccount(publicKey1).
+				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetDrsAccountData().
+				Return(&drsAccountDataEnity, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+				Return([]horizon.Account{
+					{
+						AccountID: drsAccountDataEnity.RegulatorListAddress,
+						Data: map[string]string{
+							publicKey1: base64.StdEncoding.EncodeToString([]byte("true")),
+							publicKey2: base64.StdEncoding.EncodeToString([]byte("true")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+						Data:      map[string]string{},
+					},
+					{
+						AccountID: drsAccountDataEnity.PriceFeederListAddress,
+						Data:      map[string]string{},
+					},
+				}, nil)
+
+			_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey2, vxdr.RoleMap[vxdr.RoleRegulator]))
+			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
+		})
+	})
+	t.Run("When role == TRUSTED_PARTNER", func(t *testing.T) {
+		t.Run("Success", func(t *testing.T) {
+			helper := initTest(t)
+			defer helper.mockController.Finish()
+
+			veloTx := &vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.WhiteList{
+					Address: publicKey2,
+					Role:    string(vxdr.RoleTrustedPartner),
+				},
+			}
+			_ = veloTx.Build()
+			_ = veloTx.Sign(kp1)
+
+			helper.mockStellarRepo.EXPECT().
+				GetAccount(publicKey1).
+				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetDrsAccountData().
+				Return(&drsAccountDataEnity, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+				Return([]horizon.Account{
+					{
+						AccountID: drsAccountDataEnity.RegulatorListAddress,
+						Data: map[string]string{
+							publicKey1: base64.StdEncoding.EncodeToString([]byte("true")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+						Data:      map[string]string{},
+					},
+					{
+						AccountID: drsAccountDataEnity.PriceFeederListAddress,
+						Data:      map[string]string{},
+					},
+				}, nil)
+
+			signedTxXdr, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+			assert.NoError(t, err)
+			assert.NotNil(t, signedTxXdr)
+		})
+		t.Run("Error - public key 2 has already been whitelisted as a TRUSTED_PARTNER", func(t *testing.T) {
+			helper := initTest(t)
+			defer helper.mockController.Finish()
+
+			veloTx := &vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.WhiteList{
+					Address: publicKey2,
+					Role:    string(vxdr.RoleTrustedPartner),
+				},
+			}
+			_ = veloTx.Build()
+			_ = veloTx.Sign(kp1)
+
+			helper.mockStellarRepo.EXPECT().
+				GetAccount(publicKey1).
+				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetDrsAccountData().
+				Return(&drsAccountDataEnity, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+				Return([]horizon.Account{
+					{
+						AccountID: drsAccountDataEnity.RegulatorListAddress,
+						Data: map[string]string{
+							publicKey1: base64.StdEncoding.EncodeToString([]byte("true")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+						Data: map[string]string{
+							publicKey2: base64.StdEncoding.EncodeToString([]byte("PUBLIC_KEY_2_META_ADDRESS")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.PriceFeederListAddress,
+						Data:      map[string]string{},
+					},
+				}, nil)
+
+			_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]))
+			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
+		})
+	})
+	t.Run("When role == PRICE_FEEDER", func(t *testing.T) {
+		t.Run("Success", func(t *testing.T) {
+			helper := initTest(t)
+			defer helper.mockController.Finish()
+
+			veloTx := &vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.WhiteList{
+					Address:  publicKey2,
+					Role:     string(vxdr.RolePriceFeeder),
+					Currency: string(vxdr.CurrencyTHB),
+				},
+			}
+			_ = veloTx.Build()
+			_ = veloTx.Sign(kp1)
+
+			helper.mockStellarRepo.EXPECT().
+				GetAccount(publicKey1).
+				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetDrsAccountData().
+				Return(&drsAccountDataEnity, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+				Return([]horizon.Account{
+					{
+						AccountID: drsAccountDataEnity.RegulatorListAddress,
+						Data: map[string]string{
+							publicKey1: base64.StdEncoding.EncodeToString([]byte("true")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+						Data:      map[string]string{},
+					},
+					{
+						AccountID: drsAccountDataEnity.PriceFeederListAddress,
+						Data:      map[string]string{},
+					},
+				}, nil)
+
+			signedTxXdr, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+			assert.NoError(t, err)
+			assert.NotNil(t, signedTxXdr)
+		})
+		t.Run("Error - public key 2 has already been whitelisted as a PRICE_FEEDER", func(t *testing.T) {
+			helper := initTest(t)
+			defer helper.mockController.Finish()
+
+			veloTx := &vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.WhiteList{
+					Address:  publicKey2,
+					Role:     string(vxdr.RolePriceFeeder),
+					Currency: string(vxdr.CurrencyTHB),
+				},
+			}
+			_ = veloTx.Build()
+			_ = veloTx.Sign(kp1)
+
+			helper.mockStellarRepo.EXPECT().
+				GetAccount(publicKey1).
+				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetDrsAccountData().
+				Return(&drsAccountDataEnity, nil)
+			helper.mockStellarRepo.EXPECT().
+				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
+				Return([]horizon.Account{
+					{
+						AccountID: drsAccountDataEnity.RegulatorListAddress,
+						Data: map[string]string{
+							publicKey1: base64.StdEncoding.EncodeToString([]byte("true")),
+						},
+					},
+					{
+						AccountID: drsAccountDataEnity.TrustedPartnerListAddress,
+						Data:      map[string]string{},
+					},
+					{
+						AccountID: drsAccountDataEnity.PriceFeederListAddress,
+						Data: map[string]string{
+							publicKey2: base64.StdEncoding.EncodeToString([]byte("PUBLIC_KEY_2_META_ADDRESS")),
+						},
+					},
+				}, nil)
+
+			_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+
+			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey2, vxdr.RoleMap[vxdr.RolePriceFeeder]))
+			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
+		})
+	})
 
 }

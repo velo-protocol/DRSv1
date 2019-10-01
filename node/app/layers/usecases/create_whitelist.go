@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/keypair"
-	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	vconvert "gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
@@ -49,13 +48,17 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	// get tx sender account
 	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
 	if err != nil {
-		return nil, nerrors.ErrNotFound{Message: err.Error()}
+		return nil, nerrors.ErrNotFound{
+			Message: errors.Wrap(err, "fail to get tx sender account").Error(),
+		}
 	}
 
 	// get drs account
 	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get data of drs account").Error(),
+		}
 	}
 
 	// get lists of whitelisted account of each role
@@ -65,7 +68,9 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		drsAccountData.PriceFeederListAddress,
 	)
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get role list accounts").Error(),
+		}
 	}
 	var (
 		regulatorList      = accounts[0].Data
@@ -112,7 +117,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 					Destination: drsAccountData.RegulatorListAddress,
 					Amount:      "0.5",
 					Asset:       txnbuild.NativeAsset{},
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsKp.Address(),
 					},
 				},
@@ -120,7 +125,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				&txnbuild.ManageData{
 					Name:  whiteListOp.Address.Address(),
 					Value: []byte("true"),
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.RegulatorListAddress,
 					},
 				},
@@ -166,7 +171,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 					Destination: drsAccountData.TrustedPartnerListAddress,
 					Amount:      "0.5",
 					Asset:       txnbuild.NativeAsset{},
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsKp.Address(),
 					},
 				},
@@ -174,13 +179,13 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				&txnbuild.ManageData{
 					Name:  whiteListOp.Address.Address(),
 					Value: []byte(trustedPartnerMetaKp.Address()),
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.TrustedPartnerListAddress,
 					},
 				},
 				// DRS create a TrustedPartnerMeta account
 				&txnbuild.CreateAccount{
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsKp.Address(),
 					},
 					Destination: trustedPartnerMetaKp.Address(),
@@ -193,7 +198,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 						Address: drsKp.Address(),
 						Weight:  txnbuild.Threshold(1),
 					},
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: trustedPartnerMetaKp.Address(),
 					},
 				},
@@ -233,7 +238,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 					Destination: drsAccountData.PriceFeederListAddress,
 					Amount:      "0.5",
 					Asset:       txnbuild.NativeAsset{},
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsKp.Address(),
 					},
 				},
@@ -242,7 +247,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 					Destination: drsAccountData.VeloPriceAddress(whiteListOp.Currency),
 					Amount:      "0.5",
 					Asset:       txnbuild.NativeAsset{},
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsKp.Address(),
 					},
 				},
@@ -250,17 +255,17 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				&txnbuild.ManageData{
 					Name:  whiteListOp.Address.Address(),
 					Value: []byte(whiteListOp.Currency),
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.PriceFeederListAddress,
 					},
 				},
-				// Add signer to PriceAddress
+				// Add signer to PriceAccount
 				&txnbuild.SetOptions{
 					Signer: &txnbuild.Signer{
 						Address: whiteListOp.Address.Address(),
 						Weight:  txnbuild.Threshold(1),
 					},
-					SourceAccount: &horizon.Account{
+					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.VeloPriceAddress(whiteListOp.Currency),
 					},
 				},
