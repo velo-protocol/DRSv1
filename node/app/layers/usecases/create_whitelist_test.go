@@ -51,7 +51,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.EqualError(t, err, "currency must not be blank for price feeder role")
+		assert.EqualError(t, err, constants.ErrPriceFeederCurrencyMustNotBlank)
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
 	})
 	t.Run("Error - currency must not be blank for price feeder role", func(t *testing.T) {
@@ -73,7 +73,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.EqualError(t, err, "currency must be blank for non-price feeder role")
+		assert.EqualError(t, err, constants.ErrCurrencyMustBeBlank)
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
 	})
 	t.Run("Error - signature not found", func(t *testing.T) {
@@ -166,7 +166,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.Error(), "fail to get data of drs account")
+		assert.Contains(t, err.Error(), constants.ErrGetDrsAccount)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 	t.Run("Error - fail to get role list accounts", func(t *testing.T) {
@@ -197,7 +197,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
-		assert.Contains(t, err.Error(), "fail to get role list accounts")
+		assert.Contains(t, err.Error(), constants.ErrGetRoleListAccount)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 	t.Run("Error - tx sender role validation fail", func(t *testing.T) {

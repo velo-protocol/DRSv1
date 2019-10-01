@@ -25,11 +25,11 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	// additional parameter validation
 	if whiteListOp.Role == vxdr.RolePriceFeeder && whiteListOp.Currency == "" {
 		return nil, nerrors.ErrInvalidArgument{
-			Message: "currency must not be blank for price feeder role",
+			Message: constants.ErrPriceFeederCurrencyMustNotBlank,
 		}
 	} else if whiteListOp.Role != vxdr.RolePriceFeeder && whiteListOp.Currency != "" {
 		return nil, nerrors.ErrInvalidArgument{
-			Message: "currency must be blank for non-price feeder role",
+			Message: constants.ErrCurrencyMustBeBlank,
 		}
 	}
 
@@ -49,7 +49,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
 	if err != nil {
 		return nil, nerrors.ErrNotFound{
-			Message: errors.Wrap(err, "fail to get tx sender account").Error(),
+			Message: errors.Wrap(err, constants.ErrGetSenderAccount).Error(),
 		}
 	}
 
@@ -57,7 +57,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrap(err, "fail to get data of drs account").Error(),
+			Message: errors.Wrap(err, constants.ErrGetDrsAccount).Error(),
 		}
 	}
 
@@ -69,7 +69,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	)
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrap(err, "fail to get role list accounts").Error(),
+			Message: errors.Wrap(err, constants.ErrGetRoleListAccount).Error(),
 		}
 	}
 	var (
@@ -89,7 +89,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrap(err, "failed to derived KP from seed key").Error(),
+			Message: errors.Wrap(err, constants.ErrDerivedKeyPairFromSeed).Error(),
 		}
 	}
 
@@ -136,7 +136,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		signedTxXdr, err := tx.BuildSignEncode(drsKp)
 		if err != nil {
 			return nil, nerrors.ErrInternal{
-				Message: errors.Wrap(err, "failed to build and sign tx").Error(),
+				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
 			}
 		}
 		return &signedTxXdr, nil
@@ -152,7 +152,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		trustedPartnerMetaKp, err := keypair.Random()
 		if err != nil {
 			return nil, nerrors.ErrInternal{
-				Message: errors.Wrap(err, "failed to create trusted partner meta KP").Error(),
+				Message: errors.Wrap(err, constants.ErrCreateTrustedPartnerMetaKeyPair).Error(),
 			}
 		}
 
@@ -210,7 +210,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		signedTxXdr, err := tx.BuildSignEncode(drsKp, trustedPartnerMetaKp)
 		if err != nil {
 			return nil, nerrors.ErrInternal{
-				Message: errors.Wrap(err, "failed to build and sign tx").Error(),
+				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
 			}
 		}
 		return &signedTxXdr, nil
@@ -276,14 +276,14 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		signedTxXdr, err := tx.BuildSignEncode(drsKp)
 		if err != nil {
 			return nil, nerrors.ErrInternal{
-				Message: errors.Wrap(err, "failed to build and sign tx").Error(),
+				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
 			}
 		}
 		return &signedTxXdr, nil
 
 	default:
 		return nil, nerrors.ErrInternal{
-			Message: "unknown role specified",
+			Message: constants.ErrUnknowRoleSpecified,
 		}
 	}
 
