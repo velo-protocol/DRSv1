@@ -13,6 +13,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/testhelpers"
 	"testing"
 )
 
@@ -21,7 +22,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		kp1, _ = vconvert.SecretKeyToKeyPair(secretKey1)
 		kp2, _ = vconvert.SecretKeyToKeyPair(secretKey2)
 
-		trustedPartnerListAddress = publicKey2
+		trustedPartnerListAddress = testhelpers.TrustedPartnerListKp.Address()
 		trustedPartnerMetaAddress = publicKey3
 		trustedPartnerMetaEncoded = base64.StdEncoding.EncodeToString([]byte(publicKey3))
 
