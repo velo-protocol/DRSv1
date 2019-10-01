@@ -49,13 +49,17 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	// get tx sender account
 	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
 	if err != nil {
-		return nil, nerrors.ErrNotFound{Message: err.Error()}
+		return nil, nerrors.ErrNotFound{
+			Message: errors.Wrap(err, "fail to get tx sender account").Error(),
+		}
 	}
 
 	// get drs account
 	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get data of drs account").Error(),
+		}
 	}
 
 	// get lists of whitelisted account of each role
@@ -65,7 +69,9 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		drsAccountData.PriceFeederListAddress,
 	)
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: err.Error()}
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, "fail to get role list accounts").Error(),
+		}
 	}
 	var (
 		regulatorList      = accounts[0].Data

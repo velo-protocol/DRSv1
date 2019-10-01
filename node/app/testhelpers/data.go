@@ -21,6 +21,13 @@ const (
 	RegulatorListSecretKey      = "SBUAFRBY2CUPQKVFHGUAGODDKCKRXTL5RKQBPPGDABNIHDYJKJ7X4BZW"
 	PriceFeederListPublicKey    = "GAP425PLI2M6ZPPC4A2D5DX45DR4AODPKLZWXPOO2XTICGTKGWLDGULL"
 	PriceFeederListSecretKey    = "SAGIOUFA4DNRUYD64NGOAG4ETWNUEKURUYUB35IGHHAAXVLCXEPDN73T"
+
+	PriceUsdVeloPublicKey = "GAHK7V3FDBNYIFRS3XPOT5AL6VOPNIRZIYT5Q2LM7QNJEDWB3RY6YAZ3"
+	PriceUsdVeloSecretKey = "SCQE3KNSRIPP26WN57K3THQDS6YAYLHDD7RCKIWA32ZRXG5UNPI5T76R"
+	PriceThbVeloPublicKey = "GCIK7P7LYWUL7BHKVM26RSHVVMWF5EOYUEIBVRQPBVYQ7QR7XXZLK4LW"
+	PriceThbVeloSecretKey = "SBSRHVR7KNB3GMLC4ECCQCBURE6SMDUNTYDPBN42BQLPYNHOBEYNVDTN"
+	PriceSgdVeloPublicKey = "GAOMVXYOKCIVYYKY3DHMYLDFGF3RTPBUK7VY7HHBBNTES23LMG4G4WQA"
+	PriceSgdVeloSecretKey = "SAFGTLTJQPADFHNVHMHDLWCS3E2N3KRSRHCAHOTTDHIDVHNER3XPZTLP"
 )
 
 var (
@@ -39,9 +46,9 @@ var (
 		TrustedPartnerListAddress: TrustedPartnerListPublicKey,
 		RegulatorListAddress:      RegulatorListPublicKey,
 		PriceFeederListAddress:    PriceFeederListPublicKey,
-		PriceUsdVeloAddress:       "",
-		PriceThbVeloAddress:       "",
-		PriceSgdVeloAddress:       "",
+		PriceUsdVeloAddress:       PriceUsdVeloPublicKey,
+		PriceThbVeloAddress:       PriceThbVeloPublicKey,
+		PriceSgdVeloAddress:       PriceSgdVeloPublicKey,
 		Base64Decoded:             true,
 	}
 )
