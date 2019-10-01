@@ -173,7 +173,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
-	t.Run("Error - can't get trusted partner role", func(t *testing.T) {
+	t.Run("Error - can't get trusted partner list account", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
