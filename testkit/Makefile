@@ -7,6 +7,10 @@ xdr/setup-credit:
 xdr/price-update:
 	go run ./price_update_op/main.go
 
+xdr/sign:
+	go run ./sign_transaction/main.go
+
+
 submit/velotx:
 	grpcurl -plaintext \
 		-d '{"signedVeloTxXdr":"$(xdr)"}' \
