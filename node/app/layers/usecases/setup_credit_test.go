@@ -278,7 +278,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
-	t.Run("Error - can't get trusted partner meta", func(t *testing.T) {
+	t.Run("Error - can't get data of trusted partner meta account", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
