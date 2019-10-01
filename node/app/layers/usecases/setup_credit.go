@@ -2,6 +2,8 @@ package usecases
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
 	"github.com/stellar/go/keypair"
@@ -13,53 +15,80 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
+	"log"
+	"strings"
 )
 
 func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
-	return nil, nil
-	//if err := veloTx.VeloOp.Validate(); err != nil {
-	//	return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
-	//}
-	//
-	//txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
-	//txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
-	//if err != nil {
-	//	return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
-	//}
-	//if veloTx.TxEnvelope().Signatures == nil {
-	//	return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
-	//}
-	//if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
-	//	return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
-	//}
-	//
-	//trustedPartnerEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhiteListFilter{
-	//	StellarPublicKey: pointer.ToString(txSenderPublicKey),
-	//	RoleCode:         pointer.ToString(string(vxdr.RoleTrustedPartner)),
-	//})
-	//if err != nil {
-	//	return nil, nerrors.ErrInternal{Message: err.Error()}
-	//}
-	//if trustedPartnerEntity == nil {
-	//	return nil, nerrors.ErrPermissionDenied{
-	//		Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
-	//	}
-	//}
-	//
-	//trustedPartnerAccount, err := useCase.StellarRepo.GetAccount(trustedPartnerEntity.StellarPublicKey)
-	//if err != nil {
-	//	return nil, nerrors.ErrNotFound{Message: err.Error()}
-	//}
-	//
-	//signedTx, err := buildSetupTx(trustedPartnerAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp)
-	//if err != nil {
-	//	return nil, nerrors.ErrInternal{Message: err.Error()}
-	//}
-	//
-	//return &signedTx, nil
+	if err := veloTx.VeloOp.Validate(); err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+
+	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
+	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
+	if err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+	if veloTx.TxEnvelope().Signatures == nil {
+		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
+	}
+	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
+		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
+	}
+
+	// get tx sender account
+	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
+	if err != nil {
+		return nil, nerrors.ErrNotFound{Message: err.Error()}
+	}
+
+	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: err.Error()}
+	}
+
+	// validate trusted partner role
+	trustedPartnerList, err := useCase.StellarRepo.GetAccountData(drsAccountData.TrustedPartnerListAddress)
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: err.Error()}
+	}
+
+	trustedPartnerMetaEncoded, ok := trustedPartnerList[txSenderKeyPair.Address()]
+	if !ok {
+		return nil, nerrors.ErrPermissionDenied{
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
+		}
+	}
+
+	trustedPartnerMetaAddress, err := base64.StdEncoding.DecodeString(trustedPartnerMetaEncoded)
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: fmt.Sprintf(`%s: fail to decode data "%s"`, err.Error(), trustedPartnerMetaEncoded)}
+	}
+
+	log.Println(trustedPartnerMetaAddress)
+
+	// get trusted partner meta
+	trustedPartnerMeta, err := useCase.StellarRepo.GetAccountData(string(trustedPartnerMetaAddress))
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: err.Error()}
+	}
+
+	for key, _ := range trustedPartnerMeta {
+		assetDetail := strings.Split(key, "_")
+		if assetDetail[0] == veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode {
+			return nil, nerrors.ErrInternal{Message: "the issuing and distribution account for asset code to specified already"}
+		}
+	}
+
+	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: trustedPartnerMetaEncoded})
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: err.Error()}
+	}
+
+	return &signedTx, nil
 }
 
-func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp) (setupTxB64 string, err error) {
+func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp, trustedPartnerMetaAddress *txnbuild.SimpleAccount) (setupTxB64 string, err error) {
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to derived KP from seed key")
@@ -81,7 +110,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			// Trusted Party must pay tx fee to DRS
 			&txnbuild.Payment{
 				Destination:   drsKp.Address(),
-				Amount:        "5.5",
+				Amount:        "6",
 				Asset:         txnbuild.NativeAsset{},
 				SourceAccount: trustedPartnerAccount,
 			},
@@ -177,6 +206,17 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 				SourceAccount: &horizon.Account{
 					AccountID: distributorKp.Address(),
 				},
+			},
+			&txnbuild.Payment{
+				Destination:   drsKp.Address(),
+				Amount:        "0.5",
+				Asset:         txnbuild.NativeAsset{},
+				SourceAccount: trustedPartnerAccount,
+			},
+			&txnbuild.ManageData{
+				Name:          setupCreditOp.AssetCode + "_" + issuerKp.Address(),
+				Value:         []byte(distributorKp.Address()),
+				SourceAccount: trustedPartnerMetaAddress,
 			},
 		},
 		Network:    env.NetworkPassphrase,
