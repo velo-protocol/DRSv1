@@ -54,7 +54,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 	trustedPartnerList, err := useCase.StellarRepo.GetAccountData(drsAccountData.TrustedPartnerListAddress)
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrap(err, "fail to get data of trusted partner list account").Error(),
+			Message: errors.Wrap(err, constants.ErrGetTrustedPartnerListDataAccount).Error(),
 		}
 	}
 
@@ -81,7 +81,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 	for key, _ := range trustedPartnerMeta {
 		assetDetail := strings.Split(key, "_")
 		if assetDetail[0] == veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode {
-			return nil, nerrors.ErrInternal{Message: fmt.Sprintf("asset code %s has already been used", veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode)}
+			return nil, nerrors.ErrInternal{Message: fmt.Sprintf(constants.ErrAssetCodeAlreadyBeenUsed, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode)}
 		}
 	}
 
@@ -96,17 +96,17 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp, trustedPartnerMetaAddress *txnbuild.SimpleAccount) (setupTxB64 string, err error) {
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to derived KP from seed key")
+		return "", errors.Wrap(err, constants.ErrDerivedKeyPairFromSeed)
 	}
 
 	issuerKp, err := keypair.Random()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to create issuer KP")
+		return "", errors.Wrap(err, constants.ErrCreateIssuerKeyPair)
 	}
 
 	distributorKp, err := keypair.Random()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to create distributor KP")
+		return "", errors.Wrap(err, constants.ErrCreateDistributorKeyPair)
 	}
 
 	tx := txnbuild.Transaction{
@@ -233,7 +233,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 
 	signedTxXdr, err := tx.BuildSignEncode(drsKp, distributorKp, issuerKp)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to build and sign tx")
+		return "", errors.Wrap(err, constants.ErrBuildAndSignTransaction)
 	}
 
 	return signedTxXdr, nil

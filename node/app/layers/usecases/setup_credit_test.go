@@ -129,7 +129,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.Nil(t, signedStellarTxXdr)
-		assert.Contains(t, err.Error(), "fail to get tx sender account")
+		assert.Contains(t, err.Error(), constants.ErrGetSenderAccount)
 		assert.IsType(t, nerrors.ErrNotFound{}, err)
 	})
 
@@ -156,7 +156,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.Nil(t, signedStellarTxXdr)
-		assert.Contains(t, err.Error(), "fail to get data of drs account")
+		assert.Contains(t, err.Error(), constants.ErrGetDrsAccount)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
@@ -187,7 +187,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.Nil(t, signedStellarTxXdr)
-		assert.Contains(t, err.Error(), "fail to get data of trusted partner list account")
+		assert.Contains(t, err.Error(), constants.ErrGetTrustedPartnerListDataAccount)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
@@ -321,7 +321,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, signedStellarTxXdr)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
-		assert.Equal(t, fmt.Sprintf("asset code %s has already been used", veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode), err.Error())
+		assert.Equal(t, fmt.Sprintf(constants.ErrAssetCodeAlreadyBeenUsed, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode), err.Error())
 	})
 
 }
