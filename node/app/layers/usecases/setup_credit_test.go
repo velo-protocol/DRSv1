@@ -208,7 +208,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
-	t.Run("Error - don't have trusted partner permission denied", func(t *testing.T) {
+	t.Run("Error - permission denied, tx sender is not a trusted partner", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
