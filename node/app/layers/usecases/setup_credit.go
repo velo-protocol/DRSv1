@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
@@ -15,6 +14,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/utils"
 	"strings"
 )
 
@@ -58,22 +58,22 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 		}
 	}
 
-	trustedPartnerMetaEncoded, ok := trustedPartnerList[txSenderKeyPair.Address()]
+	trustedPartnerMetaEncodedAddress, ok := trustedPartnerList[txSenderKeyPair.Address()]
 	if !ok {
 		return nil, nerrors.ErrPermissionDenied{
 			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
 		}
 	}
 
-	trustedPartnerMetaAddress, err := base64.StdEncoding.DecodeString(trustedPartnerMetaEncoded)
+	trustedPartnerMetaAddress, err := utils.DecodeBase64(trustedPartnerMetaEncodedAddress)
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrapf(err, `fail to decode data "%s`, trustedPartnerMetaEncoded).Error(),
+			Message: errors.Wrapf(err, `fail to decode data "%s`, trustedPartnerMetaEncodedAddress).Error(),
 		}
 	}
 
 	// get trusted partner meta
-	trustedPartnerMeta, err := useCase.StellarRepo.GetAccountData(string(trustedPartnerMetaAddress))
+	trustedPartnerMeta, err := useCase.StellarRepo.GetAccountData(trustedPartnerMetaAddress)
 	if err != nil {
 		return nil, nerrors.ErrInternal{Message: err.Error()}
 	}
@@ -85,7 +85,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 		}
 	}
 
-	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: string(trustedPartnerMetaAddress)})
+	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: trustedPartnerMetaAddress})
 	if err != nil {
 		return nil, nerrors.ErrInternal{Message: err.Error()}
 	}

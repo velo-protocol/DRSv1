@@ -8,10 +8,8 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
 	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
 	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/testhelpers"
 	"testing"
@@ -19,13 +17,6 @@ import (
 
 func TestUseCase_SetupCredit(t *testing.T) {
 	var (
-		kp1, _ = vconvert.SecretKeyToKeyPair(secretKey1)
-		kp2, _ = vconvert.SecretKeyToKeyPair(secretKey2)
-
-		trustedPartnerListAddress = testhelpers.TrustedPartnerListKp.Address()
-		trustedPartnerMetaAddress = publicKey3
-		trustedPartnerMetaEncoded = base64.StdEncoding.EncodeToString([]byte(publicKey3))
-
 		getMockVeloTx = func() *vtxnbuild.VeloTx {
 			return &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -58,18 +49,14 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get drs account data
 		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
-			Return(
-				&entities.DrsAccountData{
-					TrustedPartnerListAddress: trustedPartnerListAddress,
-				},
-				nil)
+			Return(&drsAccountDataEnity, nil)
 
 		// validate trusted partner role
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
-			Return(map[string]string{publicKey1: trustedPartnerMetaEncoded}, nil)
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
+			Return(map[string]string{publicKey1: base64.StdEncoding.EncodeToString([]byte(publicKey3))}, nil)
 
 		// get trusted partner meta
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerMetaAddress).
+		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
 			Return(map[string]string{"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": "R0RXQUZZM1pRSlZEQ0tOVVVOTFZHNTVOVkZCRFpWVlBZRFNGWlIzRURQTEtJWkwzNDRKWkxUNlU="}, nil)
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
@@ -191,14 +178,10 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get drs account data
 		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
-			Return(
-				&entities.DrsAccountData{
-					TrustedPartnerListAddress: trustedPartnerListAddress,
-				},
-				nil)
+			Return(&drsAccountDataEnity, nil)
 
 		// validate trusted partner role
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
 			Return(nil, errors.New("stellar return error"))
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
@@ -226,14 +209,10 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get drs account data
 		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
-			Return(
-				&entities.DrsAccountData{
-					TrustedPartnerListAddress: trustedPartnerListAddress,
-				},
-				nil)
+			Return(&drsAccountDataEnity, nil)
 
 		// validate trusted partner role
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
 			Return(map[string]string{}, nil)
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
@@ -261,14 +240,10 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get drs account data
 		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
-			Return(
-				&entities.DrsAccountData{
-					TrustedPartnerListAddress: trustedPartnerListAddress,
-				},
-				nil)
+			Return(&drsAccountDataEnity, nil)
 
 		// validate trusted partner role
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
 			Return(map[string]string{publicKey1: "BAD_ENCODED_VALUE"}, nil)
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
@@ -296,18 +271,14 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get drs account data
 		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
-			Return(
-				&entities.DrsAccountData{
-					TrustedPartnerListAddress: trustedPartnerListAddress,
-				},
-				nil)
+			Return(&drsAccountDataEnity, nil)
 
 		// validate trusted partner role
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
-			Return(map[string]string{publicKey1: trustedPartnerMetaEncoded}, nil)
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
+			Return(map[string]string{publicKey1: base64.StdEncoding.EncodeToString([]byte(publicKey3))}, nil)
 
 		// get trusted partner meta
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerMetaAddress).
+		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
 			Return(nil, errors.New("stellar return error"))
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
@@ -334,18 +305,14 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get drs account data
 		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
-			Return(
-				&entities.DrsAccountData{
-					TrustedPartnerListAddress: trustedPartnerListAddress,
-				},
-				nil)
+			Return(&drsAccountDataEnity, nil)
 
 		// validate trusted partner role
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerListAddress).
-			Return(map[string]string{publicKey1: trustedPartnerMetaEncoded}, nil)
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
+			Return(map[string]string{publicKey1: base64.StdEncoding.EncodeToString([]byte(publicKey3))}, nil)
 
 		// get trusted partner meta
-		helper.mockStellarRepo.EXPECT().GetAccountData(trustedPartnerMetaAddress).
+		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
 			Return(map[string]string{
 				"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": "R0RXQUZZM1pRSlZEQ0tOVVVOTFZHNTVOVkZCRFpWVlBZRFNGWlIzRURQTEtJWkwzNDRKWkxUNlU=",
 				"vTHB_GAHLHUVDHRJ3U3CUOYQRW2TVNRIC6QC6R2MWVCMKYSVYESO5CQMA6PYM": "R0NTWExLS0tFRzdDWE9WVEVTRVI2SDRYNkk0V1lIWkFCVkpNRkxFUU42MlVCTFNMVlhPUEFUSFY="}, nil)
