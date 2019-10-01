@@ -16,8 +16,26 @@ import (
 )
 
 func TestUseCase_CreateWhiteList(t *testing.T) {
+	t.Run("Error - whitelist op validation fail", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.WhiteList{
+				Address: publicKey2,
+				Role:    "BAD_ROLE",
+			},
+		}
+
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
+	})
 	t.Run("Error - currency must not be blank for price feeder role", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -31,13 +49,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.EqualError(t, err, "currency must not be blank for price feeder role")
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
 	})
 	t.Run("Error - currency must not be blank for price feeder role", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -52,13 +71,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.EqualError(t, err, "currency must be blank for non-price feeder role")
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
 	})
 	t.Run("Error - signature not found", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -71,13 +91,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		}
 		_ = veloTx.Build()
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrSignatureNotFound)
 		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
 	})
 	t.Run("Error - invalid signatures", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -91,13 +112,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp2)
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrSignatureNotMatchSourceAccount)
 		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
 	})
 	t.Run("Error - tx sender account not found", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -111,16 +133,17 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccount(publicKey1).
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.IsType(t, nerrors.ErrNotFound{}, err)
 	})
 	t.Run("Error - fail to get drs account data", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -134,20 +157,21 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccount(publicKey1).
 			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetDrsAccountData().
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Contains(t, err.Error(), "fail to get data of drs account")
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 	t.Run("Error - fail to get role list accounts", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -161,23 +185,24 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccount(publicKey1).
 			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetDrsAccountData().
 			Return(&drsAccountDataEnity, nil)
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.Contains(t, err.Error(), "fail to get role list accounts")
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 	t.Run("Error - tx sender role validation fail", func(t *testing.T) {
-		testHelper := initTest(t)
+		helper := initTest(t)
+		defer helper.mockController.Finish()
 
 		veloTx := &vtxnbuild.VeloTx{
 			SourceAccount: &txnbuild.SimpleAccount{
@@ -191,13 +216,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccount(publicKey1).
 			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetDrsAccountData().
 			Return(&drsAccountDataEnity, nil)
-		testHelper.mockStellarRepo.EXPECT().
+		helper.mockStellarRepo.EXPECT().
 			GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 			Return([]horizon.Account{
 				{
@@ -214,7 +239,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 				},
 			}, nil)
 
-		_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+		_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 		assert.EqualError(t, err, fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList))
 		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
@@ -222,7 +247,8 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 
 	t.Run("When role == REGULATOR", func(t *testing.T) {
 		t.Run("Success", func(t *testing.T) {
-			testHelper := initTest(t)
+			helper := initTest(t)
+			defer helper.mockController.Finish()
 
 			veloTx := &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -236,13 +262,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 			_ = veloTx.Build()
 			_ = veloTx.Sign(kp1)
 
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccount(publicKey1).
 				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetDrsAccountData().
 				Return(&drsAccountDataEnity, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 				Return([]horizon.Account{
 					{
@@ -261,13 +287,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 					},
 				}, nil)
 
-			signedTxXdr, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+			signedTxXdr, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 			assert.NoError(t, err)
 			assert.NotNil(t, signedTxXdr)
 		})
 		t.Run("Error - public key 2 has already been whitelisted as a REGULATOR", func(t *testing.T) {
-			testHelper := initTest(t)
+			helper := initTest(t)
+			defer helper.mockController.Finish()
 
 			veloTx := &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -281,13 +308,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 			_ = veloTx.Build()
 			_ = veloTx.Sign(kp1)
 
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccount(publicKey1).
 				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetDrsAccountData().
 				Return(&drsAccountDataEnity, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 				Return([]horizon.Account{
 					{
@@ -307,7 +334,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 					},
 				}, nil)
 
-			_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+			_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey2, vxdr.RoleMap[vxdr.RoleRegulator]))
 			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
@@ -315,7 +342,8 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 	})
 	t.Run("When role == TRUSTED_PARTNER", func(t *testing.T) {
 		t.Run("Success", func(t *testing.T) {
-			testHelper := initTest(t)
+			helper := initTest(t)
+			defer helper.mockController.Finish()
 
 			veloTx := &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -329,13 +357,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 			_ = veloTx.Build()
 			_ = veloTx.Sign(kp1)
 
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccount(publicKey1).
 				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetDrsAccountData().
 				Return(&drsAccountDataEnity, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 				Return([]horizon.Account{
 					{
@@ -354,13 +382,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 					},
 				}, nil)
 
-			signedTxXdr, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+			signedTxXdr, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 			assert.NoError(t, err)
 			assert.NotNil(t, signedTxXdr)
 		})
 		t.Run("Error - public key 2 has already been whitelisted as a TRUSTED_PARTNER", func(t *testing.T) {
-			testHelper := initTest(t)
+			helper := initTest(t)
+			defer helper.mockController.Finish()
 
 			veloTx := &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -374,13 +403,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 			_ = veloTx.Build()
 			_ = veloTx.Sign(kp1)
 
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccount(publicKey1).
 				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetDrsAccountData().
 				Return(&drsAccountDataEnity, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 				Return([]horizon.Account{
 					{
@@ -401,7 +430,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 					},
 				}, nil)
 
-			_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+			_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]))
 			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
@@ -409,7 +438,8 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 	})
 	t.Run("When role == PRICE_FEEDER", func(t *testing.T) {
 		t.Run("Success", func(t *testing.T) {
-			testHelper := initTest(t)
+			helper := initTest(t)
+			defer helper.mockController.Finish()
 
 			veloTx := &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -424,13 +454,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 			_ = veloTx.Build()
 			_ = veloTx.Sign(kp1)
 
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccount(publicKey1).
 				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetDrsAccountData().
 				Return(&drsAccountDataEnity, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 				Return([]horizon.Account{
 					{
@@ -449,13 +479,14 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 					},
 				}, nil)
 
-			signedTxXdr, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+			signedTxXdr, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 			assert.NoError(t, err)
 			assert.NotNil(t, signedTxXdr)
 		})
 		t.Run("Error - public key 2 has already been whitelisted as a PRICE_FEEDER", func(t *testing.T) {
-			testHelper := initTest(t)
+			helper := initTest(t)
+			defer helper.mockController.Finish()
 
 			veloTx := &vtxnbuild.VeloTx{
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -470,13 +501,13 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 			_ = veloTx.Build()
 			_ = veloTx.Sign(kp1)
 
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccount(publicKey1).
 				Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetDrsAccountData().
 				Return(&drsAccountDataEnity, nil)
-			testHelper.mockStellarRepo.EXPECT().
+			helper.mockStellarRepo.EXPECT().
 				GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 				Return([]horizon.Account{
 					{
@@ -497,7 +528,7 @@ func TestUseCase_CreateWhiteList(t *testing.T) {
 					},
 				}, nil)
 
-			_, err := testHelper.useCase.CreateWhiteList(context.Background(), veloTx)
+			_, err := helper.useCase.CreateWhiteList(context.Background(), veloTx)
 
 			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, publicKey2, vxdr.RoleMap[vxdr.RolePriceFeeder]))
 			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
