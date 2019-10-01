@@ -81,7 +81,7 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 	for key, _ := range trustedPartnerMeta {
 		assetDetail := strings.Split(key, "_")
 		if assetDetail[0] == veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode {
-			return nil, nerrors.ErrInternal{Message: "the issuing and distribution account for asset code to specified already"}
+			return nil, nerrors.ErrInternal{Message: fmt.Sprintf("asset code %s has already been used", veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode)}
 		}
 	}
 

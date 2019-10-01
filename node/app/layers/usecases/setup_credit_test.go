@@ -57,7 +57,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 
 		// get trusted partner meta
 		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
-			Return(map[string]string{"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": "R0RXQUZZM1pRSlZEQ0tOVVVOTFZHNTVOVkZCRFpWVlBZRFNGWlIzRURQTEtJWkwzNDRKWkxUNlU="}, nil)
+			Return(map[string]string{"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"))}, nil)
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
@@ -287,7 +287,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
-	t.Run("Error - the issuing and distribution account for asset code to specified already", func(t *testing.T) {
+	t.Run("Error - asset code has already been used", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
@@ -314,14 +314,14 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		// get trusted partner meta
 		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
 			Return(map[string]string{
-				"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": "R0RXQUZZM1pRSlZEQ0tOVVVOTFZHNTVOVkZCRFpWVlBZRFNGWlIzRURQTEtJWkwzNDRKWkxUNlU=",
-				"vTHB_GAHLHUVDHRJ3U3CUOYQRW2TVNRIC6QC6R2MWVCMKYSVYESO5CQMA6PYM": "R0NTWExLS0tFRzdDWE9WVEVTRVI2SDRYNkk0V1lIWkFCVkpNRkxFUU42MlVCTFNMVlhPUEFUSFY="}, nil)
+				"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U")),
+				"vTHB_GAHLHUVDHRJ3U3CUOYQRW2TVNRIC6QC6R2MWVCMKYSVYESO5CQMA6PYM": base64.StdEncoding.EncodeToString([]byte("GCSXLKKKEG7CXOVTESER6H4X6I4WYHZABVJMFLEQN62UBLSLVXOPATHV"))}, nil)
 
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.Nil(t, signedStellarTxXdr)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
-		assert.Equal(t, "the issuing and distribution account for asset code to specified already", err.Error())
+		assert.Equal(t, fmt.Sprintf("asset code %s has already been used", veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode), err.Error())
 	})
 
 }
