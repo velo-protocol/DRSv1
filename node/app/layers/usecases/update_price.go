@@ -6,8 +6,8 @@ import (
 	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
 )
 
-func (useCase *useCase) UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloTx) nerrors.NodeError {
-	return nil
+func (useCase *useCase) UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
+	return nil, nil
 	//if err := veloTx.VeloOp.Validate(); err != nil {
 	//	return nerrors.ErrInvalidArgument{Message: err.Error()}
 	//}

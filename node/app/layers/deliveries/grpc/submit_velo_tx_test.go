@@ -177,13 +177,14 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			mockedUseCase.EXPECT().
 				UpdatePrice(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
-				Return(nil)
+				Return(pointer.ToString("AAAAA...="), nil)
 
 			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 				SignedVeloTxXdr: veloTxB64,
 			})
 
 			assert.NoError(t, err)
+			assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
 			assert.Equal(t, constants.ReplyPriceUpdateSuccess, reply.Message)
 		})
 
@@ -204,7 +205,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			mockedUseCase.EXPECT().
 				UpdatePrice(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
-				Return(nerrors.ErrInternal{Message: "some error has occurred"})
+				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 				SignedVeloTxXdr: veloTxB64,
