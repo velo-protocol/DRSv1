@@ -243,7 +243,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
 	})
 
-	t.Run("Error - can't decode trusted partner data", func(t *testing.T) {
+	t.Run("Error - can't decode trusted partner meta address", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
