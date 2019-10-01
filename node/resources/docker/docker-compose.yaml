@@ -5,7 +5,7 @@ services:
     build:
       context: ../../..
       dockerfile: node/Dockerfile
-#      target: development
+      target: development
     container_name: cen-node
     command:  sh -c 'cd node/app && fresh'
     volumes:
