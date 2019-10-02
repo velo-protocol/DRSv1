@@ -14,20 +14,20 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/errors"
 )
 
-func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
+func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
 	if err := veloTx.VeloOp.Validate(); err != nil {
 		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
 	}
 
 	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
-	whiteListOp := veloTx.TxEnvelope().VeloTx.VeloOp.Body.WhiteListOp
+	whitelistOp := veloTx.TxEnvelope().VeloTx.VeloOp.Body.WhitelistOp
 
 	// additional parameter validation
-	if whiteListOp.Role == vxdr.RolePriceFeeder && whiteListOp.Currency == "" {
+	if whitelistOp.Role == vxdr.RolePriceFeeder && whitelistOp.Currency == "" {
 		return nil, nerrors.ErrInvalidArgument{
 			Message: constants.ErrPriceFeederCurrencyMustNotBlank,
 		}
-	} else if whiteListOp.Role != vxdr.RolePriceFeeder && whiteListOp.Currency != "" {
+	} else if whitelistOp.Role != vxdr.RolePriceFeeder && whitelistOp.Currency != "" {
 		return nil, nerrors.ErrInvalidArgument{
 			Message: constants.ErrCurrencyMustBeBlank,
 		}
@@ -81,7 +81,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 	// validate tx sender role, in which must be regulator
 	if _, ok := regulatorList[txSenderKeyPair.Address()]; !ok {
 		return nil, nerrors.ErrPermissionDenied{
-			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhiteList),
+			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhitelist),
 		}
 	}
 
@@ -93,12 +93,12 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 		}
 	}
 
-	switch whiteListOp.Role {
+	switch whitelistOp.Role {
 	case vxdr.RoleRegulator:
 		// duplication check
-		if _, ok := regulatorList[whiteListOp.Address.Address()]; ok {
+		if _, ok := regulatorList[whitelistOp.Address.Address()]; ok {
 			return nil, nerrors.ErrAlreadyExists{
-				Message: fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, whiteListOp.Address.Address(), vxdr.RoleMap[whiteListOp.Role]),
+				Message: fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, whitelistOp.Address.Address(), vxdr.RoleMap[whitelistOp.Role]),
 			}
 		}
 
@@ -123,7 +123,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				},
 				// Add the new address to the RegulatorList account
 				&txnbuild.ManageData{
-					Name:  whiteListOp.Address.Address(),
+					Name:  whitelistOp.Address.Address(),
 					Value: []byte("true"),
 					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.RegulatorListAddress,
@@ -143,9 +143,9 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 
 	case vxdr.RoleTrustedPartner:
 		// duplication check
-		if _, ok := trustedPartnerList[whiteListOp.Address.Address()]; ok {
+		if _, ok := trustedPartnerList[whitelistOp.Address.Address()]; ok {
 			return nil, nerrors.ErrAlreadyExists{
-				Message: fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, whiteListOp.Address.Address(), vxdr.RoleMap[whiteListOp.Role]),
+				Message: fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, whitelistOp.Address.Address(), vxdr.RoleMap[whitelistOp.Role]),
 			}
 		}
 
@@ -177,7 +177,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				},
 				// Add the new address to the TrustedPartnerList account
 				&txnbuild.ManageData{
-					Name:  whiteListOp.Address.Address(),
+					Name:  whitelistOp.Address.Address(),
 					Value: []byte(trustedPartnerMetaKp.Address()),
 					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.TrustedPartnerListAddress,
@@ -217,9 +217,9 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 
 	case vxdr.RolePriceFeeder:
 		// duplication check
-		if _, ok := priceFeederList[whiteListOp.Address.Address()]; ok {
+		if _, ok := priceFeederList[whitelistOp.Address.Address()]; ok {
 			return nil, nerrors.ErrAlreadyExists{
-				Message: fmt.Sprintf(constants.ErrWhiteListAlreadyWhiteListed, whiteListOp.Address.Address(), vxdr.RoleMap[whiteListOp.Role]),
+				Message: fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, whitelistOp.Address.Address(), vxdr.RoleMap[whitelistOp.Role]),
 			}
 		}
 
@@ -229,7 +229,7 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				// Regulator must pay tx fee to DRS
 				&txnbuild.Payment{
 					Destination:   drsKp.Address(),
-					Amount:        "1",
+					Amount:        "1.5",
 					Asset:         txnbuild.NativeAsset{},
 					SourceAccount: txSenderAccount,
 				},
@@ -244,8 +244,8 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				},
 				// DRS pay to PriceAccount for account reserve
 				&txnbuild.Payment{
-					Destination: drsAccountData.VeloPriceAddress(whiteListOp.Currency),
-					Amount:      "0.5",
+					Destination: drsAccountData.VeloPriceAddress(whitelistOp.Currency),
+					Amount:      "1",
 					Asset:       txnbuild.NativeAsset{},
 					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsKp.Address(),
@@ -253,8 +253,8 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				},
 				// Add the new address to the PriceFeederList account
 				&txnbuild.ManageData{
-					Name:  whiteListOp.Address.Address(),
-					Value: []byte(whiteListOp.Currency),
+					Name:  whitelistOp.Address.Address(),
+					Value: []byte(whitelistOp.Currency),
 					SourceAccount: &txnbuild.SimpleAccount{
 						AccountID: drsAccountData.PriceFeederListAddress,
 					},
@@ -262,11 +262,11 @@ func (useCase *useCase) CreateWhiteList(ctx context.Context, veloTx *vtxnbuild.V
 				// Add signer to PriceAccount
 				&txnbuild.SetOptions{
 					Signer: &txnbuild.Signer{
-						Address: whiteListOp.Address.Address(),
+						Address: whitelistOp.Address.Address(),
 						Weight:  txnbuild.Threshold(1),
 					},
 					SourceAccount: &txnbuild.SimpleAccount{
-						AccountID: drsAccountData.VeloPriceAddress(whiteListOp.Currency),
+						AccountID: drsAccountData.VeloPriceAddress(whitelistOp.Currency),
 					},
 				},
 			},

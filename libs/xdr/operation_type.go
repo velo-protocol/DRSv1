@@ -7,19 +7,19 @@ import (
 type OperationType int32
 
 const (
-	OperationTypeWhiteList   OperationType = 0
+	OperationTypeWhitelist   OperationType = 0
 	OperationTypeSetupCredit OperationType = 1
 	OperationTypePriceUpdate OperationType = 2
 )
 
 type OperationBody struct {
 	Type          OperationType
-	WhiteListOp   *WhiteListOp
+	WhitelistOp   *WhitelistOp
 	SetupCreditOp *SetupCreditOp
 	PriceUpdateOp *PriceUpdateOp
 }
 
-type WhiteListOp struct {
+type WhitelistOp struct {
 	Address  xdr.AccountId
 	Role     Role
 	Currency Currency

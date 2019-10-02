@@ -24,7 +24,7 @@ func (useCase *useCase) UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloT
 	//	return nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
 	//}
 	//
-	//priceFeederEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhiteListFilter{
+	//priceFeederEntity, err := useCase.WhitelistRepo.FindOneWhitelist(entities.WhitelistFilter{
 	//	StellarPublicKey: pointer.ToString(txSenderPublicKey),
 	//	RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
 	//})

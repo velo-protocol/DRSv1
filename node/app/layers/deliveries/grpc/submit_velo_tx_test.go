@@ -41,7 +41,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &vtxnbuild.WhiteList{},
+			VeloOp: &vtxnbuild.Whitelist{},
 		}).BuildSignEncode(kp1)
 
 		_, err := (&handler{}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
@@ -51,7 +51,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("must be able to handle white list operation", func(t *testing.T) {
+	t.Run("must be able to handle whitelist operation", func(t *testing.T) {
 		t.Run("success", func(t *testing.T) {
 			mockedUseCase, finish := newMockedUseCase()
 			defer finish()
@@ -60,14 +60,14 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: publicKey1,
 				},
-				VeloOp: &vtxnbuild.WhiteList{
+				VeloOp: &vtxnbuild.Whitelist{
 					Address: publicKey2,
 					Role:    string(vxdr.RoleTrustedPartner),
 				},
 			}).BuildSignEncode(kp1)
 
 			mockedUseCase.EXPECT().
-				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				CreateWhitelist(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(pointer.ToString("AAAAA...="), nil)
 
 			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
@@ -76,7 +76,7 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
-			assert.Equal(t, fmt.Sprintf(constants.ReplyWhiteListSuccess, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]), reply.Message)
+			assert.Equal(t, fmt.Sprintf(constants.ReplyWhitelistSuccess, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]), reply.Message)
 		})
 		t.Run("error, use case return error", func(t *testing.T) {
 			mockedUseCase, finish := newMockedUseCase()
@@ -86,14 +86,14 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 				SourceAccount: &txnbuild.SimpleAccount{
 					AccountID: publicKey1,
 				},
-				VeloOp: &vtxnbuild.WhiteList{
+				VeloOp: &vtxnbuild.Whitelist{
 					Address: publicKey2,
 					Role:    string(vxdr.RoleTrustedPartner),
 				},
 			}).BuildSignEncode(kp1)
 
 			mockedUseCase.EXPECT().
-				CreateWhiteList(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				CreateWhitelist(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
