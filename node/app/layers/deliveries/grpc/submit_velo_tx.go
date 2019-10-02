@@ -19,8 +19,8 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 	}
 
 	switch veloTx.TxEnvelope().VeloTx.VeloOp.Body.Type {
-	case vxdr.OperationTypeWhiteList:
-		return handler.handleWhiteListOperation(ctx, &veloTx)
+	case vxdr.OperationTypeWhitelist:
+		return handler.handleWhitelistOperation(ctx, &veloTx)
 	case vxdr.OperationTypeSetupCredit:
 		return handler.handleSetupCreditOperation(ctx, &veloTx)
 	case vxdr.OperationTypePriceUpdate:
@@ -33,22 +33,22 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 
 }
 
-func (handler *handler) handleWhiteListOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
-	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.WhiteListOp
+func (handler *handler) handleWhitelistOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
+	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.WhitelistOp
 	if op == nil {
 		return nil, nerrors.ErrInvalidArgument{
-			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, constants.VeloOpWhiteList),
+			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, constants.VeloOpWhitelist),
 		}.GRPCError()
 	}
 
-	signedStellarTxXdr, err := handler.UseCase.CreateWhiteList(ctx, veloTx)
+	signedStellarTxXdr, err := handler.UseCase.CreateWhitelist(ctx, veloTx)
 	if err != nil {
 		return nil, err.GRPCError()
 	}
 
 	return &spec.VeloTxReply{
 		SignedStellarTxXdr: *signedStellarTxXdr,
-		Message:            fmt.Sprintf(constants.ReplyWhiteListSuccess, op.Address.Address(), vxdr.RoleMap[op.Role]),
+		Message:            fmt.Sprintf(constants.ReplyWhitelistSuccess, op.Address.Address(), vxdr.RoleMap[op.Role]),
 	}, nil
 }
 

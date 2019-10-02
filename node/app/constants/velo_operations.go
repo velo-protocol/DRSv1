@@ -1,7 +1,7 @@
 package constants
 
 const (
-	VeloOpWhiteList   = "WhiteList"
+	VeloOpWhitelist   = "Whitelist"
 	VeloOpSetupCredit = "SetupCredit"
 	VeloOpPriceUpdate = "PriceUpdate"
 )

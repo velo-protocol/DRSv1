@@ -13,12 +13,12 @@ func NewOperationBody(opType OperationType, value interface{}) (OperationBody, e
 	opBody.Type = opType
 
 	switch opType {
-	case OperationTypeWhiteList:
-		tv, ok := value.(WhiteListOp)
+	case OperationTypeWhitelist:
+		tv, ok := value.(WhitelistOp)
 		if !ok {
-			return OperationBody{}, fmt.Errorf("invalid value, must be WhiteListOp")
+			return OperationBody{}, fmt.Errorf("invalid value, must be WhitelistOp")
 		}
-		opBody.WhiteListOp = &tv
+		opBody.WhitelistOp = &tv
 	case OperationTypeSetupCredit:
 		tv, ok := value.(SetupCreditOp)
 		if !ok {

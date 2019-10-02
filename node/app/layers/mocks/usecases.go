@@ -50,19 +50,19 @@ func (mr *MockUseCaseMockRecorder) SetupCredit(ctx, veloTx interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockUseCase)(nil).SetupCredit), ctx, veloTx)
 }
 
-// CreateWhiteList mocks base method
-func (m *MockUseCase) CreateWhiteList(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
+// CreateWhitelist mocks base method
+func (m *MockUseCase) CreateWhitelist(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateWhiteList", ctx, veloTx)
+	ret := m.ctrl.Call(m, "CreateWhitelist", ctx, veloTx)
 	ret0, _ := ret[0].(*string)
 	ret1, _ := ret[1].(errors.NodeError)
 	return ret0, ret1
 }
 
-// CreateWhiteList indicates an expected call of CreateWhiteList
-func (mr *MockUseCaseMockRecorder) CreateWhiteList(ctx, veloTx interface{}) *gomock.Call {
+// CreateWhitelist indicates an expected call of CreateWhitelist
+func (mr *MockUseCaseMockRecorder) CreateWhitelist(ctx, veloTx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhiteList", reflect.TypeOf((*MockUseCase)(nil).CreateWhiteList), ctx, veloTx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhitelist", reflect.TypeOf((*MockUseCase)(nil).CreateWhitelist), ctx, veloTx)
 }
 
 // UpdatePrice mocks base method

@@ -17,16 +17,16 @@ func main() {
 	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
 }
 
-func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole vxdr.Role, currency string, secretKey *keypair.Full) string {
-	fmt.Println("##### Start Build WhiteList Operation #####")
+func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whitelistRole vxdr.Role, currency string, secretKey *keypair.Full) string {
+	fmt.Println("##### Start Build Whitelist Operation #####")
 
 	veloTxB64, err := (&vtxnbuild.VeloTx{
 		SourceAccount: &txnbuild.SimpleAccount{
 			AccountID: txSourceAccount,
 		},
-		VeloOp: &vtxnbuild.WhiteList{
+		VeloOp: &vtxnbuild.Whitelist{
 			Address:  opSourceAccount,
-			Role:     string(whiteListRole),
+			Role:     string(whitelistRole),
 			Currency: currency,
 		},
 	}).BuildSignEncode(secretKey)
@@ -36,7 +36,7 @@ func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whiteListRole 
 	}
 	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
 
-	fmt.Println("##### End Build WhiteList Operation #####")
+	fmt.Println("##### End Build Whitelist Operation #####")
 
 	return veloTxB64
 }

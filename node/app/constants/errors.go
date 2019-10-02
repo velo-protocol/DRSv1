@@ -1,7 +1,7 @@
 package constants
 
 var (
-	ErrCreateWhiteList          = "can't create white list"
+	ErrCreateWhitelist          = "can't create whitelist"
 	ErrUnauthorized             = "unauthorized to perform an action"
 	ErrRoleNotFound             = "role specified does not exists"
 	ErrBadSignature             = "bad signature"
@@ -11,7 +11,7 @@ var (
 
 	ErrSignatureNotMatchSourceAccount = "the signature and source account does not match"
 	ErrFormatSignerNotHavePermission  = "the signer is not found or does not have sufficient permission to perform %s"
-	ErrWhiteListAlreadyWhiteListed    = "the address %s has already been whitelisted for the role %s"
+	ErrWhitelistAlreadyWhitelisted    = "the address %s has already been whitelisted for the role %s"
 
 	ErrPriceFeederCurrencyMustNotBlank  = "currency must not be blank for price feeder role"
 	ErrCurrencyMustBeBlank              = "currency must be blank for non-price feeder role"

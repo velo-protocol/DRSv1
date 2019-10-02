@@ -13,8 +13,8 @@ type VeloOp interface {
 func operationFromXDR(vXdrOp vxdr.VeloOp) (VeloOp, error) {
 	var newVeloOp VeloOp
 	switch vXdrOp.Body.Type {
-	case vxdr.OperationTypeWhiteList:
-		newVeloOp = &WhiteList{}
+	case vxdr.OperationTypeWhitelist:
+		newVeloOp = &Whitelist{}
 	case vxdr.OperationTypeSetupCredit:
 		newVeloOp = &SetupCredit{}
 	case vxdr.OperationTypePriceUpdate:

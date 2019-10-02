@@ -1,12 +1,12 @@
 package entities
 
-type WhiteList struct {
+type Whitelist struct {
 	ID               string
 	StellarPublicKey string
 	RoleCode         string
 }
 
-type WhiteListFilter struct {
+type WhitelistFilter struct {
 	StellarPublicKey *string
 	RoleCode         *string
 }

@@ -15,7 +15,7 @@ func TestVeloTx_Build(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -25,10 +25,10 @@ func TestVeloTx_Build(t *testing.T) {
 		assert.NoError(t, err)
 
 		// assert data in xdr tx
-		assert.Equal(t, vxdr.OperationTypeWhiteList, veloTx.veloXdrTx.VeloOp.Body.Type)
+		assert.Equal(t, vxdr.OperationTypeWhitelist, veloTx.veloXdrTx.VeloOp.Body.Type)
 		assert.Equal(t, publicKey1, veloTx.veloXdrTx.SourceAccount.Address())
-		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Address.Address())
-		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Role)
+		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Address.Address())
+		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Role)
 
 		// assert equality of tx in envelope and the velo tx
 		assert.Equal(t, veloTx.veloXdrTx.VeloOp, veloTx.veloXdrEnvelope.VeloTx.VeloOp)
@@ -39,7 +39,7 @@ func TestVeloTx_Build(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -50,10 +50,10 @@ func TestVeloTx_Build(t *testing.T) {
 		assert.NoError(t, err)
 
 		// assert data in xdr tx
-		assert.Equal(t, vxdr.OperationTypeWhiteList, veloTx.veloXdrTx.VeloOp.Body.Type)
+		assert.Equal(t, vxdr.OperationTypeWhitelist, veloTx.veloXdrTx.VeloOp.Body.Type)
 		assert.Equal(t, publicKey1, veloTx.veloXdrTx.SourceAccount.Address())
-		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Address.Address())
-		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Role)
+		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Address.Address())
+		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Role)
 
 		// assert equality of tx in envelope and the velo tx
 		assert.Equal(t, veloTx.veloXdrTx.VeloOp, veloTx.veloXdrEnvelope.VeloTx.VeloOp)
@@ -64,7 +64,7 @@ func TestVeloTx_Build(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -83,7 +83,7 @@ func TestVeloTx_Build(t *testing.T) {
 	t.Run("error, source account cannot be nil", func(t *testing.T) {
 		veloTx := VeloTx{
 			SourceAccount: nil,
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -97,7 +97,7 @@ func TestVeloTx_Build(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: "",
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -111,7 +111,7 @@ func TestVeloTx_Build(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: "BAD_PUBLIC_KY",
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -126,7 +126,7 @@ func TestVeloTx_Build(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    "BAD_ROLE",
 			},
@@ -143,7 +143,7 @@ func TestVeloTx_Sign(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -154,10 +154,10 @@ func TestVeloTx_Sign(t *testing.T) {
 		assert.NoError(t, err)
 
 		// assert data in xdr tx
-		assert.Equal(t, vxdr.OperationTypeWhiteList, veloTx.veloXdrTx.VeloOp.Body.Type)
+		assert.Equal(t, vxdr.OperationTypeWhitelist, veloTx.veloXdrTx.VeloOp.Body.Type)
 		assert.Equal(t, publicKey1, veloTx.veloXdrTx.SourceAccount.Address())
-		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Address.Address())
-		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Role)
+		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Address.Address())
+		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Role)
 
 		// assert data in xdr envelope
 		assert.Len(t, veloTx.veloXdrEnvelope.Signatures, 3)
@@ -178,7 +178,7 @@ func TestVeloTx_BuildSignEncode(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -196,7 +196,7 @@ func TestTransactionFromXDR(t *testing.T) {
 			SourceAccount: &txnbuild.SimpleAccount{
 				AccountID: publicKey1,
 			},
-			VeloOp: &WhiteList{
+			VeloOp: &Whitelist{
 				Address: publicKey2,
 				Role:    string(vxdr.RoleTrustedPartner),
 			},
@@ -206,10 +206,10 @@ func TestTransactionFromXDR(t *testing.T) {
 		assert.NoError(t, err)
 
 		// assert data in xdr tx
-		assert.Equal(t, vxdr.OperationTypeWhiteList, veloTx.veloXdrTx.VeloOp.Body.Type)
+		assert.Equal(t, vxdr.OperationTypeWhitelist, veloTx.veloXdrTx.VeloOp.Body.Type)
 		assert.Equal(t, publicKey1, veloTx.veloXdrTx.SourceAccount.Address())
-		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Address.Address())
-		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhiteListOp.Role)
+		assert.Equal(t, publicKey2, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Address.Address())
+		assert.Equal(t, vxdr.RoleTrustedPartner, veloTx.veloXdrTx.VeloOp.Body.WhitelistOp.Role)
 
 		// assert equality of tx in envelope and the velo tx
 		assert.Equal(t, veloTx.veloXdrTx.VeloOp, veloTx.veloXdrEnvelope.VeloTx.VeloOp)

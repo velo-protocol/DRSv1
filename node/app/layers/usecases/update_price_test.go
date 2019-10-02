@@ -31,12 +31,12 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 	//	_ = veloTx.Build()
 	//	_ = veloTx.Sign(kp1)
 	//
-	//	testHelper.MockWhiteListRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhiteListFilter{
+	//	testHelper.MockWhitelistRepo.EXPECT().
+	//		FindOneWhitelist(entities.WhitelistFilter{
 	//			StellarPublicKey: &publicKey1,
 	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
 	//		}).
-	//		Return(&entities.WhiteList{
+	//		Return(&entities.Whitelist{
 	//			StellarPublicKey: publicKey1,
 	//			RoleCode:         string(vxdr.RolePriceFeeder),
 	//		}, nil)
@@ -108,8 +108,8 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
 	//	defer mockCtrl.Finish()
 	//
-	//	testHelper.MockWhiteListRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhiteListFilter{
+	//	testHelper.MockWhitelistRepo.EXPECT().
+	//		FindOneWhitelist(entities.WhitelistFilter{
 	//			StellarPublicKey: &publicKey1,
 	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
 	//		}).
@@ -129,8 +129,8 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
 	//	defer mockCtrl.Finish()
 	//
-	//	testHelper.MockWhiteListRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhiteListFilter{
+	//	testHelper.MockWhitelistRepo.EXPECT().
+	//		FindOneWhitelist(entities.WhitelistFilter{
 	//			StellarPublicKey: &publicKey1,
 	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
 	//		}).
@@ -153,12 +153,12 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 	//	_ = veloTx.Build()
 	//	_ = veloTx.Sign(kp1)
 	//
-	//	testHelper.MockWhiteListRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhiteListFilter{
+	//	testHelper.MockWhitelistRepo.EXPECT().
+	//		FindOneWhitelist(entities.WhitelistFilter{
 	//			StellarPublicKey: &publicKey1,
 	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
 	//		}).
-	//		Return(&entities.WhiteList{
+	//		Return(&entities.Whitelist{
 	//			StellarPublicKey: publicKey1,
 	//			RoleCode:         string(vxdr.RolePriceFeeder),
 	//		}, nil)
