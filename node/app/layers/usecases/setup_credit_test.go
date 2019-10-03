@@ -156,7 +156,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.Nil(t, signedStellarTxXdr)
-		assert.Contains(t, err.Error(), constants.ErrGetDrsAccount)
+		assert.Contains(t, err.Error(), constants.ErrGetDrsAccountData)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 
@@ -187,7 +187,7 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.Error(t, err)
 		assert.Nil(t, signedStellarTxXdr)
-		assert.Contains(t, err.Error(), constants.ErrGetTrustedPartnerListDataAccount)
+		assert.Contains(t, err.Error(), constants.ErrGetTrustedPartnerListAccountData)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 

@@ -22,6 +22,7 @@ const (
 var (
 	KPFirstRegulator, _ = vconvert.SecretKeyToKeyPair(SecretKeyFirstRegulator)
 	KPTP, _             = vconvert.SecretKeyToKeyPair(SecretKeyTP)
+	KPPF, _             = vconvert.SecretKeyToKeyPair(SecretKeyPF)
 )
 
 func DecodeB64VeloTx(base64VeloTx string) {

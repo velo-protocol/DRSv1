@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 	"sync"
 )
 
@@ -23,7 +24,7 @@ func (repo *repo) GetAccounts(stellarAddresses ...string) ([]horizon.Account, er
 				if r := recover(); r != nil {
 					err := r.(error)
 					getAccountsResults[i] = getAccountsResult{
-						Error: errors.Wrapf(err, "fail to get account detail of %s", stellarAddress),
+						Error: errors.Wrapf(err, constants.ErrGetAccountDetail, stellarAddress),
 					}
 				}
 				waitGroup.Done()

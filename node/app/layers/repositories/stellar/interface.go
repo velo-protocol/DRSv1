@@ -10,6 +10,7 @@ type Repo interface {
 	GetAccounts(stellarAddresses ...string) ([]horizon.Account, error)
 	GetAccountData(stellarAddress string) (map[string]string, error)
 	GetAccountDecodedData(stellarAddress string) (map[string]string, error)
+	GetAccountDecodedDataByKey(stellarAddress string, key string) (string, error)
 	GetDrsAccountData() (*entities.DrsAccountData, error)
 	SubmitTransaction(txB64 string) (*horizon.TransactionSuccess, error)
 }

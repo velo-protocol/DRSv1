@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestRepo_GetAccountDecodedData(t *testing.T) {
+func TestRepo_GetAccountDecodedDataByKey(t *testing.T) {
 	testhelpers.InitEnv()
 
 	t.Run("success", func(t *testing.T) {
@@ -26,10 +26,10 @@ func TestRepo_GetAccountDecodedData(t *testing.T) {
 				Data:      map[string]string{"key1": "dmFsdWUx"},
 			}, nil)
 
-		decodedData, err := helper.repo.GetAccountDecodedData(testhelpers.PublicKey1)
+		decodedData, err := helper.repo.GetAccountDecodedDataByKey(testhelpers.PublicKey1, "key1")
 
 		assert.NoError(t, err)
-		assert.Equal(t, map[string]string{"key1": "value1"}, decodedData)
+		assert.Equal(t, "value1", decodedData)
 
 		helper.mockedHorizonClient.
 			AssertNumberOfCalls(t, "AccountDetail", 1)
@@ -44,7 +44,7 @@ func TestRepo_GetAccountDecodedData(t *testing.T) {
 			}).
 			Return(horizon.Account{}, errors.New("some error has occurred"))
 
-		_, err := helper.repo.GetAccountData(testhelpers.PublicKey1)
+		_, err := helper.repo.GetAccountDecodedDataByKey(testhelpers.PublicKey1, "key1")
 
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrGetAccountDetail, testhelpers.PublicKey1))
@@ -65,7 +65,7 @@ func TestRepo_GetAccountDecodedData(t *testing.T) {
 				Data:      map[string]string{"key1": "BAD_B64_VALUE"},
 			}, nil)
 
-		_, err := helper.repo.GetAccountDecodedData(testhelpers.PublicKey1)
+		_, err := helper.repo.GetAccountDecodedDataByKey(testhelpers.PublicKey1, "key1")
 
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrToDecodeData, "key1"))

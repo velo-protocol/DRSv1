@@ -57,7 +57,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 	drsAccountData, err := useCase.StellarRepo.GetDrsAccountData()
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrap(err, constants.ErrGetDrsAccount).Error(),
+			Message: errors.Wrap(err, constants.ErrGetDrsAccountData).Error(),
 		}
 	}
 
@@ -73,13 +73,13 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 		}
 	}
 	var (
-		regulatorList      = accounts[0].Data
-		trustedPartnerList = accounts[1].Data
-		priceFeederList    = accounts[2].Data
+		regulatorListData      = accounts[0].Data
+		trustedPartnerListData = accounts[1].Data
+		priceFeederListData    = accounts[2].Data
 	)
 
 	// validate tx sender role, in which must be regulator
-	if _, ok := regulatorList[txSenderKeyPair.Address()]; !ok {
+	if _, ok := regulatorListData[txSenderKeyPair.Address()]; !ok {
 		return nil, nerrors.ErrPermissionDenied{
 			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhitelist),
 		}
@@ -96,7 +96,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 	switch whitelistOp.Role {
 	case vxdr.RoleRegulator:
 		// duplication check
-		if _, ok := regulatorList[whitelistOp.Address.Address()]; ok {
+		if _, ok := regulatorListData[whitelistOp.Address.Address()]; ok {
 			return nil, nerrors.ErrAlreadyExists{
 				Message: fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, whitelistOp.Address.Address(), vxdr.RoleMap[whitelistOp.Role]),
 			}
@@ -131,7 +131,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 				},
 			},
 			Network:    env.NetworkPassphrase,
-			Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes * 60), // seconds
+			Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes),
 		}
 		signedTxXdr, err := tx.BuildSignEncode(drsKp)
 		if err != nil {
@@ -143,7 +143,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 
 	case vxdr.RoleTrustedPartner:
 		// duplication check
-		if _, ok := trustedPartnerList[whitelistOp.Address.Address()]; ok {
+		if _, ok := trustedPartnerListData[whitelistOp.Address.Address()]; ok {
 			return nil, nerrors.ErrAlreadyExists{
 				Message: fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, whitelistOp.Address.Address(), vxdr.RoleMap[whitelistOp.Role]),
 			}
@@ -204,7 +204,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 				},
 			},
 			Network:    env.NetworkPassphrase,
-			Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes * 60), // seconds
+			Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes),
 		}
 
 		signedTxXdr, err := tx.BuildSignEncode(drsKp, trustedPartnerMetaKp)
@@ -217,7 +217,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 
 	case vxdr.RolePriceFeeder:
 		// duplication check
-		if _, ok := priceFeederList[whitelistOp.Address.Address()]; ok {
+		if _, ok := priceFeederListData[whitelistOp.Address.Address()]; ok {
 			return nil, nerrors.ErrAlreadyExists{
 				Message: fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, whitelistOp.Address.Address(), vxdr.RoleMap[whitelistOp.Role]),
 			}
@@ -271,7 +271,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 				},
 			},
 			Network:    env.NetworkPassphrase,
-			Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes * 60), // seconds
+			Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes),
 		}
 		signedTxXdr, err := tx.BuildSignEncode(drsKp)
 		if err != nil {
@@ -283,7 +283,7 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 
 	default:
 		return nil, nerrors.ErrInternal{
-			Message: constants.ErrUnknowRoleSpecified,
+			Message: constants.ErrUnknownRoleSpecified,
 		}
 	}
 
