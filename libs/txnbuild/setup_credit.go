@@ -70,7 +70,7 @@ func (setupCredit *SetupCredit) Validate() error {
 		return errors.New("peggedValue must be greater than zero")
 	}
 
-	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,12}$`, setupCredit.AssetCode); !matched {
+	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,7}$`, setupCredit.AssetCode); !matched {
 		return errors.New("invalid assetCode format")
 	}
 
