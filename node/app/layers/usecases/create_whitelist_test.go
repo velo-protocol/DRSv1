@@ -166,7 +166,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 
 		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
 
-		assert.Contains(t, err.Error(), constants.ErrGetDrsAccount)
+		assert.Contains(t, err.Error(), constants.ErrGetDrsAccountData)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
 	})
 	t.Run("Error - fail to get role list accounts", func(t *testing.T) {

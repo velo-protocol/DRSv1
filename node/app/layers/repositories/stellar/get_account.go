@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 )
 
 func (repo *repo) GetAccount(stellarAddress string) (*horizon.Account, error) {
@@ -11,7 +12,7 @@ func (repo *repo) GetAccount(stellarAddress string) (*horizon.Account, error) {
 		AccountID: stellarAddress,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "fail to get account detail of %s", stellarAddress)
+		return nil, errors.Wrapf(err, constants.ErrGetAccountDetail, stellarAddress)
 	}
 
 	return &account, nil

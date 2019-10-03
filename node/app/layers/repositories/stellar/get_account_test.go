@@ -6,6 +6,7 @@ import (
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
+	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/testhelpers"
 	"testing"
 )
@@ -44,7 +45,7 @@ func TestRepo_GetAccount(t *testing.T) {
 		_, err := helper.repo.GetAccount(testhelpers.PublicKey1)
 
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), fmt.Sprintf("fail to get account detail of %s", testhelpers.PublicKey1))
+		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrGetAccountDetail, testhelpers.PublicKey1))
 
 		helper.mockedHorizonClient.
 			AssertNumberOfCalls(t, "AccountDetail", 1)

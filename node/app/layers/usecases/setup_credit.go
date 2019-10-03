@@ -50,14 +50,14 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 	}
 
 	// validate trusted partner role
-	trustedPartnerList, err := useCase.StellarRepo.GetAccountData(drsAccountData.TrustedPartnerListAddress)
+	trustedPartnerListData, err := useCase.StellarRepo.GetAccountData(drsAccountData.TrustedPartnerListAddress)
 	if err != nil {
 		return nil, nerrors.ErrInternal{
-			Message: errors.Wrap(err, constants.ErrGetTrustedPartnerListDataAccount).Error(),
+			Message: errors.Wrap(err, constants.ErrGetTrustedPartnerListAccountData).Error(),
 		}
 	}
 
-	trustedPartnerMetaEncodedAddress, ok := trustedPartnerList[txSenderKeyPair.Address()]
+	trustedPartnerMetaEncodedAddress, ok := trustedPartnerListData[txSenderKeyPair.Address()]
 	if !ok {
 		return nil, nerrors.ErrPermissionDenied{
 			Message: fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpSetupCredit),
@@ -227,7 +227,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 			},
 		},
 		Network:    env.NetworkPassphrase,
-		Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes * 60), // seconds
+		Timebounds: txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes),
 	}
 
 	signedTxXdr, err := tx.BuildSignEncode(drsKp, distributorKp, issuerKp)

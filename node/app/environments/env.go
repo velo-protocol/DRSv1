@@ -24,7 +24,7 @@ func Init() {
 	VeloIssuerPublicKey = requireEnv("VELO_ISSUER_PUBLIC_KEY")
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
 	HorizonURL = requireEnv("HORIZON_URL")
-	StellarTxTimeBoundInMinutes = 15
+	StellarTxTimeBoundInMinutes = 15 * 60 // 15 minute * 60 seconds
 
 	Port = "8080"
 	EnableReflectionAPI = true

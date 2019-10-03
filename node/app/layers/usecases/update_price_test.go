@@ -1,179 +1,271 @@
 package usecases_test
 
 import (
+	"context"
+	"encoding/base64"
+	"fmt"
+	"github.com/pkg/errors"
+	"github.com/stellar/go/protocols/horizon"
+	"github.com/stellar/go/txnbuild"
+	"github.com/stretchr/testify/assert"
+	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/node/app/constants"
+	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
 
 func TestUseCase_UpdatePrice(t *testing.T) {
-	//var (
-	//	kp1, _ = vconvert.SecretKeyToKeyPair(secretKey1)
-	//	kp2, _ = vconvert.SecretKeyToKeyPair(secretKey2)
-	//
-	//	getMockVeloTx = func() *vtxnbuild.VeloTx {
-	//		return &vtxnbuild.VeloTx{
-	//			SourceAccount: &txnbuild.SimpleAccount{
-	//				AccountID: publicKey1,
-	//			},
-	//			VeloOp: &vtxnbuild.PriceUpdate{
-	//				Asset:                       "VELO",
-	//				Currency:                    "THB",
-	//				PriceInCurrencyPerAssetUnit: "1",
-	//			},
-	//		}
-	//	}
-	//)
-	//
-	//t.Run("Happy", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	testHelper.MockWhitelistRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhitelistFilter{
-	//			StellarPublicKey: &publicKey1,
-	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
-	//		}).
-	//		Return(&entities.Whitelist{
-	//			StellarPublicKey: publicKey1,
-	//			RoleCode:         string(vxdr.RolePriceFeeder),
-	//		}, nil)
-	//
-	//	createPriceEntry := &entities.CreatePriceEntry{
-	//		FeederPublicKey:             publicKey1,
-	//		Asset:                       veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp.Asset,
-	//		PriceInCurrencyPerAssetUnit: decimal.New(int64(veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp.PriceInCurrencyPerAssetUnit), -7),
-	//		Currency:                    string(veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp.Currency),
-	//	}
-	//
-	//	testHelper.MockPriceRepo.EXPECT().CreatePriceEntry(createPriceEntry).Return(createPriceEntry, nil)
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//	assert.NoError(t, err)
-	//})
-	//
-	//t.Run("Error - velo op validation fail", func(t *testing.T) {
-	//	useCase, _, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := &vtxnbuild.VeloTx{
-	//		SourceAccount: &txnbuild.SimpleAccount{
-	//			AccountID: publicKey1,
-	//		},
-	//		VeloOp: &vtxnbuild.PriceUpdate{
-	//			Asset:                       "",
-	//			Currency:                    "THB",
-	//			PriceInCurrencyPerAssetUnit: "1",
-	//		},
-	//	}
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//	assert.Error(t, err)
-	//	assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
-	//})
-	//
-	//t.Run("Error - VeloTx missing signer", func(t *testing.T) {
-	//	useCase, _, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign()
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//
-	//	assert.Error(t, err)
-	//	assert.Contains(t, err.Error(), constants.ErrSignatureNotFound)
-	//	assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
-	//})
-	//
-	//t.Run("Error - VeloTx wrong signer", func(t *testing.T) {
-	//	useCase, _, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp2)
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//
-	//	assert.Error(t, err)
-	//	assert.Contains(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
-	//	assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
-	//})
-	//
-	//t.Run("Error - can't query on whitelist table", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	testHelper.MockWhitelistRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhitelistFilter{
-	//			StellarPublicKey: &publicKey1,
-	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
-	//		}).
-	//		Return(nil, errors.New(constants.ErrToGetDataFromDatabase))
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//	assert.Error(t, err)
-	//	assert.Contains(t, err.Error(), constants.ErrToGetDataFromDatabase)
-	//	assert.IsType(t, nerrors.ErrInternal{}, err)
-	//})
-	//
-	//t.Run("Error - this user has no permission", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	testHelper.MockWhitelistRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhitelistFilter{
-	//			StellarPublicKey: &publicKey1,
-	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
-	//		}).
-	//		Return(nil, nil)
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//	assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpPriceUpdate))
-	//	assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
-	//})
-	//
-	//t.Run("Error - fail to update price", func(t *testing.T) {
-	//	useCase, testHelper, mockCtrl := initUseCaseTest(t)
-	//	defer mockCtrl.Finish()
-	//
-	//	veloTx := getMockVeloTx()
-	//	_ = veloTx.Build()
-	//	_ = veloTx.Sign(kp1)
-	//
-	//	testHelper.MockWhitelistRepo.EXPECT().
-	//		FindOneWhitelist(entities.WhitelistFilter{
-	//			StellarPublicKey: &publicKey1,
-	//			RoleCode:         pointer.ToString(string(vxdr.RolePriceFeeder)),
-	//		}).
-	//		Return(&entities.Whitelist{
-	//			StellarPublicKey: publicKey1,
-	//			RoleCode:         string(vxdr.RolePriceFeeder),
-	//		}, nil)
-	//
-	//	createPriceEntry := &entities.CreatePriceEntry{
-	//		FeederPublicKey:             publicKey1,
-	//		Asset:                       veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp.Asset,
-	//		PriceInCurrencyPerAssetUnit: decimal.New(int64(veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp.PriceInCurrencyPerAssetUnit), -7),
-	//		Currency:                    string(veloTx.TxEnvelope().VeloTx.VeloOp.Body.PriceUpdateOp.Currency),
-	//	}
-	//
-	//	testHelper.MockPriceRepo.EXPECT().CreatePriceEntry(createPriceEntry).Return(nil, errors.New("some error has occurred"))
-	//
-	//	err := useCase.UpdatePrice(context.Background(), veloTx)
-	//	assert.Error(t, err)
-	//	assert.IsType(t, nerrors.ErrInternal{}, err)
-	//})
+	t.Run("Success", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1.5",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetAccountData(drsAccountDataEnity.PriceFeederListAddress).
+			Return(map[string]string{
+				publicKey1: base64.StdEncoding.EncodeToString([]byte("THB")),
+			}, nil)
+
+		signedTxXdr, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, signedTxXdr)
+	})
+	t.Run("Error - velo op validation fail", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1",
+			},
+		}
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+		assert.Error(t, err)
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
+	})
+
+	t.Run("Error - VeloTx missing signer", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign()
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), constants.ErrSignatureNotFound)
+		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
+	})
+
+	t.Run("Error - VeloTx wrong signer", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp2)
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), constants.ErrSignatureNotMatchSourceAccount)
+		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
+	})
+	t.Run("Error - tx sender account not found", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1.5",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(nil, errors.New("some error has occurred"))
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.IsType(t, nerrors.ErrNotFound{}, err)
+	})
+
+	t.Run("Error - fail to get drs account data", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1.5",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(nil, errors.New("some error has occurred"))
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.IsType(t, nerrors.ErrInternal{}, err)
+		assert.Contains(t, err.Error(), constants.ErrGetDrsAccountData)
+	})
+	t.Run("Error - fail to get data of price feeder list account", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1.5",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetAccountData(drsAccountDataEnity.PriceFeederListAddress).
+			Return(nil, errors.New("some error has occurred"))
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+		assert.IsType(t, nerrors.ErrInternal{}, err)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceFeederListAccountData)
+	})
+	t.Run("Error - tx sender has no permission to perform price update", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1.5",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetAccountData(drsAccountDataEnity.PriceFeederListAddress).
+			Return(map[string]string{}, nil)
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.EqualError(t, err, fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpPriceUpdate))
+		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
+	})
+	t.Run("Error - currency must match with the registered currency", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.PriceUpdate{
+				Asset:                       "VELO",
+				Currency:                    "THB",
+				PriceInCurrencyPerAssetUnit: "1.5",
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{AccountID: publicKey1, Sequence: "1"}, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+		helper.mockStellarRepo.EXPECT().
+			GetAccountData(drsAccountDataEnity.PriceFeederListAddress).
+			Return(map[string]string{
+				publicKey1: base64.StdEncoding.EncodeToString([]byte("USD")),
+			}, nil)
+
+		_, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+
+		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
+		assert.Contains(t, err.Error(), constants.ErrCurrencyMustMatchWithRegisteredCurrency)
+	})
 }

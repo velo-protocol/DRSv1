@@ -98,6 +98,21 @@ func (mr *MockStellarRepoMockRecorder) GetAccountDecodedData(stellarAddress inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedData", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedData), stellarAddress)
 }
 
+// GetAccountDecodedDataByKey mocks base method
+func (m *MockStellarRepo) GetAccountDecodedDataByKey(stellarAddress, key string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccountDecodedDataByKey", stellarAddress, key)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAccountDecodedDataByKey indicates an expected call of GetAccountDecodedDataByKey
+func (mr *MockStellarRepoMockRecorder) GetAccountDecodedDataByKey(stellarAddress, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedDataByKey", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedDataByKey), stellarAddress, key)
+}
+
 // GetDrsAccountData mocks base method
 func (m *MockStellarRepo) GetDrsAccountData() (*entities.DrsAccountData, error) {
 	m.ctrl.T.Helper()
