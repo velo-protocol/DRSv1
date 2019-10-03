@@ -123,7 +123,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "1.00",
-			AssetCode:      "1234567890XXX",
+			AssetCode:      "12345678",
 		}).Validate()
 
 		assert.Errorf(t, err, "invalid format of asset name")
