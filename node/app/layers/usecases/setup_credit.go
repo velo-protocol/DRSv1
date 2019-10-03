@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/stellar/go/amount"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
@@ -140,7 +139,7 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 					AccountID: issuerKp.Address(),
 				},
 				Name:  "peggedValue",
-				Value: []byte(amount.String(setupCreditOp.PeggedValue)),
+				Value: []byte(fmt.Sprintf("%d", setupCreditOp.PeggedValue)),
 			},
 			&txnbuild.ManageData{
 				SourceAccount: &txnbuild.SimpleAccount{
