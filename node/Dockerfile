@@ -22,7 +22,7 @@ RUN go get github.com/pilu/fresh
 
 # Install go tool for convert go test output to junit xml
 RUN go get -u github.com/jstemmer/go-junit-report &&\
-    go get github.com/axw/gocov &&\
+    go get github.com/axw/gocov/gocov &&\
     go get github.com/AlekSi/gocov-xml
 
 # Install wait-for
