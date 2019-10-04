@@ -78,9 +78,5 @@ func (setupCredit *SetupCredit) Validate() error {
 		return errors.Errorf("peggedCurrency %s does not exist", setupCredit.PeggedCurrency)
 	}
 
-	if !vxdr.Asset(setupCredit.AssetCode).IsValid() {
-		return errors.Errorf("assetCode %s does not exist", setupCredit.AssetCode)
-	}
-
 	return nil
 }

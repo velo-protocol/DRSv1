@@ -12,14 +12,14 @@ func TestSetUpCredit_BuildXDR(t *testing.T) {
 		veloXdrOp, err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "1.00",
-			AssetCode:      "VELO",
+			AssetCode:      "vTHB",
 		}).BuildXDR()
 
 		assert.NoError(t, err)
 		assert.Equal(t, vxdr.OperationTypeSetupCredit, veloXdrOp.Body.Type)
 		assert.Equal(t, "THB", veloXdrOp.Body.SetupCreditOp.PeggedCurrency)
 		assert.Equal(t, xdr.Int64(10000000), veloXdrOp.Body.SetupCreditOp.PeggedValue)
-		assert.Equal(t, "VELO", veloXdrOp.Body.SetupCreditOp.AssetCode)
+		assert.Equal(t, "vTHB", veloXdrOp.Body.SetupCreditOp.AssetCode)
 	})
 	t.Run("error, validation fail", func(t *testing.T) {
 		_, err := (&SetupCredit{
@@ -39,7 +39,7 @@ func TestSetUpCredit_FromXDR(t *testing.T) {
 				SetupCreditOp: &vxdr.SetupCreditOp{
 					PeggedCurrency: "THB",
 					PeggedValue:    xdr.Int64(10000000),
-					AssetCode:      "VELO",
+					AssetCode:      "vTHB",
 				},
 			},
 		}
@@ -50,7 +50,7 @@ func TestSetUpCredit_FromXDR(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "THB", newVeloSetupCreditOp.PeggedCurrency)
 		assert.Equal(t, "1.0000000", newVeloSetupCreditOp.PeggedValue)
-		assert.Equal(t, "VELO", newVeloSetupCreditOp.AssetCode)
+		assert.Equal(t, "vTHB", newVeloSetupCreditOp.AssetCode)
 	})
 	t.Run("error, empty SetupCreditOp", func(t *testing.T) {
 		veloXdrOp := vxdr.VeloOp{
@@ -69,7 +69,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "1.00",
-			AssetCode:      "VELO",
+			AssetCode:      "vTHB",
 		}).Validate()
 
 		assert.NoError(t, err)
@@ -87,7 +87,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "",
-			AssetCode:      "VELO",
+			AssetCode:      "vTHB",
 		}).Validate()
 
 		assert.Error(t, err, "peggedValue parameter cannot be blank")
@@ -96,7 +96,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "",
 			PeggedValue:    "1.00",
-			AssetCode:      "VELO",
+			AssetCode:      "vTHB",
 		}).Validate()
 
 		assert.Error(t, err, "peggedCurrency parameter cannot be blank")
@@ -105,7 +105,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "1.0000XXX",
-			AssetCode:      "VELO",
+			AssetCode:      "vTHB",
 		}).Validate()
 
 		assert.Error(t, err, "peggedValue parameter is not a number")
@@ -114,7 +114,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "-1.000",
-			AssetCode:      "VELO",
+			AssetCode:      "vTHB",
 		}).Validate()
 
 		assert.Error(t, err, "peggedValue must be greater than zero")
@@ -132,7 +132,7 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "THB",
 			PeggedValue:    "1.00",
-			AssetCode:      "_VELO",
+			AssetCode:      "_vTHB",
 		}).Validate()
 
 		assert.Error(t, err, "invalid format of asset name")
@@ -150,19 +150,9 @@ func TestSetUpCredit_Validate(t *testing.T) {
 		err := (&SetupCredit{
 			PeggedCurrency: "_THB",
 			PeggedValue:    "1.00",
-			AssetCode:      "VELO",
-		}).Validate()
-
-		assert.Error(t, err, "invalid format of pegged currency")
-	})
-	t.Run("error, asset is not VELO", func(t *testing.T) {
-		err := (&SetupCredit{
-			PeggedCurrency: "THB",
-			PeggedValue:    "1.00",
 			AssetCode:      "vTHB",
 		}).Validate()
 
-		assert.Error(t, err)
-		assert.Errorf(t, err, "assetCode %s does not exist", "vTHB")
+		assert.Error(t, err, "invalid format of pegged currency")
 	})
 }
