@@ -107,7 +107,6 @@ pipeline {
         stage('Build and Push to Registry') {
             when {
                 anyOf {
-                    branch 'feature/pipeline';
                     branch 'develop';
                     branch 'release/*';
                     branch 'master'
@@ -131,9 +130,7 @@ pipeline {
             parallel {
                 stage ('Deploy to Develop Environment') {
                     when {
-                        anyOf {
                             branch 'develop'
-                        }
                     }
                     steps {
                         withCredentials([sshUserPrivateKey(credentialsId: '7a468a86-b55c-4bc2-a0de-e3f9e77568be', usernameVariable: 'ec2user', keyFileVariable: 'ec2keyfile')]) {
