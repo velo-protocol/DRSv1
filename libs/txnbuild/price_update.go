@@ -73,5 +73,9 @@ func (priceUpdate *PriceUpdate) Validate() error {
 		return errors.Errorf("the currency %s does not exist", priceUpdate.Currency)
 	}
 
+	if !vxdr.Asset(priceUpdate.Asset).IsValid() {
+		return errors.Errorf("asset %s does not exist", priceUpdate.Asset)
+	}
+
 	return nil
 }

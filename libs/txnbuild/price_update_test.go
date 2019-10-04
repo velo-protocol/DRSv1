@@ -129,4 +129,14 @@ func TestPriceUpdate_Validate(t *testing.T) {
 
 		assert.Errorf(t, err, "the currency JPY does not exist")
 	})
+	t.Run("error, invalid asset", func(t *testing.T) {
+		err := (&PriceUpdate{
+			Asset:                       "vTHB",
+			Currency:                    "THB",
+			PriceInCurrencyPerAssetUnit: "0.5",
+		}).Validate()
+
+		assert.Error(t, err)
+		assert.Errorf(t, err, "asset %s does not exist", "vTHB")
+	})
 }
