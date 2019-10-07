@@ -18,11 +18,11 @@ func main() {
 
 	client.Init()
 
-	whiteListRequest := client2.WhiteListRequest{
+	whiteListRequest := client2.WhitelistRequest{
 		Address: "GBN4XRS4SGWOKAFOBTZ4JNZH7F3IJ3JUVDAFWD3ACES3KORW6QDAKGWA",
 		Role:    vxdr.RoleTrustedPartner,
 	}
-	_, err := client.WhiteList(whiteListRequest)
+	_, err := client.Whitelist(whiteListRequest)
 
 	//setupCreditRequest := vclient.SetupCreditRequest{
 	//	PeggedCurrency: "SGD",

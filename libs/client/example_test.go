@@ -15,7 +15,7 @@ func Example() {
 		_ = client.Close()
 	}()
 
-	txResult, err := client.WhiteList(context.Background(), vtxnbuild.WhiteList{
+	txResult, err := client.Whitelist(context.Background(), vtxnbuild.Whitelist{
 		Address:  "GC5F4E7IKMDFNOL7Z5WDHC42LBLLQL2UFY6KQALO2RRHC5EMJJRECPI3",
 		Role:     "PRICE_FEEDER",
 		Currency: "USD",

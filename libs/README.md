@@ -32,7 +32,7 @@ func main() {
         SourceAccount: &txnbuild.SimpleAccount{
             AccountID: "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73",
         },
-        VeloOp: &vtxnbuild.WhiteList{
+        VeloOp: &vtxnbuild.Whitelist{
             Address: "GC2ROYZQH5FTVEPQZF7CAB32SCJC7DWVKILDUAT5BCU5O7HEI7HFUB25",
             Role:    string(vxdr.RoleTrustedPartner),
         },
