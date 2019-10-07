@@ -25,7 +25,7 @@ type Client struct {
 
 type ClientInterface interface {
 	Close() error
-	WhiteList(ctx context.Context, veloOp vtxnbuild.WhiteList) (*horizon.TransactionSuccess, error)
+	Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (*horizon.TransactionSuccess, error)
 	SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCredit) (*horizon.TransactionSuccess, error)
 	PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpdate) (*horizon.TransactionSuccess, error)
 }
@@ -84,7 +84,7 @@ func (client *Client) Close() (err error) {
 	return client.grpcConnection.Close()
 }
 
-func (client *Client) WhiteList(ctx context.Context, veloOp vtxnbuild.WhiteList) (*horizon.TransactionSuccess, error) {
+func (client *Client) Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (*horizon.TransactionSuccess, error) {
 	return client.executeVeloTx(ctx, &veloOp)
 }
 

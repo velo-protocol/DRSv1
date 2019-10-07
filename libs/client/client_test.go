@@ -58,7 +58,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 				Result: "AAAA...",
 			}, nil)
 
-		result, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.WhiteList{
+		result, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
@@ -68,7 +68,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 	})
 	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
 		helper := initTest(t)
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.WhiteList{})
+		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{})
 
 		assert.Error(t, err)
 	})
@@ -78,7 +78,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.WhiteList{
+		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
@@ -94,7 +94,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 				Message:            "Success",
 			}, nil)
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.WhiteList{
+		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
@@ -115,7 +115,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 				Problem: problem.BadRequest,
 			})
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.WhiteList{
+		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
@@ -135,7 +135,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
 			Return(horizon.TransactionSuccess{}, errors.New("some error has occurred"))
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.WhiteList{
+		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
