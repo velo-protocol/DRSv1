@@ -11,9 +11,12 @@ import (
 )
 
 var (
-	sourceSeedKey = "<YOUR_SECRET_KEY>"
-	sourceKP, _   = vconvert.SecretKeyToKeyPair(sourceSeedKey)
-	client        = horizonclient.DefaultTestNetClient
+	sourceSeedKey          = "<YOUR_SECRET_KEY>"
+	veloAssetIssuerAccount = "<VELO_ISSUER_PUBLIC_KEY>"
+	veloAsset              = "VELO"
+
+	sourceKP, _ = vconvert.SecretKeyToKeyPair(sourceSeedKey)
+	client      = horizonclient.DefaultTestNetClient
 )
 
 func main() {
@@ -34,7 +37,7 @@ func generateDRSAndFriends() {
 		log.Panic(err)
 	}
 
-	createDRSOp, drsKP := _operations.CreateAccountOp(&sourceAccount, "14.5")
+	createDRSOp, drsKP := _operations.CreateAccountOp(&sourceAccount, "15")
 
 	drsAccount := loadAccount(drsKP.Address())
 	createTPListOp, tpListKP := _operations.CreateAccountOp(drsAccount, "1.5")
@@ -90,6 +93,8 @@ func generateDRSAndFriends() {
 
 	drsManageDataPriceSGDVELOOp := _operations.ManageDataOp(drsAccount, "Price[SGD-VELO]", priceSGDKP.Address())
 
+	drsTrustLineVELOOp := _operations.ChangeTrustOp(drsAccount, veloAsset, veloAssetIssuerAccount)
+
 	regulatorListManageDataAddRegulatorOp := _operations.ManageDataOp(regulatorListAccount, regulatorKP.Address(), "true")
 
 	txFuture := txnbuild.Transaction{
@@ -117,6 +122,7 @@ func generateDRSAndFriends() {
 			drsManageDataPriceUSDVELOOp,
 			drsManageDataPriceTHBVELOOp,
 			drsManageDataPriceSGDVELOOp,
+			drsTrustLineVELOOp,
 
 			regulatorListManageDataAddRegulatorOp,
 		},
