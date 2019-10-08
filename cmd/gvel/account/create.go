@@ -16,5 +16,5 @@ func newCreateCmd() *cobra.Command {
 }
 
 func createAccountRunner(cmd *cobra.Command, args []string) {
-	fmt.Println("fuck")
+	fmt.Println("TBI")
 }
