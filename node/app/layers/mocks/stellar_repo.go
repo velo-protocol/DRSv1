@@ -6,6 +6,7 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
+	decimal "github.com/shopspring/decimal"
 	horizon "github.com/stellar/go/protocols/horizon"
 	entities "gitlab.com/velo-labs/cen/node/app/entities"
 	reflect "reflect"
@@ -126,6 +127,21 @@ func (m *MockStellarRepo) GetDrsAccountData() (*entities.DrsAccountData, error) 
 func (mr *MockStellarRepoMockRecorder) GetDrsAccountData() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDrsAccountData", reflect.TypeOf((*MockStellarRepo)(nil).GetDrsAccountData))
+}
+
+// GetMedianPriceFromPriceAccount mocks base method
+func (m *MockStellarRepo) GetMedianPriceFromPriceAccount(priceAccountAddress string) (decimal.Decimal, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMedianPriceFromPriceAccount", priceAccountAddress)
+	ret0, _ := ret[0].(decimal.Decimal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMedianPriceFromPriceAccount indicates an expected call of GetMedianPriceFromPriceAccount
+func (mr *MockStellarRepoMockRecorder) GetMedianPriceFromPriceAccount(priceAccountAddress interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedianPriceFromPriceAccount", reflect.TypeOf((*MockStellarRepo)(nil).GetMedianPriceFromPriceAccount), priceAccountAddress)
 }
 
 // SubmitTransaction mocks base method

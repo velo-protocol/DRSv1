@@ -3,6 +3,7 @@ package env
 import (
 	"fmt"
 	"syscall"
+	"time"
 )
 
 var (
@@ -12,6 +13,7 @@ var (
 	NetworkPassphrase           string
 	HorizonURL                  string
 	StellarTxTimeBoundInMinutes int64
+	ValidPriceBoundary          time.Duration
 
 	Port                string
 	EnableReflectionAPI bool
@@ -25,6 +27,7 @@ func Init() {
 	NetworkPassphrase = requireEnv("NETWORK_PASSPHRASE")
 	HorizonURL = requireEnv("HORIZON_URL")
 	StellarTxTimeBoundInMinutes = 15 * 60 // 15 minute * 60 seconds
+	ValidPriceBoundary = 15 * time.Minute
 
 	Port = "8080"
 	EnableReflectionAPI = true
