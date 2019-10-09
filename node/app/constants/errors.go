@@ -30,6 +30,7 @@ var (
 	ErrUnknownRoleSpecified     = "unknown role specified"
 	ErrAssetCodeAlreadyBeenUsed = "asset code %s has already been used"
 	ErrToDecodeData             = `fail to decode data "%s"`
+	ErrNoValidPrice             = `no valid price in price account %s`
 
 	ErrCreateTrustedPartnerMetaKeyPair = "fail to create trusted partner meta KP"
 	ErrCreateIssuerKeyPair             = "fail to create issuer KP"
