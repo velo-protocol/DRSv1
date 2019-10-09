@@ -13,6 +13,7 @@ services:
       - $GOPATH/pkg/mod:/go/pkg/mod # to avoid re-"go mod download" on every build
     ports:
       - "8080:8080"
+      - "6666:6666"
     environment:
       HORIZON_URL: "https://horizon-testnet.stellar.org"
       DRS_PUBLIC_KEY: "GB7QJFBQ7WABQ5EZ2XR5XEJOUUYMBJOOLJHCBNZO462P2XRPSJ7TZJXA"

@@ -15,7 +15,8 @@ var (
 	StellarTxTimeBoundInMinutes int64
 	ValidPriceBoundary          time.Duration
 
-	Port                string
+	Port                int64
+	HealthPort          int64
 	EnableReflectionAPI bool
 )
 
@@ -29,7 +30,8 @@ func Init() {
 	StellarTxTimeBoundInMinutes = 15 * 60 // 15 minute * 60 seconds
 	ValidPriceBoundary = 15 * time.Minute
 
-	Port = "8080"
+	Port = 8080
+	HealthPort = 6666
 	EnableReflectionAPI = true
 }
 
