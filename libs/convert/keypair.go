@@ -9,12 +9,12 @@ import (
 func PublicKeyToKeyPair(publicKey string) (*keypair.FromAddress, error) {
 	kp, err := keypair.Parse(publicKey)
 	if err != nil {
-		return nil, errors.New("unable to get keyPair from publicKey")
+		return nil, errors.Wrap(err, "unable to get keyPair from publicKey")
 	}
 
 	kpFromAddress, ok := kp.(*keypair.FromAddress)
 	if !ok {
-		return nil, errors.New("unable to cast KP to keypair.FromAddress")
+		return nil, errors.Wrap(err, "unable to cast KP to keypair.FromAddress")
 	}
 	return kpFromAddress, nil
 }
@@ -22,12 +22,12 @@ func PublicKeyToKeyPair(publicKey string) (*keypair.FromAddress, error) {
 func SecretKeyToKeyPair(secretKey string) (*keypair.Full, error) {
 	seedKey, err := stringToByte32(secretKey)
 	if err != nil {
-		return nil, errors.New("unable to convert secretKey to byte")
+		return nil, errors.Wrap(err, "incorrect signature format")
 	}
 
 	kp, err := keypair.FromRawSeed(seedKey)
 	if err != nil {
-		return nil, errors.New("unable to get keyPair from secretKey")
+		return nil, errors.Wrap(err, "unable to get keyPair from secretKey")
 	}
 
 	return kp, nil
