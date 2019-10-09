@@ -10,6 +10,7 @@ const (
 	OperationTypeWhitelist   OperationType = 0
 	OperationTypeSetupCredit OperationType = 1
 	OperationTypePriceUpdate OperationType = 2
+	OperationTypeMintCredit  OperationType = 3
 )
 
 type OperationBody struct {
@@ -17,6 +18,7 @@ type OperationBody struct {
 	WhitelistOp   *WhitelistOp
 	SetupCreditOp *SetupCreditOp
 	PriceUpdateOp *PriceUpdateOp
+	MintCreditOp  *MintCreditOp
 }
 
 type WhitelistOp struct {
@@ -35,4 +37,10 @@ type PriceUpdateOp struct {
 	Asset                       string
 	Currency                    Currency
 	PriceInCurrencyPerAssetUnit xdr.Int64
+}
+
+type MintCreditOp struct {
+	AssetCodeToBeIssued string
+	CollateralAssetCode Asset
+	CollateralAmount    xdr.Int64
 }
