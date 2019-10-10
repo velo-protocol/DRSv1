@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	txnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	entities "gitlab.com/velo-labs/cen/node/app/entities"
 	errors "gitlab.com/velo-labs/cen/node/app/errors"
 	reflect "reflect"
 )
@@ -78,4 +79,19 @@ func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) 
 func (mr *MockUseCaseMockRecorder) UpdatePrice(ctx, veloTx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePrice", reflect.TypeOf((*MockUseCase)(nil).UpdatePrice), ctx, veloTx)
+}
+
+// MintCredit mocks base method
+func (m *MockUseCase) MintCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.MintCreditOutput, errors.NodeError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MintCredit", ctx, veloTx)
+	ret0, _ := ret[0].(*entities.MintCreditOutput)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
+}
+
+// MintCredit indicates an expected call of MintCredit
+func (mr *MockUseCaseMockRecorder) MintCredit(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCredit", reflect.TypeOf((*MockUseCase)(nil).MintCredit), ctx, veloTx)
 }

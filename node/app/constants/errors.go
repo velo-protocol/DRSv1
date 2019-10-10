@@ -23,16 +23,22 @@ var (
 	ErrGetTrustedPartnerListAccountData = "fail to get data of trusted partner list account"
 	ErrGetPriceFeederListAccountData    = "fail to get data of price feeder list account"
 
-	ErrGetAccountDetail         = "fail to get account detail of %s"
-	ErrGetDrsAccountDetail      = "fail to get account detail of drs account"
-	ErrDerivedKeyPairFromSeed   = "fail to derived KP from seed key"
-	ErrBuildAndSignTransaction  = "fail to build and sign tx"
-	ErrUnknownRoleSpecified     = "unknown role specified"
-	ErrAssetCodeAlreadyBeenUsed = "asset code %s has already been used"
-	ErrToDecodeData             = `fail to decode data "%s"`
-	ErrNoValidPrice             = `no valid price in price account %s`
+	ErrGetAccountDetail                   = "fail to get account detail of %s"
+	ErrGetDrsAccountDetail                = "fail to get account detail of drs account"
+	ErrGetTrustedPartnerMetaAccountDetail = "fail to get account detail of trusted partner's meta account"
+	ErrGetIssuerAccountDetail             = "fail to get account detail of issuer account"
+	ErrDerivedKeyPairFromSeed             = "fail to derived KP from seed key"
+	ErrBuildAndSignTransaction            = "fail to build and sign tx"
+	ErrUnknownRoleSpecified               = "unknown role specified"
+	ErrAssetCodeAlreadyBeenUsed           = "asset code %s has already been used"
+	ErrToDecodeData                       = `fail to decode data "%s"`
+	ErrNoValidPrice                       = "no valid price in price account %s"
 
 	ErrCreateTrustedPartnerMetaKeyPair = "fail to create trusted partner meta KP"
 	ErrCreateIssuerKeyPair             = "fail to create issuer KP"
 	ErrCreateDistributorKeyPair        = "fail to create distributor KP"
+
+	ErrAssetCodeToBeIssuedNotSetup      = "assetCodeToBeIssued %s have not been setup yet"
+	ErrGetPriceOfPeggedCurrency         = "cannot get price of pegged currency"
+	ErrPeggedValueMustBeGreaterThanZero = "pegged value must be greater than zero"
 )
