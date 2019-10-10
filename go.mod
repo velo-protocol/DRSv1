@@ -14,5 +14,6 @@ require (
 	github.com/stellar/go v0.0.0-20191002202447-38b3b5b8e694
 	github.com/stretchr/testify v1.4.0
 	github.com/syndtr/goleveldb v1.0.0
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	google.golang.org/grpc v1.24.0
 )
