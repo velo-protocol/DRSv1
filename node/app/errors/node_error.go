@@ -81,3 +81,15 @@ func (e ErrInternal) Error() string {
 func (e ErrInternal) GRPCError() error {
 	return status.Errorf(codes.Internal, e.Message)
 }
+
+type ErrPrecondition struct {
+	Message string
+}
+
+func (e ErrPrecondition) Error() string {
+	return e.Message
+}
+
+func (e ErrPrecondition) GRPCError() error {
+	return status.Errorf(codes.FailedPrecondition, e.Message)
+}

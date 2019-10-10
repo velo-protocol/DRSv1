@@ -4,4 +4,5 @@ const (
 	VeloOpWhitelist   = "Whitelist"
 	VeloOpSetupCredit = "SetupCredit"
 	VeloOpPriceUpdate = "PriceUpdate"
+	VeloOpMintCredit  = "MintCredit"
 )
