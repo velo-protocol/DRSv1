@@ -23,6 +23,8 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
 	}
 
+	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp
+
 	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
 	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
 	if err != nil {
@@ -82,7 +84,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	var distributionAccount string
 	for key, value := range trustedPartnerMeta {
 		assetDetail := strings.Split(key, "_")
-		if assetDetail[0] == veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.AssetCodeToBeIssued {
+		if assetDetail[0] == op.AssetCodeToBeIssued {
 			issuerAccount = assetDetail[1]
 			distributionAccount, err = utils.DecodeBase64(value)
 			if err != nil {
@@ -94,7 +96,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	}
 	if issuerAccount == "" || distributionAccount == "" {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Errorf(constants.ErrAssetCodeToBeIssuedNotSetup, veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.AssetCodeToBeIssued).Error(),
+			Message: errors.Errorf(constants.ErrAssetCodeToBeIssuedNotSetup, op.AssetCodeToBeIssued).Error(),
 		}
 	}
 
@@ -107,14 +109,14 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	peggedCurrency, ok := issuerAccountData["peggedCurrency"]
 	if !ok {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Errorf(constants.ErrAssetCodeToBeIssuedNotSetup, veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.AssetCodeToBeIssued).Error(),
+			Message: errors.Errorf(constants.ErrAssetCodeToBeIssuedNotSetup, op.AssetCodeToBeIssued).Error(),
 		}
 	}
 
 	peggedValueString, ok := issuerAccountData["peggedValue"]
 	if !ok {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Errorf(constants.ErrAssetCodeToBeIssuedNotSetup, veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.AssetCodeToBeIssued).Error(),
+			Message: errors.Errorf(constants.ErrAssetCodeToBeIssuedNotSetup, op.AssetCodeToBeIssued).Error(),
 		}
 	}
 
@@ -133,8 +135,8 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 		return nil, nerrors.ErrPrecondition{Message: constants.ErrPeggedValueMustBeGreaterThanZero}
 	}
 
-	collateralAmount := decimal.New(int64(veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.CollateralAmount), -7)
-	collateralAsset := string(veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.CollateralAssetCode)
+	collateralAmount := decimal.New(int64(op.CollateralAmount), -7)
+	collateralAsset := string(op.CollateralAssetCode)
 	collateralAssetIssuer := env.VeloIssuerPublicKey
 
 	mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue)
@@ -164,7 +166,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 				Destination: distributionAccount,
 				Amount:      mintAmount.String(),
 				Asset: txnbuild.CreditAsset{
-					Code:   veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.AssetCodeToBeIssued,
+					Code:   op.AssetCodeToBeIssued,
 					Issuer: issuerAccount,
 				},
 				SourceAccount: &txnbuild.SimpleAccount{
@@ -182,7 +184,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	return &entities.MintCreditOutput{
 		SignedStellarTxXdr: signedTx,
 		MintAmount:         mintAmount,
-		MintCurrency:       veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp.AssetCodeToBeIssued,
+		MintCurrency:       op.AssetCodeToBeIssued,
 		CollateralAmount:   collateralAmount,
 		CollateralAsset:    collateralAsset,
 	}, nil

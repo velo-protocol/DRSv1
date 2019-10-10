@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/AlekSi/pointer"
 	"github.com/golang/mock/gomock"
+	"github.com/shopspring/decimal"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	spec "gitlab.com/velo-labs/cen/grpc"
@@ -12,6 +13,7 @@ import (
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
+	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
 	"testing"
@@ -205,6 +207,71 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 
 			mockedUseCase.EXPECT().
 				UpdatePrice(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
+
+			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.Error(t, err)
+		})
+	})
+
+	t.Run("must be able to handle mint credit operation", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.MintCredit{
+					AssetCodeToBeIssued: "vTHB",
+					CollateralAssetCode: "VELO",
+					CollateralAmount:    "1000.4569",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				MintCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				Return(&entities.MintCreditOutput{
+					SignedStellarTxXdr: "AAAAA...=",
+					MintAmount:         decimal.New(52702950798, -8), // 527.02950798
+					MintCurrency:       "vTHB",
+					CollateralAmount:   decimal.New(100045690008, -8), // 1000.45690008
+					CollateralAsset:    "VELO",
+				}, nil)
+
+			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.NoError(t, err)
+			assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
+			assert.Equal(t,
+				fmt.Sprintf(constants.ReplyMintCreditSuccess, "527.0295079", "vTHB", "1000.4569000", "VELO"),
+				reply.Message,
+			)
+		})
+
+		t.Run("error, use case return error", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.MintCredit{
+					AssetCodeToBeIssued: "vTHB",
+					CollateralAssetCode: "VELO",
+					CollateralAmount:    "1000.4569",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				MintCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
 			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
