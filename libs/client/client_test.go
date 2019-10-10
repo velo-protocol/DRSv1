@@ -13,6 +13,8 @@ import (
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"testing"
 )
 
@@ -72,6 +74,20 @@ func TestClient_executeVeloTx(t *testing.T) {
 
 		assert.Error(t, err)
 	})
+	t.Run("error, cannot connect to VeloCen via gRPC", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(nil, status.Error(codes.Unavailable, "some error has occurred"))
+
+		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+			Address: whitelistingPublicKey,
+			Role:    string(vxdr.RoleRegulator),
+		})
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "cannot connect to VeloCen via gRPC")
+	})
 	t.Run("error, velo node client returns an error", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
@@ -111,7 +127,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 			}, nil)
 		helper.mockHorizonClient.
 			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
-			Return(horizon.TransactionSuccess{}, horizonclient.Error{
+			Return(horizon.TransactionSuccess{}, &horizonclient.Error{
 				Problem: problem.BadRequest,
 			})
 
@@ -121,7 +137,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 		})
 
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "horizon response with an error")
+		assert.IsType(t, &horizonclient.Error{}, err)
 	})
 	t.Run("error, cannot connect to horizon", func(t *testing.T) {
 		helper := initTest(t)

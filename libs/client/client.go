@@ -12,6 +12,8 @@ import (
 	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Client struct {
@@ -33,7 +35,7 @@ type ClientInterface interface {
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot connect to VeloNode")
+		return nil, errors.Wrap(err, "cannot connect to VeloCen via gRPC")
 	}
 
 	return NewPublicClient(grpcConn, stellarAccountSecretKey)
@@ -42,7 +44,7 @@ func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) 
 func NewDefaultTestNetClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot connect to VeloNode")
+		return nil, errors.Wrap(err, "cannot connect to VeloCen via gRPC")
 	}
 
 	return NewTestNetClient(grpcConn, stellarAccountSecretKey)
@@ -113,6 +115,13 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 		SignedVeloTxXdr: signedVeloTxB64,
 	})
 	if err != nil {
+		veloNodeErr, ok := status.FromError(err)
+		if ok {
+			if veloNodeErr.Code() == codes.Unavailable {
+				return nil, errors.Wrap(err, "cannot connect to VeloCen via gRPC")
+			}
+		}
+
 		return nil, err
 	}
 
@@ -134,9 +143,9 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 
 	result, err := client.horizonClient.SubmitTransactionXDR(signedTxB64)
 	if err != nil {
-		herr, ok := err.(horizonclient.Error)
+		herr, ok := err.(*horizonclient.Error)
 		if ok {
-			return nil, errors.Wrapf(err, `horizon response with an error "%s"`, herr.Problem.Detail)
+			return nil, herr
 		}
 		return nil, errors.Wrap(err, "cannot connect to horizon")
 	}
