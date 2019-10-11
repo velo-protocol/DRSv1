@@ -9,12 +9,11 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/testhelpers"
-	"log"
 	"testing"
 )
 
@@ -153,7 +152,6 @@ func TestUseCase_Mint(t *testing.T) {
 		assert.NotEmpty(t, mintOutput.SignedStellarTxXdr)
 		assert.Equal(t, largeCollateral.String(), mintOutput.CollateralAmount.String())
 		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
-		log.Println(mintAmount.String())
 		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
 		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
 
@@ -209,7 +207,6 @@ func TestUseCase_Mint(t *testing.T) {
 			Return(medianPrice, nil)
 
 		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
-		log.Println(mintOutput)
 		assert.Error(t, err)
 		assert.Nil(t, mintOutput)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
