@@ -62,7 +62,7 @@ func (mintCredit *MintCredit) Validate() error {
 	}
 
 	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,7}$`, mintCredit.AssetCodeToBeIssued); !matched {
-		return errors.New("invalid assetCode format")
+		return errors.New("invalid assetCodeToBeIssued format")
 	}
 
 	if !vxdr.Asset(mintCredit.CollateralAssetCode).IsValid() {

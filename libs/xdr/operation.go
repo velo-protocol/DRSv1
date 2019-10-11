@@ -37,6 +37,12 @@ func NewOperationBody(opType OperationType, value interface{}) (OperationBody, e
 			return OperationBody{}, fmt.Errorf("invalid value, must be MintCreditOp")
 		}
 		opBody.MintCreditOp = &tv
+	case OperationTypeRedeemCredit:
+		tv, ok := value.(RedeemCreditOp)
+		if !ok {
+			return OperationBody{}, fmt.Errorf("invalid value, must be RedeemCreditOp")
+		}
+		opBody.RedeemCreditOp = &tv
 	default:
 		return OperationBody{}, fmt.Errorf("unknown operation type")
 	}
