@@ -9,10 +9,10 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/testhelpers"
 	"testing"
 )
@@ -92,6 +92,125 @@ func TestUseCase_Mint(t *testing.T) {
 		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
 		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
 		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
+
+	})
+
+	t.Run("Success - large collateral amount", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+		largeCollateral := decimal.New(92233720368547, -7)
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.MintCredit{
+				AssetCodeToBeIssued: assetToBeIssued,
+				CollateralAssetCode: collateralAsset,
+				CollateralAmount:    largeCollateral.String(),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		// get tx sender account
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{
+				AccountID: publicKey1,
+				Sequence:  "1",
+			}, nil)
+
+		// get drs account data
+		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+
+		// validate trusted partner role
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
+			Return(map[string]string{publicKey1: base64.StdEncoding.EncodeToString([]byte(publicKey3))}, nil)
+
+		// get trusted partner meta
+		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
+			Return(map[string]string{"vTHB_" + vThbIssuerAccount: base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"))}, nil)
+
+		// get issuer account data
+		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(vThbIssuerAccount).
+			Return(map[string]string{
+				"peggedCurrency": peggedCurrency,
+				"peggedValue":    peggedValueStroop.String(),
+			}, nil)
+
+		//get median price from price account
+		helper.mockStellarRepo.EXPECT().GetMedianPriceFromPriceAccount(drsAccountDataEnity.VeloPriceAddress(vxdr.Currency(peggedCurrency))).
+			Return(medianPrice, nil)
+
+		mintAmount := largeCollateral.Mul(medianPrice).Div(peggedValue)
+
+		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
+		assert.NoError(t, err)
+		assert.NotNil(t, mintOutput)
+		assert.NotEmpty(t, mintOutput.SignedStellarTxXdr)
+		assert.Equal(t, largeCollateral.String(), mintOutput.CollateralAmount.String())
+		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
+		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
+		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
+
+	})
+
+	t.Run("Error - calculate mint over flow", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+		largeCollateral := decimal.New(922337203685477, -7)
+
+		veloTx := &vtxnbuild.VeloTx{
+			SourceAccount: &txnbuild.SimpleAccount{
+				AccountID: publicKey1,
+			},
+			VeloOp: &vtxnbuild.MintCredit{
+				AssetCodeToBeIssued: assetToBeIssued,
+				CollateralAssetCode: collateralAsset,
+				CollateralAmount:    largeCollateral.String(),
+			},
+		}
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		// get tx sender account
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{
+				AccountID: publicKey1,
+				Sequence:  "1",
+			}, nil)
+
+		// get drs account data
+		helper.mockStellarRepo.EXPECT().GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+
+		// validate trusted partner role
+		helper.mockStellarRepo.EXPECT().GetAccountData(testhelpers.TrustedPartnerListKp.Address()).
+			Return(map[string]string{publicKey1: base64.StdEncoding.EncodeToString([]byte(publicKey3))}, nil)
+
+		// get trusted partner meta
+		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
+			Return(map[string]string{"vTHB_" + vThbIssuerAccount: base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"))}, nil)
+
+		// get issuer account data
+		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(vThbIssuerAccount).
+			Return(map[string]string{
+				"peggedCurrency": peggedCurrency,
+				"peggedValue":    peggedValueStroop.String(),
+			}, nil)
+
+		//get median price from price account
+		helper.mockStellarRepo.EXPECT().GetMedianPriceFromPriceAccount(drsAccountDataEnity.VeloPriceAddress(vxdr.Currency(peggedCurrency))).
+			Return(medianPrice, nil)
+
+		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
+		assert.Error(t, err)
+		assert.Nil(t, mintOutput)
+		assert.IsType(t, nerrors.ErrInternal{}, err)
+		assert.Contains(t, err.Error(), constants.ErrBuildAndSignTransaction)
 
 	})
 
