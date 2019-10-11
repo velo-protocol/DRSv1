@@ -7,18 +7,20 @@ import (
 type OperationType int32
 
 const (
-	OperationTypeWhitelist   OperationType = 0
-	OperationTypeSetupCredit OperationType = 1
-	OperationTypePriceUpdate OperationType = 2
-	OperationTypeMintCredit  OperationType = 3
+	OperationTypeWhitelist    OperationType = 0
+	OperationTypeSetupCredit  OperationType = 1
+	OperationTypePriceUpdate  OperationType = 2
+	OperationTypeMintCredit   OperationType = 3
+	OperationTypeRedeemCredit OperationType = 4
 )
 
 type OperationBody struct {
-	Type          OperationType
-	WhitelistOp   *WhitelistOp
-	SetupCreditOp *SetupCreditOp
-	PriceUpdateOp *PriceUpdateOp
-	MintCreditOp  *MintCreditOp
+	Type           OperationType
+	WhitelistOp    *WhitelistOp
+	SetupCreditOp  *SetupCreditOp
+	PriceUpdateOp  *PriceUpdateOp
+	MintCreditOp   *MintCreditOp
+	RedeemCreditOp *RedeemCreditOp
 }
 
 type WhitelistOp struct {
@@ -43,4 +45,10 @@ type MintCreditOp struct {
 	AssetCodeToBeIssued string
 	CollateralAssetCode Asset
 	CollateralAmount    xdr.Int64
+}
+
+type RedeemCreditOp struct {
+	AssetCode string
+	Issuer    xdr.AccountId
+	Amount    xdr.Int64
 }

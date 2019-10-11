@@ -1,0 +1,87 @@
+package vtxnbuild
+
+import (
+	"github.com/pkg/errors"
+	_amount "github.com/stellar/go/amount"
+	"github.com/stellar/go/protocols/horizon"
+	"gitlab.com/velo-labs/cen/libs/xdr"
+	"regexp"
+)
+
+type RedeemCredit struct {
+	AssetCode string
+	Issuer    string
+	Amount    string
+}
+
+func (redeemCredit *RedeemCredit) BuildXDR() (vxdr.VeloOp, error) {
+	if err := redeemCredit.Validate(); err != nil {
+		return vxdr.VeloOp{}, err
+	}
+
+	amount, err := _amount.Parse(redeemCredit.Amount)
+	if err != nil {
+		return vxdr.VeloOp{}, errors.Wrap(err, "failed to parse amount")
+	}
+
+	// xdr op
+	vXdrOp := vxdr.RedeemCreditOp{
+		AssetCode: redeemCredit.AssetCode,
+		Amount:    amount,
+	}
+	err = vXdrOp.Issuer.SetAddress(redeemCredit.Issuer)
+	if err != nil {
+		return vxdr.VeloOp{}, errors.Wrap(err, "failed to set redeem credit issuer address")
+	}
+
+	body, err := vxdr.NewOperationBody(vxdr.OperationTypeRedeemCredit, vXdrOp)
+	if err != nil {
+		return vxdr.VeloOp{}, errors.Wrap(err, "failed to build XDR operation body")
+	}
+
+	return vxdr.VeloOp{Body: body}, nil
+}
+
+func (redeemCredit *RedeemCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
+	redeemOp := vXdrOp.Body.RedeemCreditOp
+	if redeemOp == nil {
+		return errors.New("error parsing redeemCredit operation from xdr")
+	}
+
+	redeemCredit.AssetCode = redeemOp.AssetCode
+	redeemCredit.Amount = _amount.String(redeemOp.Amount)
+	redeemCredit.Issuer = redeemOp.Issuer.Address()
+
+	return nil
+}
+
+func (redeemCredit *RedeemCredit) Validate() error {
+	if redeemCredit.AssetCode == "" {
+		return errors.New("assetCode must not be blank")
+	}
+	if redeemCredit.Issuer == "" {
+		return errors.New("issuer must not be blank")
+	}
+	if redeemCredit.Amount == "" {
+		return errors.New("amount must not be blank")
+	}
+
+	if matched, _ := regexp.MatchString(`^[A-Za-z0-9]{1,7}$`, redeemCredit.AssetCode); !matched {
+		return errors.New("invalid assetCode format")
+	}
+
+	_, err := horizon.KeyTypeFromAddress(redeemCredit.Issuer)
+	if err != nil {
+		return errors.New("invalid issuer format")
+	}
+
+	amount, err := _amount.Parse(redeemCredit.Amount)
+	if err != nil {
+		return errors.New("invalid amount format")
+	}
+	if amount <= 0 {
+		return errors.New("amount must be greater than zero")
+	}
+
+	return nil
+}

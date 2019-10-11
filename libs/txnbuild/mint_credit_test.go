@@ -102,14 +102,14 @@ func TestMintCredit_Validate(t *testing.T) {
 
 		assert.EqualError(t, err, "collateralAmount must not be blank")
 	})
-	t.Run("error, invalid assetCode format", func(t *testing.T) {
+	t.Run("error, invalid assetCodeToBeIssued format", func(t *testing.T) {
 		err := (&MintCredit{
 			AssetCodeToBeIssued: "tooLongAsset",
 			CollateralAssetCode: "VELO",
 			CollateralAmount:    "1000.00",
 		}).Validate()
 
-		assert.EqualError(t, err, "invalid assetCode format")
+		assert.EqualError(t, err, "invalid assetCodeToBeIssued format")
 	})
 	t.Run("error, collateralAssetCode value must be VELO", func(t *testing.T) {
 		err := (&MintCredit{
