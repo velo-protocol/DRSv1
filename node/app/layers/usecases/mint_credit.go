@@ -75,14 +75,14 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	}
 
 	// get trusted partner meta
-	trustedPartnerMeta, err := useCase.StellarRepo.GetAccountData(trustedPartnerMetaAddress)
+	trustedPartnerMetaData, err := useCase.StellarRepo.GetAccountData(trustedPartnerMetaAddress)
 	if err != nil {
 		return nil, nerrors.ErrInternal{Message: errors.Wrapf(err, constants.ErrGetTrustedPartnerMetaAccountDetail).Error()}
 	}
 
 	var issuerAccount string
 	var distributionAccount string
-	for key, value := range trustedPartnerMeta {
+	for key, value := range trustedPartnerMetaData {
 		assetDetail := strings.Split(key, "_")
 		if assetDetail[0] == op.AssetCodeToBeIssued {
 			issuerAccount = assetDetail[1]
@@ -139,7 +139,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	collateralAsset := string(op.CollateralAssetCode)
 	collateralAssetIssuer := env.VeloIssuerPublicKey
 
-	mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue)
+	mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue).Truncate(7)
 
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {

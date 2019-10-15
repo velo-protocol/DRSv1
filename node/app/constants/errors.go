@@ -25,20 +25,29 @@ var (
 
 	ErrGetAccountDetail                   = "fail to get account detail of %s"
 	ErrGetDrsAccountDetail                = "fail to get account detail of drs account"
+	ErrGetTrustedPartnerAccountDetail     = "fail to get account detail of trusted partner account"
 	ErrGetTrustedPartnerMetaAccountDetail = "fail to get account detail of trusted partner's meta account"
 	ErrGetIssuerAccountDetail             = "fail to get account detail of issuer account"
-	ErrDerivedKeyPairFromSeed             = "fail to derived KP from seed key"
-	ErrBuildAndSignTransaction            = "fail to build and sign tx"
-	ErrUnknownRoleSpecified               = "unknown role specified"
-	ErrAssetCodeAlreadyBeenUsed           = "asset code %s has already been used"
-	ErrToDecodeData                       = `fail to decode data "%s"`
-	ErrNoValidPrice                       = "no valid price in price account %s"
+	ErrGetIssuerAccount                   = "fail to get issuer account"
+
+	ErrVerifyTrustedPartnerAccount = "fail to verify trusted partner account"
+	ErrVerifyAssetCode             = "fail to verify asset code"
+
+	ErrDerivedKeyPairFromSeed   = "fail to derived KP from seed key"
+	ErrBuildAndSignTransaction  = "fail to build and sign tx"
+	ErrUnknownRoleSpecified     = "unknown role specified"
+	ErrAssetCodeAlreadyBeenUsed = "asset code %s has already been used"
+	ErrToDecodeData             = `fail to decode data "%s"`
+	ErrKeyNotFoundInAccountData = `key "%s" not found in the data of account %s`
+	ErrNoValidPrice             = "no valid price in price account %s"
 
 	ErrCreateTrustedPartnerMetaKeyPair = "fail to create trusted partner meta KP"
 	ErrCreateIssuerKeyPair             = "fail to create issuer KP"
 	ErrCreateDistributorKeyPair        = "fail to create distributor KP"
 
 	ErrAssetCodeToBeIssuedNotSetup      = "assetCodeToBeIssued %s have not been setup yet"
-	ErrGetPriceOfPeggedCurrency         = "cannot get price of pegged currency"
+	ErrGetPriceOfPeggedCurrency         = "fail to get price of pegged currency"
 	ErrPeggedValueMustBeGreaterThanZero = "pegged value must be greater than zero"
+	ErrMedianPriceMustBeGreaterThanZero = "median price must be greater than zero"
+	ErrInvalidIssuerAccount             = "invalid issuer account, %s"
 )
