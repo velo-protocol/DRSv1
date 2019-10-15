@@ -53,6 +53,27 @@ func TestRepo_GetAccountDecodedDataByKey(t *testing.T) {
 			AssertNumberOfCalls(t, "AccountDetail", 1)
 	})
 
+	t.Run("error, key not found", func(t *testing.T) {
+		helper := initTest()
+
+		helper.mockedHorizonClient.
+			On("AccountDetail", horizonclient.AccountRequest{
+				AccountID: testhelpers.PublicKey1,
+			}).
+			Return(horizon.Account{
+				AccountID: testhelpers.PublicKey1,
+				Data:      map[string]string{"key2": "BAD_B64_VALUE"},
+			}, nil)
+
+		_, err := helper.repo.GetAccountDecodedDataByKey(testhelpers.PublicKey1, "key1")
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrKeyNotFoundInAccountData, "key1", testhelpers.PublicKey1))
+
+		helper.mockedHorizonClient.
+			AssertNumberOfCalls(t, "AccountDetail", 1)
+	})
+
 	t.Run("error, fail to decode data", func(t *testing.T) {
 		helper := initTest()
 

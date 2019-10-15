@@ -16,6 +16,10 @@ func (repo *repo) GetAccountDecodedDataByKey(stellarAddress string, key string) 
 		return "", errors.Wrapf(err, constants.ErrGetAccountDetail, stellarAddress)
 	}
 
+	if _, ok := account.Data[key]; !ok {
+		return "", errors.Errorf(constants.ErrKeyNotFoundInAccountData, key, stellarAddress)
+	}
+
 	value, err := utils.DecodeBase64(account.Data[key])
 	if err != nil {
 		return "", errors.Wrap(err, fmt.Sprintf(constants.ErrToDecodeData, key))

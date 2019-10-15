@@ -17,7 +17,7 @@ import (
 	"testing"
 )
 
-func TestUseCase_Mint(t *testing.T) {
+func TestUseCase_MintCredit(t *testing.T) {
 
 	var (
 		collateralAmount  = decimal.NewFromFloat(1000)

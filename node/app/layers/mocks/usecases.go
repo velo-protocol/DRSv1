@@ -95,3 +95,18 @@ func (mr *MockUseCaseMockRecorder) MintCredit(ctx, veloTx interface{}) *gomock.C
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCredit", reflect.TypeOf((*MockUseCase)(nil).MintCredit), ctx, veloTx)
 }
+
+// RedeemCredit mocks base method
+func (m *MockUseCase) RedeemCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.RedeemCreditOutput, errors.NodeError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RedeemCredit", ctx, veloTx)
+	ret0, _ := ret[0].(*entities.RedeemCreditOutput)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
+}
+
+// RedeemCredit indicates an expected call of RedeemCredit
+func (mr *MockUseCaseMockRecorder) RedeemCredit(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RedeemCredit", reflect.TypeOf((*MockUseCase)(nil).RedeemCredit), ctx, veloTx)
+}
