@@ -4,8 +4,10 @@ go 1.12
 
 require (
 	github.com/AlekSi/pointer v1.1.0
+	github.com/bgentry/speakeasy v0.1.0
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2
+	github.com/jarcoal/httpmock v0.0.0-20161210151336-4442edb3db31
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/pkg/errors v0.8.1
 	github.com/shopspring/decimal v0.0.0-20190905144223-a36b5d85f337
