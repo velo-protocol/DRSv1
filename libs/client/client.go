@@ -31,6 +31,7 @@ type ClientInterface interface {
 	SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCredit) (*horizon.TransactionSuccess, error)
 	PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpdate) (*horizon.TransactionSuccess, error)
 	MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredit) (*horizon.TransactionSuccess, error)
+	RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (*horizon.TransactionSuccess, error)
 }
 
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
@@ -100,6 +101,10 @@ func (client *Client) PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpd
 }
 
 func (client *Client) MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredit) (*horizon.TransactionSuccess, error) {
+	return client.executeVeloTx(ctx, &veloOp)
+}
+
+func (client *Client) RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (*horizon.TransactionSuccess, error) {
 	return client.executeVeloTx(ctx, &veloOp)
 }
 
