@@ -1,8 +1,10 @@
 package logic_test
 
 import (
+	"encoding/json"
 	"github.com/golang/mock/gomock"
 	mocksDB "gitlab.com/velo-labs/cen/cmd/gvel/db/mocks"
+	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	mocksFriendbot "gitlab.com/velo-labs/cen/cmd/gvel/friendbot/mocks"
 	"gitlab.com/velo-labs/cen/cmd/gvel/logic"
 	"testing"
@@ -26,5 +28,16 @@ func initTest(t *testing.T) helper {
 		mockDB:         mockDB,
 		mockFriendbot:  mockFriendbot,
 		mockController: mockCtrl,
+	}
+}
+
+func stellarAccountsBytes() [][]byte {
+	stellarAccountBytes, _ := json.Marshal(entity.StellarAccount{
+		EncryptedSeed: []byte("fake-seed"),
+		Nonce:         []byte("aaaa"),
+	})
+
+	return [][]byte{
+		stellarAccountBytes,
 	}
 }

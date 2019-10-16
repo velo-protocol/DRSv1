@@ -20,7 +20,7 @@ func newCreateCmd() *cobra.Command {
 }
 
 func createAccountRunner(cmd *cobra.Command, args []string) {
-	lo, err := util.InitLogic(constant.DefaultGevelAccountDbPath, constant.URL_FRIENDBOT)
+	lo, err := util.InitLogic(constant.DefaultGevelAccountDbPath, constant.UrlFriendbot)
 	if err != nil {
 		panic(err)
 	}

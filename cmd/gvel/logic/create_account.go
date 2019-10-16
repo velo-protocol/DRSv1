@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/keypair"
-	"gitlab.com/velo-labs/cen/cmd/gvel/constant"
 	"gitlab.com/velo-labs/cen/cmd/gvel/crypto"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 )
@@ -21,7 +20,7 @@ func (lo *logic) CreateAccount(passphrase string) (*keypair.Full, error) {
 		return nil, errors.Wrap(err, "failed to create a stellar account")
 	}
 
-	dbkey := fmt.Sprintf("%s%s", constant.STELLAR_ACCOUNT, newKP.Address())
+	dbkey := fmt.Sprintf("%s", newKP.Address())
 
 	encryptedSeed, nonce, err := crypto.Encrypt([]byte(newKP.Seed()), passphrase)
 	if err != nil {
@@ -29,6 +28,7 @@ func (lo *logic) CreateAccount(passphrase string) (*keypair.Full, error) {
 	}
 
 	stellarAccount := entity.StellarAccount{
+		Address:       newKP.Address(),
 		EncryptedSeed: encryptedSeed,
 		Nonce:         nonce,
 	}
