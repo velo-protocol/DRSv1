@@ -281,4 +281,63 @@ func TestHandler_SubmitVeloTx(t *testing.T) {
 			assert.Error(t, err)
 		})
 	})
+
+	t.Run("must be able to handle redeem credit operation", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.RedeemCredit{
+					AssetCode: "vTHB",
+					Issuer:    "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73",
+					Amount:    "1",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				RedeemCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				Return(&entities.RedeemCreditOutput{
+					SignedStellarTxXdr: "AAAAA...=",
+				}, nil)
+
+			reply, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.NoError(t, err)
+			assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
+			assert.Equal(t, constants.ReplyRedeemCreditSuccess, reply.Message)
+		})
+
+		t.Run("error, use case return error", func(t *testing.T) {
+			mockedUseCase, finish := newMockedUseCase()
+			defer finish()
+
+			veloTxB64, _ := (&vtxnbuild.VeloTx{
+				SourceAccount: &txnbuild.SimpleAccount{
+					AccountID: publicKey1,
+				},
+				VeloOp: &vtxnbuild.RedeemCredit{
+					AssetCode: "vTHB",
+					Issuer:    "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73",
+					Amount:    "1",
+				},
+			}).BuildSignEncode(kp1)
+
+			mockedUseCase.EXPECT().
+				RedeemCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+				Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
+
+			_, err := (&handler{mockedUseCase}).SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
+				SignedVeloTxXdr: veloTxB64,
+			})
+
+			assert.Error(t, err)
+		})
+
+	})
 }

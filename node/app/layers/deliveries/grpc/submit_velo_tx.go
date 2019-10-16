@@ -27,6 +27,8 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 		return handler.handlePriceUpdateOperation(ctx, &veloTx)
 	case vxdr.OperationTypeMintCredit:
 		return handler.handleMintCreditOperation(ctx, &veloTx)
+	case vxdr.OperationTypeRedeemCredit:
+		return handler.handlerRedeemCreditOperation(ctx, &veloTx)
 	default: // this case should never occur, if the cen/libs and cen/node is aligned
 		return nil, nerrors.ErrInvalidArgument{
 			Message: constants.ErrUnknownVeloOperationType,
@@ -114,5 +116,24 @@ func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *v
 			mintCreditOutput.CollateralAmount.Truncate(7).StringFixed(7),
 			mintCreditOutput.CollateralAsset,
 		),
+	}, nil
+}
+
+func (handler *handler) handlerRedeemCreditOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
+	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.RedeemCreditOp
+	if op == nil {
+		return nil, nerrors.ErrInvalidArgument{
+			Message: fmt.Sprintf(constants.ErrFormatMissingOperation, constants.VeloOpRedeemCredit),
+		}.GRPCError()
+	}
+
+	redeemCreditOutput, err := handler.UseCase.RedeemCredit(ctx, veloTx)
+	if err != nil {
+		return nil, err.GRPCError()
+	}
+
+	return &spec.VeloTxReply{
+		SignedStellarTxXdr: redeemCreditOutput.SignedStellarTxXdr,
+		Message:            constants.ReplyRedeemCreditSuccess,
 	}, nil
 }
