@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	"github.com/stellar/go/amount"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
+	"github.com/stellar/go/xdr"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
@@ -20,8 +22,8 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 
 	var (
 		redeemAmount = decimal.NewFromFloat(1000)
-		peggedValue  = decimal.NewFromFloat(1.5)
-		medianPrice  = decimal.NewFromFloat(2.3)
+		peggedValue  = decimal.NewFromFloat(15000000)
+		medianPrice  = decimal.NewFromFloat(23000000)
 
 		vThbIssuerAddress = "GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72"
 		vThbAsset         = "vTHB"
@@ -60,9 +62,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -86,15 +93,41 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 			Return(fmt.Sprintf("%s_%s", vThbAsset, vThbIssuerAddress), nil)
 		helper.mockStellarRepo.EXPECT().
 			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceThbVeloAddress).
-			Return(medianPrice, nil)
+			Return(decimal.New(medianPrice.IntPart(), -7), nil)
 
 		veloTx := getMockVeloTx()
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		output, err := helper.useCase.RedeemCredit(context.Background(), veloTx)
-		assert.NoError(t, err)
+		output, nErr := helper.useCase.RedeemCredit(context.Background(), veloTx)
+		assert.NoError(t, nErr)
 		assert.NotEmpty(t, output.SignedStellarTxXdr)
+
+		stellarTx, err := txnbuild.TransactionFromXDR(output.SignedStellarTxXdr)
+		assert.NoError(t, err)
+
+		txEnv := stellarTx.TxEnvelope()
+		assert.Equal(t, publicKey1, txEnv.Tx.SourceAccount.Address())
+
+		assert.Equal(t, xdr.OperationTypePayment, txEnv.Tx.Operations[0].Body.Type)
+		assert.Equal(t, publicKey1, txEnv.Tx.Operations[0].SourceAccount.Address())
+		assert.Equal(t, vThbIssuerAddress, txEnv.Tx.Operations[0].Body.PaymentOp.Asset.AlphaNum4.Issuer.Address())
+		assert.Equal(t, vThbAsset, func() string {
+			bytes, _ := txEnv.Tx.Operations[0].Body.PaymentOp.Asset.AlphaNum4.AssetCode.MarshalBinary()
+			return string(bytes)
+		}())
+		assert.Equal(t, vThbIssuerAddress, txEnv.Tx.Operations[0].Body.PaymentOp.Destination.Address())
+		assert.Equal(t, redeemAmount.StringFixed(7), amount.String(txEnv.Tx.Operations[0].Body.PaymentOp.Amount))
+
+		assert.Equal(t, xdr.OperationTypePayment, txEnv.Tx.Operations[1].Body.Type)
+		assert.Equal(t, env.DrsPublicKey, txEnv.Tx.Operations[1].SourceAccount.Address())
+		assert.Equal(t, env.VeloIssuerPublicKey, txEnv.Tx.Operations[1].Body.PaymentOp.Asset.AlphaNum4.Issuer.Address())
+		assert.Equal(t, "VELO", func() string {
+			bytes, _ := txEnv.Tx.Operations[1].Body.PaymentOp.Asset.AlphaNum4.AssetCode.MarshalBinary()
+			return string(bytes)
+		}())
+		assert.Equal(t, publicKey1, txEnv.Tx.Operations[1].Body.PaymentOp.Destination.Address())
+		assert.Equal(t, "652.1739130", amount.String(txEnv.Tx.Operations[1].Body.PaymentOp.Amount))
 	})
 
 	t.Run("Error - velo op validation fail", func(t *testing.T) {
@@ -188,7 +221,7 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 		assert.IsType(t, nerrors.ErrNotFound{}, err)
 	})
 
-	t.Run("Error - signer count must be 2", func(t *testing.T) {
+	t.Run("Error - signer count must be 3", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
@@ -212,7 +245,7 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 
 		_, err := helper.useCase.RedeemCredit(context.Background(), veloTx)
 		assert.Error(t, err)
-		assert.EqualError(t, err, fmt.Sprintf(constants.ErrInvalidIssuerAccount, "signer count must be 2"))
+		assert.EqualError(t, err, fmt.Sprintf(constants.ErrInvalidIssuerAccount, "signer count must be 3"))
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
 	})
 
@@ -232,9 +265,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    "BAD_VALUE",
@@ -268,9 +306,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte("BAD_VALUE")),
@@ -304,9 +347,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -340,9 +388,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: "UNKNOWN_KEY",
+					Key:    "UNKNOWN_ADDRESS",
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -375,9 +428,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -414,9 +472,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -459,9 +522,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -507,9 +575,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -558,9 +631,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),
@@ -612,9 +690,14 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 				AccountID: vThbIssuerAddress,
 				Sequence:  "1",
 				Signers: []horizon.Signer{{
-					Key: env.DrsPublicKey,
+					Key:    env.DrsPublicKey,
+					Weight: 1,
 				}, {
-					Key: trustedPartnerAddress,
+					Key:    trustedPartnerAddress,
+					Weight: 1,
+				}, {
+					Key:    vThbIssuerAddress,
+					Weight: 0,
 				}},
 				Data: map[string]string{
 					"peggedValue":    base64.StdEncoding.EncodeToString([]byte(peggedValue.String())),

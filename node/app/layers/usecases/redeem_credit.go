@@ -15,6 +15,7 @@ import (
 	env "gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/utils"
+	"strconv"
 )
 
 func (useCase *useCase) RedeemCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.RedeemCreditOutput, nerrors.NodeError) {
@@ -51,23 +52,24 @@ func (useCase *useCase) RedeemCredit(ctx context.Context, veloTx *vtxnbuild.Velo
 			Message: errors.Wrap(err, constants.ErrGetIssuerAccount).Error(),
 		}
 	}
-	if len(assetIssuerAccount.Signers) != 2 {
+	if len(assetIssuerAccount.Signers) != 3 {
 		return nil, nerrors.ErrPrecondition{
-			Message: fmt.Sprintf(constants.ErrInvalidIssuerAccount, "signer count must be 2"),
+			Message: fmt.Sprintf(constants.ErrInvalidIssuerAccount, "signer count must be 3"),
 		}
 	}
-	peggedValueRaw, err := utils.DecodeBase64(assetIssuerAccount.Data["peggedValue"])
+	peggedValueString, err := utils.DecodeBase64(assetIssuerAccount.Data["peggedValue"])
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
 			Message: fmt.Sprintf(constants.ErrInvalidIssuerAccount, "invalid pegged value format"),
 		}
 	}
-	peggedValue, err := decimal.NewFromString(peggedValueRaw)
+	peggedValueRaw, err := strconv.ParseInt(peggedValueString, 10, 64)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
 			Message: fmt.Sprintf(constants.ErrInvalidIssuerAccount, "invalid pegged value format"),
 		}
 	}
+	peggedValue := decimal.New(peggedValueRaw, -7)
 	peggedCurrency, err := utils.DecodeBase64(assetIssuerAccount.Data["peggedCurrency"])
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
@@ -77,11 +79,20 @@ func (useCase *useCase) RedeemCredit(ctx context.Context, veloTx *vtxnbuild.Velo
 
 	// derive trusted partner address
 	var trustedPartnerAddress string
-	if assetIssuerAccount.Signers[0].Key == env.DrsPublicKey {
-		trustedPartnerAddress = assetIssuerAccount.Signers[1].Key
-	} else if assetIssuerAccount.Signers[0].Key == env.DrsPublicKey {
-		trustedPartnerAddress = assetIssuerAccount.Signers[0].Key
-	} else {
+	var drsKeyFound, issuerKeyFound bool // make sure the other two keys are what we expected
+	for _, signer := range assetIssuerAccount.Signers {
+		if signer.Key != env.DrsPublicKey && signer.Key != op.Issuer.Address() {
+			trustedPartnerAddress = signer.Key
+		}
+
+		if signer.Key == env.DrsPublicKey && signer.Weight == 1 {
+			drsKeyFound = true
+		}
+		if signer.Key == op.Issuer.Address() && signer.Weight == 0 {
+			issuerKeyFound = true
+		}
+	}
+	if trustedPartnerAddress == "" || !drsKeyFound || !issuerKeyFound {
 		return nil, nerrors.ErrPrecondition{
 			Message: fmt.Sprintf(constants.ErrInvalidIssuerAccount, "no drs as signer"),
 		}
