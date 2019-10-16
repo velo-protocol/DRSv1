@@ -130,7 +130,7 @@ pipeline {
             parallel {
                 stage ('Deploy to Develop Environment') {
                     when {
-                            branch 'develop'
+                        branch 'develop'
                     }
                     steps {
                         withCredentials([sshUserPrivateKey(credentialsId: '7a468a86-b55c-4bc2-a0de-e3f9e77568be', usernameVariable: 'ec2user', keyFileVariable: 'ec2keyfile')]) {
@@ -210,6 +210,16 @@ pipeline {
             steps {
                 sh '''
                     echo "Check Deployment Status"
+                    ec2_json=$(aws ec2 describe-instances --filters "Name=tag-key,Values=Service" "Name=tag-value,Values=velo-cen-node" "Name=instance-state-name,Values=running" | jq -r '.Reservations[]')
+                    ec2_tag_output(){
+                      ec2_output=$(aws ec2 describe-instances --instance-id $1 --query 'Reservations[*].Instances[*].[PrivateDnsName,Tags[?Key==`ConfigMap`]|[0].Value]' --output text )
+                    }
+                    instances=$(echo $ec2_json | jq -r '.Instances[].InstanceId');
+                    for row in ${instances}; do
+                      ec2_tag_output $row
+                      addr=$(echo $ec2_output | awk '{print $1}')
+                      grpc-health-probe -addr=${addr}:6666
+                    done;
                 '''
             }
         }
