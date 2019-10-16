@@ -1,5 +1,5 @@
 package constant
 
 const (
-	URL_FRIENDBOT = "https://horizon-testnet.stellar.org/friendbot?addr=%s"
+	UrlFriendbot = "https://horizon-testnet.stellar.org/friendbot?addr=%s"
 )

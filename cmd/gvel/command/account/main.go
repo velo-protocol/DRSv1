@@ -11,6 +11,7 @@ func NewAccountCmd(rootCmd *cobra.Command) {
 	}
 
 	accountMainCmd.AddCommand(newCreateCmd())
+	accountMainCmd.AddCommand(newListCmd())
 
 	rootCmd.AddCommand(&accountMainCmd)
 }

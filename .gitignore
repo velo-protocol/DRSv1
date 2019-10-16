@@ -3,6 +3,7 @@ node/app/tmp
 node/app/app
 coverage.out
 .coverage.txt
+cmd/gvel/gvel
 
 # IntelliJ project files
 .idea
