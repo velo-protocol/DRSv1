@@ -13,5 +13,5 @@ type UseCase interface {
 	UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError)
 	MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.MintCreditOutput, nerrors.NodeError)
 	RedeemCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.RedeemCreditOutput, nerrors.NodeError)
-	GetExchangeRate(ctx context.Context, getExchangeRate *entities.GetExchangeRateInput) (*entities.GetExchangeRateOutPut, nerrors.NodeError)
+	GetExchangeRate(ctx context.Context, input *entities.GetExchangeRateInput) (*entities.GetExchangeRateOutPut, nerrors.NodeError)
 }

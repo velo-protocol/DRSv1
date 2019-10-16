@@ -1,16 +1,15 @@
-package usecases_test
+package subusecases_test
 
 import (
 	"github.com/golang/mock/gomock"
 	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
-	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
+	"gitlab.com/velo-labs/cen/node/app/layers/subusecases"
 	"gitlab.com/velo-labs/cen/node/app/testhelpers"
 	"testing"
 )
 
 type helper struct {
-	useCase         usecases.UseCase
-	mockSubUseCase  *mocks.MockSubUseCase
+	subUseCase      subusecases.SubUseCase
 	mockStellarRepo *mocks.MockStellarRepo
 	mockController  *gomock.Controller
 }
@@ -40,11 +39,9 @@ func initTest(t *testing.T) helper {
 
 	mockCtrl := gomock.NewController(t)
 	mockStellarRepo := mocks.NewMockStellarRepo(mockCtrl)
-	mockSubUseCase := mocks.NewMockSubUseCase(mockCtrl)
 
 	return helper{
-		useCase:         usecases.Init(mockStellarRepo, mockSubUseCase),
-		mockSubUseCase:  mockSubUseCase,
+		subUseCase:      subusecases.Init(mockStellarRepo),
 		mockStellarRepo: mockStellarRepo,
 		mockController:  mockCtrl,
 	}
