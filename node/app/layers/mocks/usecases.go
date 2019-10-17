@@ -110,3 +110,18 @@ func (mr *MockUseCaseMockRecorder) RedeemCredit(ctx, veloTx interface{}) *gomock
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RedeemCredit", reflect.TypeOf((*MockUseCase)(nil).RedeemCredit), ctx, veloTx)
 }
+
+// GetExchangeRate mocks base method
+func (m *MockUseCase) GetExchangeRate(ctx context.Context, getExchangeRate *entities.GetExchangeRateInput) (*entities.GetExchangeRateOutPut, errors.NodeError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExchangeRate", ctx, getExchangeRate)
+	ret0, _ := ret[0].(*entities.GetExchangeRateOutPut)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
+}
+
+// GetExchangeRate indicates an expected call of GetExchangeRate
+func (mr *MockUseCaseMockRecorder) GetExchangeRate(ctx, getExchangeRate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExchangeRate", reflect.TypeOf((*MockUseCase)(nil).GetExchangeRate), ctx, getExchangeRate)
+}

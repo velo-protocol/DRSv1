@@ -11,10 +11,14 @@ type handler struct {
 }
 
 func Init(grpcServer *grpc.Server, useCase usecases.UseCase) {
-	handler := handler{
-		UseCase: useCase,
-	}
+	h := InitHandler(useCase)
 
 	// Register Velo Node
-	spec.RegisterVeloNodeServer(grpcServer, &handler)
+	spec.RegisterVeloNodeServer(grpcServer, h)
+}
+
+func InitHandler(useCase usecases.UseCase) *handler {
+	return &handler{
+		UseCase: useCase,
+	}
 }

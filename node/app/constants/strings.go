@@ -6,4 +6,8 @@ import (
 )
 
 var MaxTrustlineLimit = amount.StringFromInt64(math.MaxInt64)
-var VeloAbv = "VELO"
+
+const (
+	AssetCode = "assetCode"
+	Issuer    = "issuer"
+)
