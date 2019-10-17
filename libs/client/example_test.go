@@ -2,6 +2,7 @@ package vclient
 
 import (
 	"context"
+	cenGrpc "gitlab.com/velo-labs/cen/grpc"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"log"
 )
@@ -44,4 +45,16 @@ func Example() {
 		panic(err)
 	}
 	log.Println(txResult.TransactionSuccessToString())
+
+	reply, err := client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{
+		AssetCode: "vUSD",
+		Issuer:    "GC5F4E7IKMDFNOL7Z5WDHC42LBLLQL2UFY6KQALO2RRHC5EMJJRECPI3",
+	})
+	if err != nil {
+		panic(err)
+	}
+	log.Println("Asset Code: ", reply.AssetCode)
+	log.Println("Asset Issuer: ", reply.Issuer)
+	log.Println("Redeemable Collateral: ", reply.RedeemableCollateral)
+	log.Println("Redeemable Price Per Unit: ", reply.RedeemablePricePerUnit)
 }

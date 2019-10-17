@@ -27,11 +27,14 @@ type Client struct {
 
 type ClientInterface interface {
 	Close() error
+
 	Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (*horizon.TransactionSuccess, error)
 	SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCredit) (*horizon.TransactionSuccess, error)
 	PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpdate) (*horizon.TransactionSuccess, error)
 	MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredit) (*horizon.TransactionSuccess, error)
 	RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (*horizon.TransactionSuccess, error)
+
+	GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateRequest, error)
 }
 
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
@@ -161,4 +164,8 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 	}
 
 	return &result, nil
+}
+
+func (client *Client) GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateReply, error) {
+	return client.veloNodeClient.GetExchangeRate(ctx, request)
 }
