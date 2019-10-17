@@ -37,7 +37,7 @@ type ClientInterface interface {
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot connect to VeloCen via gRPC")
+		return nil, errors.Wrap(err, "cannot connect to Velo Node")
 	}
 
 	return NewPublicClient(grpcConn, stellarAccountSecretKey)
@@ -128,7 +128,7 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 		veloNodeErr, ok := status.FromError(err)
 		if ok {
 			if veloNodeErr.Code() == codes.Unavailable {
-				return nil, errors.Wrap(err, "cannot connect to VeloCen via gRPC")
+				return nil, errors.Wrap(err, "cannot connect to Velo Node")
 			}
 		}
 
