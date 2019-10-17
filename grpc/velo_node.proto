@@ -5,6 +5,8 @@ package grpc;
 service VeloNode {
     rpc SubmitVeloTx (VeloTxRequest) returns (VeloTxReply) {
     }
+    rpc GetExchangeRate (GetExchangeRateRequest) returns (GetExchangeRateReply) {
+    }
 }
 
 message VeloTxRequest {
@@ -14,4 +16,16 @@ message VeloTxRequest {
 message VeloTxReply {
     string signedStellarTxXdr = 1;
     string message = 2;
+}
+
+message GetExchangeRateRequest {
+    string assetCode = 1;
+    string issuer = 2;
+}
+
+message GetExchangeRateReply {
+    string assetCode = 1;
+    string issuer = 2;
+    string redeemableCollateral = 3;
+    string redeemablePricePerUnit = 4;
 }
