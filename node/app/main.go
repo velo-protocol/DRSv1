@@ -7,6 +7,7 @@ import (
 	"gitlab.com/velo-labs/cen/node/app/extensions"
 	grpcDelivery "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
 	_stellarRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
+	"gitlab.com/velo-labs/cen/node/app/layers/subusecases"
 	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -53,8 +54,11 @@ func main() {
 	// Repo
 	stellarRepo := _stellarRepo.Init(horizonClient)
 
+	// Sub Use Cases
+	subUseCase := subusecases.Init(stellarRepo)
+
 	// Use Cases
-	useCase := usecases.Init(stellarRepo)
+	useCase := usecases.Init(stellarRepo, subUseCase)
 
 	// Deliveries
 	grpcDelivery.Init(grpcServer, useCase)

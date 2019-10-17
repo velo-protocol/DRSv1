@@ -34,7 +34,6 @@ func (m *MockDB) EXPECT() *MockDBMockRecorder {
 
 // Save mocks base method
 func (m *MockDB) Save(key, value []byte) error {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", key, value)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -42,13 +41,11 @@ func (m *MockDB) Save(key, value []byte) error {
 
 // Save indicates an expected call of Save
 func (mr *MockDBMockRecorder) Save(key, value interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockDB)(nil).Save), key, value)
 }
 
 // Get mocks base method
 func (m *MockDB) Get(key []byte) ([]byte, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", key)
 	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
@@ -57,13 +54,11 @@ func (m *MockDB) Get(key []byte) ([]byte, error) {
 
 // Get indicates an expected call of Get
 func (mr *MockDBMockRecorder) Get(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockDB)(nil).Get), key)
 }
 
 // GetAll mocks base method
 func (m *MockDB) GetAll() ([][]byte, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll")
 	ret0, _ := ret[0].([][]byte)
 	ret1, _ := ret[1].(error)
@@ -72,6 +67,5 @@ func (m *MockDB) GetAll() ([][]byte, error) {
 
 // GetAll indicates an expected call of GetAll
 func (mr *MockDBMockRecorder) GetAll() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockDB)(nil).GetAll))
 }

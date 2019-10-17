@@ -63,6 +63,14 @@ mockgen/usecase:
 		-package mocks \
 		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
 
+mockgen/subusecase:
+	mockgen \
+		-source=./app/layers/subusecases/interface.go \
+		-destination=./app/layers/mocks/subusecases.go \
+		-package mocks \
+		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
+
 mockgen/all:
 	make mockgen/usecase
+	make mockgen/subusecase
 	make mockgen/repo m=stellar M=Stellar
