@@ -46,7 +46,7 @@ func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) 
 func NewDefaultTestNetClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot connect to VeloCen via gRPC")
+		return nil, errors.Wrap(err, "cannot connect to Velo Node")
 	}
 
 	return NewTestNetClient(grpcConn, stellarAccountSecretKey)
