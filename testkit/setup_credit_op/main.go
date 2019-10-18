@@ -1,42 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"github.com/stellar/go/keypair"
-	"github.com/stellar/go/txnbuild"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"context"
+	"gitlab.com/velo-labs/cen/libs/client"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/testkit/helper"
 	"log"
 )
 
 func main() {
-	veloTxB64 := buildB64SetupCreditOp(helper.PublicKeyTP, "THB", "1", "vTHB", helper.KPTP)
-
-	helper.DecodeB64VeloTx(veloTxB64)
-	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
-
+	callSetupCredit()
 }
 
-func buildB64SetupCreditOp(txSourceAccount, peggedCurrency, peggedValue, assetCode string, secretKey *keypair.Full) string {
-	fmt.Println("##### Start Build Setup Credit Operation #####")
+func callSetupCredit() {
 
-	veloTxB64, err := (&vtxnbuild.VeloTx{
-		SourceAccount: &txnbuild.SimpleAccount{
-			AccountID: txSourceAccount,
-		},
-		VeloOp: &vtxnbuild.SetupCredit{
-			PeggedValue:    peggedValue,
-			PeggedCurrency: peggedCurrency,
-			AssetCode:      assetCode,
-		},
-	}).BuildSignEncode(secretKey)
-
+	client, err := vclient.NewDefaultTestNetClient("localhost:8080", helper.SecretKeyTrustedPartner)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
+	defer func() {
+		_ = client.Close()
+	}()
 
-	fmt.Println("##### End Build Setup Credit Operation #####")
-
-	return veloTxB64
+	txResult, err := client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
+		PeggedValue:    "1.0",
+		PeggedCurrency: "USD",
+		AssetCode:      "vUSD",
+	})
+	if err != nil {
+		panic(err)
+	}
+	log.Println(txResult.TransactionSuccessToString())
 }
