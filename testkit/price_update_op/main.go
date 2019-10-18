@@ -1,41 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"github.com/stellar/go/keypair"
-	"github.com/stellar/go/txnbuild"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"context"
+	"gitlab.com/velo-labs/cen/libs/client"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/testkit/helper"
 	"log"
 )
 
 func main() {
-	veloTxB64 := buildB64PriceUpdateOp(helper.PublicKeyPF, "VELO", "THB", "1.1234567", helper.KPPF)
-
-	helper.DecodeB64VeloTx(veloTxB64)
-	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
+	callPriceUpdate()
 }
 
-func buildB64PriceUpdateOp(txSourceAccount, asset, currency, priceInCurrencyPerAssetUnit string, secretKey *keypair.Full) string {
-	fmt.Println("##### Start Build Price Update Operation #####")
+func callPriceUpdate() {
 
-	veloTxB64, err := (&vtxnbuild.VeloTx{
-		SourceAccount: &txnbuild.SimpleAccount{
-			AccountID: txSourceAccount,
-		},
-		VeloOp: &vtxnbuild.PriceUpdate{
-			Asset:                       asset,
-			Currency:                    currency,
-			PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
-		},
-	}).BuildSignEncode(secretKey)
+	client, err := vclient.NewDefaultTestNetClient("localhost:8080", helper.SecretKeyPriceFeeder)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	defer func() {
+		_ = client.Close()
+	}()
 
-	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
-
-	fmt.Println("##### End Build Price Update Operation #####")
-
-	return veloTxB64
+	txResult, err := client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
+		Asset:                       "VELO",
+		Currency:                    "THB",
+		PriceInCurrencyPerAssetUnit: "0.5",
+	})
+	if err != nil {
+		panic(err)
+	}
+	log.Println(txResult.TransactionSuccessToString())
 }
