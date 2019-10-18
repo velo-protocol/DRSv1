@@ -1,42 +1,36 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/stellar/go/keypair"
-	"github.com/stellar/go/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/client"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/testkit/helper"
-	"log"
 )
 
 func main() {
-	veloTxB64 := buildB64WhitelistOp(helper.PublicKeyFirstRegulator, helper.PublicKeyPF, vxdr.RolePriceFeeder, "THB", helper.KPFirstRegulator)
-
-	helper.DecodeB64VeloTx(veloTxB64)
-	helper.CompareVeloTxSigner(veloTxB64, helper.PublicKeyFirstRegulator)
+	callWhitelist()
 }
 
-func buildB64WhitelistOp(txSourceAccount, opSourceAccount string, whitelistRole vxdr.Role, currency string, secretKey *keypair.Full) string {
-	fmt.Println("##### Start Build Whitelist Operation #####")
+func callWhitelist() {
 
-	veloTxB64, err := (&vtxnbuild.VeloTx{
-		SourceAccount: &txnbuild.SimpleAccount{
-			AccountID: txSourceAccount,
-		},
-		VeloOp: &vtxnbuild.Whitelist{
-			Address:  opSourceAccount,
-			Role:     string(whitelistRole),
-			Currency: currency,
-		},
-	}).BuildSignEncode(secretKey)
-
+	client, err := vclient.NewDefaultTestNetClient("localhost:8080", helper.SecretKeyFirstRegulator)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
+	defer func() {
+		_ = client.Close()
+	}()
 
-	fmt.Println("##### End Build Whitelist Operation #####")
-
-	return veloTxB64
+	txResult, err := client.Whitelist(context.Background(), vtxnbuild.Whitelist{
+		Address:  "GC5F4E7IKMDFNOL7Z5WDHC42LBLLQL2UFY6KQALO2RRHC5EMJJRECPI3",
+		Role:     "PRICE_FEEDER",
+		Currency: "USD",
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("transaction result: ", txResult.Result)
+	fmt.Println("transaction envelope: ", txResult.Env)
+	fmt.Println("transaction ledger", txResult.Ledger)
 }
