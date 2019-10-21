@@ -37,7 +37,7 @@ func generateDRSAndFriends() {
 		log.Panic(err)
 	}
 
-	createDRSOp, drsKP := _operations.CreateAccountOp(&sourceAccount, "17")
+	createDRSOp, drsKP := _operations.CreateAccountOp(&sourceAccount, "17.5")
 
 	drsAccount := loadAccount(drsKP.Address())
 	createDrsReserveOp, drsReserveKP := _operations.CreateAccountOp(drsAccount, "2")
@@ -86,6 +86,8 @@ func generateDRSAndFriends() {
 	priceUSDAccount := loadAccount(priceUSDKP.Address())
 	addDRSSignToPriceUSDOp := _operations.SetSignerOp(priceUSDAccount, drsKP.Address(), drsSignerWeight, &dropMasterWeight, &lowThreshold, &mediumThreshold, &highThreshold)
 
+	drsManageDataDrsReserveOp := _operations.ManageDataOp(drsAccount, "DrsReserve", drsReserveKP.Address())
+
 	drsManageDataTPListOp := _operations.ManageDataOp(drsAccount, "TrustedPartnerList", tpListKP.Address())
 
 	drsManageDataREGListOp := _operations.ManageDataOp(drsAccount, "RegulatorList", regulatorListKP.Address())
@@ -124,6 +126,7 @@ func generateDRSAndFriends() {
 			addDRSSignToPriceTHBOp,
 			addDRSSignToPriceUSDOp,
 
+			drsManageDataDrsReserveOp,
 			drsManageDataTPListOp,
 			drsManageDataREGListOp,
 			drsManageDataPFListOp,
