@@ -103,7 +103,7 @@ func generateDRSAndFriends() {
 
 	regulatorListManageDataAddRegulatorOp := _operations.ManageDataOp(regulatorListAccount, regulatorKP.Address(), "true")
 
-	txFuture := txnbuild.Transaction{
+	tx := txnbuild.Transaction{
 		SourceAccount: &sourceAccount,
 		Operations: []txnbuild.Operation{
 			createDRSOp,
@@ -167,7 +167,7 @@ func generateDRSAndFriends() {
 	log.Println("regulator public:", regulatorKP.Address())
 	log.Println("regulator seed:", regulatorKP.Seed())
 
-	txe, err := txFuture.BuildSignEncode(sourceKP, drsKP, drsReserveKP, tpListKP, pfListKP, regulatorListKP, priceSGDKP, priceTHBKP, priceUSDKP)
+	txe, err := tx.BuildSignEncode(sourceKP, drsKP, drsReserveKP, tpListKP, pfListKP, regulatorListKP, priceSGDKP, priceTHBKP, priceUSDKP)
 	if err != nil {
 		log.Panic(err)
 	}
