@@ -37,9 +37,11 @@ func generateDRSAndFriends() {
 		log.Panic(err)
 	}
 
-	createDRSOp, drsKP := _operations.CreateAccountOp(&sourceAccount, "15")
+	createDRSOp, drsKP := _operations.CreateAccountOp(&sourceAccount, "17")
 
 	drsAccount := loadAccount(drsKP.Address())
+	createDrsReserveOp, drsReserveKP := _operations.CreateAccountOp(drsAccount, "2")
+
 	createTPListOp, tpListKP := _operations.CreateAccountOp(drsAccount, "1.5")
 
 	createPFListOp, pfListKP := _operations.CreateAccountOp(drsAccount, "1.5")
@@ -56,6 +58,9 @@ func generateDRSAndFriends() {
 
 	dropMasterWeight := txnbuild.Threshold(0)
 	drsSignerWeight := txnbuild.Threshold(1)
+
+	drsReserveAccount := loadAccount(drsReserveKP.Address())
+	addDRSSignToDrsReserveOp := _operations.SetSignerOp(drsReserveAccount, drsKP.Address(), drsSignerWeight, &dropMasterWeight, nil, nil, nil)
 
 	tpListAccount := loadAccount(tpListKP.Address())
 	addDRSSignToTPListOp := _operations.SetSignerOp(tpListAccount, drsKP.Address(), drsSignerWeight, &dropMasterWeight, nil, nil, nil)
@@ -94,6 +99,7 @@ func generateDRSAndFriends() {
 	drsManageDataPriceSGDVELOOp := _operations.ManageDataOp(drsAccount, "Price[SGD-VELO]", priceSGDKP.Address())
 
 	drsTrustLineVELOOp := _operations.ChangeTrustOp(drsAccount, veloAsset, veloAssetIssuerAccount)
+	drsReserveTrustLineVELOOp := _operations.ChangeTrustOp(drsReserveAccount, veloAsset, veloAssetIssuerAccount)
 
 	regulatorListManageDataAddRegulatorOp := _operations.ManageDataOp(regulatorListAccount, regulatorKP.Address(), "true")
 
@@ -101,6 +107,7 @@ func generateDRSAndFriends() {
 		SourceAccount: &sourceAccount,
 		Operations: []txnbuild.Operation{
 			createDRSOp,
+			createDrsReserveOp,
 			createTPListOp,
 			createPFListOp,
 			createREGListOp,
@@ -109,6 +116,7 @@ func generateDRSAndFriends() {
 			createPriceUSDOp,
 			createFirstRegulatorOp,
 
+			addDRSSignToDrsReserveOp,
 			addDRSSignToTPListOp,
 			addDRSSignToREGListOp,
 			addDRSSignToPFListOp,
@@ -123,6 +131,7 @@ func generateDRSAndFriends() {
 			drsManageDataPriceTHBVELOOp,
 			drsManageDataPriceSGDVELOOp,
 			drsTrustLineVELOOp,
+			drsReserveTrustLineVELOOp,
 
 			regulatorListManageDataAddRegulatorOp,
 		},
@@ -131,8 +140,11 @@ func generateDRSAndFriends() {
 		BaseFee:    100 * 100,
 	}
 
-	log.Println("drs public:", drsKP.Address())
-	log.Println("drs seed:", drsKP.Seed())
+	log.Println("drs collateral public:", drsKP.Address())
+	log.Println("drs collateral seed:", drsKP.Seed())
+
+	log.Println("drs reserve public:", drsReserveKP.Address())
+	log.Println("drs reserve seed:", drsReserveKP.Seed())
 
 	log.Println("tpList public:", tpListKP.Address())
 	log.Println("tpList seed:", tpListKP.Seed())
@@ -155,7 +167,7 @@ func generateDRSAndFriends() {
 	log.Println("regulator public:", regulatorKP.Address())
 	log.Println("regulator seed:", regulatorKP.Seed())
 
-	txe, err := txFuture.BuildSignEncode(sourceKP, drsKP, tpListKP, pfListKP, regulatorListKP, priceSGDKP, priceTHBKP, priceUSDKP)
+	txe, err := txFuture.BuildSignEncode(sourceKP, drsKP, drsReserveKP, tpListKP, pfListKP, regulatorListKP, priceSGDKP, priceTHBKP, priceUSDKP)
 	if err != nil {
 		log.Panic(err)
 	}
