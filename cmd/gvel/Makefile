@@ -8,6 +8,13 @@ format:
 build:
 	go build .
 
+mockgen/logic:
+	mockgen \
+		-source=./layers/logic/interface.go \
+		-destination=./layers/mocks/logic.go \
+		-mock_names Logic=MockLogic \
+		-package mocks
+
 mockgen/db:
 	mockgen \
 		-source=./layers/repositories/database/interface.go \
@@ -22,6 +29,14 @@ mockgen/friendbot:
 		-mock_names Repository=MockFriendBotRepo \
 		-package mocks
 
+mockgen/console:
+	mockgen \
+		-source=./utils/console/interface.go \
+		-destination=./utils/mocks/console.go \
+		-mock_names Prompt=MockPrompt \
+		-package mockutils
+
 mockgen/all:
 	make mockgen/db
 	make mockgen/friendbot
+	make mockgen/logic

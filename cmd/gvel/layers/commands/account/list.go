@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
-	errManager "gitlab.com/velo-labs/cen/cmd/gvel/utils/error_manager"
 )
 
 func (accountCommand *CommandHandler) List(cmd *cobra.Command, args []string) {
 	accounts, err := accountCommand.Logic.ListAccount()
 	if err != nil {
-		errManager.ExitWithError(errManager.ExitError, err)
+		console.ExitWithError(console.ExitError, err)
 	}
 
 	var data [][]string

@@ -8,11 +8,13 @@ import (
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/friendbot"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 	"os"
 )
 
 func main() {
 	config.Load()
+	console.InitLogger()
 
 	var logicInstance logic.Logic
 	{

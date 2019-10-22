@@ -1,7 +1,6 @@
-package errmanager
+package console
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -26,6 +25,6 @@ const (
 
 // ExitWithError Exit Command with error
 func ExitWithError(code int, err error) {
-	_, _ = fmt.Fprintln(os.Stderr, "Error:", err.Error())
+	Logger.Error(err.Error())
 	os.Exit(code)
 }

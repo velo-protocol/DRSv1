@@ -33,7 +33,9 @@ func (database *levelDbDatabase) GetAll() ([][]byte, error) {
 
 	iter := database.conn.NewIterator(nil, nil)
 	for iter.Next() {
-		all = append(all, iter.Value())
+		val := make([]byte, len(iter.Value()))
+		copy(val[:], iter.Value()[:])
+		all = append(all, val)
 	}
 	iter.Release()
 

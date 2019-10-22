@@ -13,6 +13,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.1
 	github.com/pkg/errors v0.8.1
 	github.com/shopspring/decimal v0.0.0-20190905144223-a36b5d85f337
+	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/cobra v0.0.0-20160830174925-9c28e4bbd74e
 	github.com/spf13/viper v1.4.0
 	github.com/stellar/go v0.0.0-20191009151708-d01f442ec0d3

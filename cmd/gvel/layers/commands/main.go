@@ -5,6 +5,7 @@ import (
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/account"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/initialize"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 	"log"
 )
 
@@ -13,12 +14,14 @@ type GvelHandler struct {
 	RootCommand    *cobra.Command
 	InitCommand    *cobra.Command
 	AccountCommand *cobra.Command
+	Prompt         console.Prompt
 }
 
 func NewGvelHandler(logic logic.Logic) *GvelHandler {
 	return &GvelHandler{
 		Logic:       logic,
 		RootCommand: NewGvelRootCommand(),
+		Prompt:      console.NewPrompt(),
 	}
 }
 
@@ -32,18 +35,23 @@ func NewGvelRootCommand() *cobra.Command {
 }
 
 func (gvelHandler *GvelHandler) Init() {
+	// init InitCommand
 	if gvelHandler.InitCommand == nil {
 		gvelHandler.InitCommand = initialize.
-			NewCommandHandler(gvelHandler.Logic).
+			NewCommandHandler(gvelHandler.Logic, gvelHandler.Prompt).
 			Command()
 	}
 
+	// init AccountCommand
 	if gvelHandler.AccountCommand == nil {
 		gvelHandler.AccountCommand = account.
-			NewCommandHandler(gvelHandler.Logic).
+			NewCommandHandler(gvelHandler.Logic, gvelHandler.Prompt).
 			Command()
 	}
 
-	gvelHandler.RootCommand.AddCommand(gvelHandler.InitCommand)
-	gvelHandler.RootCommand.AddCommand(gvelHandler.AccountCommand)
+	// Add commands to root
+	gvelHandler.RootCommand.AddCommand(
+		gvelHandler.InitCommand,
+		gvelHandler.AccountCommand,
+	)
 }

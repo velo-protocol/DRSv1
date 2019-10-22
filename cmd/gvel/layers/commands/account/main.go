@@ -5,16 +5,18 @@ import (
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
-	errManager "gitlab.com/velo-labs/cen/cmd/gvel/utils/error_manager"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 )
 
 type CommandHandler struct {
-	Logic logic.Logic
+	Logic  logic.Logic
+	Prompt console.Prompt
 }
 
-func NewCommandHandler(logic logic.Logic) *CommandHandler {
+func NewCommandHandler(logic logic.Logic, prompt console.Prompt) *CommandHandler {
 	return &CommandHandler{
-		Logic: logic,
+		Logic:  logic,
+		Prompt: prompt,
 	}
 }
 
@@ -24,7 +26,7 @@ func (accountCommand *CommandHandler) Command() *cobra.Command {
 		Short: "Use account command for managing the account interacting with Velo",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if !config.Exists() {
-				errManager.ExitWithError(errManager.ExitError, errors.New("config file not found, please run `gvel init`"))
+				console.ExitWithError(console.ExitError, errors.New("config file not found, please run `gvel init`"))
 			}
 		},
 	}

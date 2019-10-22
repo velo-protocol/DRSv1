@@ -2,23 +2,33 @@ package console
 
 import (
 	"github.com/bgentry/speakeasy"
-	errManager "gitlab.com/velo-labs/cen/cmd/gvel/utils/error_manager"
+	"github.com/pkg/errors"
 )
 
 func RequestPassphrase() string {
 	passphrase, err := speakeasy.Ask("please enter passphrase: ")
 	if err != nil {
-		errManager.ExitWithError(errManager.ExitBadArgs, err)
+		ExitWithError(ExitBadArgs, err)
 	}
 
 	confirm, err := speakeasy.Ask("please repeat a passphrase to confirm: ")
 	if err != nil {
-		errManager.ExitWithError(errManager.ExitBadArgs, err)
+		ExitWithError(ExitBadArgs, err)
 	}
 
 	if passphrase != confirm {
-		errManager.ExitWithError(errManager.ExitBadArgs, err)
+		ExitWithError(ExitBadArgs, errors.New("passphrase does not match"))
 	}
 
 	return passphrase
+}
+
+type prompt struct{}
+
+func NewPrompt() Prompt {
+	return &prompt{}
+}
+
+func (prompt *prompt) RequestPassphrase() string {
+	return RequestPassphrase()
 }
