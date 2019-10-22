@@ -2,25 +2,37 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/command/account"
-	_init "gitlab.com/velo-labs/cen/cmd/gvel/command/init"
-	"log"
+	"github.com/spf13/viper"
+	"gitlab.com/velo-labs/cen/cmd/gvel/config"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/friendbot"
 	"os"
 )
 
 func main() {
-	var rootCommand = &cobra.Command{
-		Use: "gvel",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			log.Println("IMPORTANT NOTICE: Heavily WIP, expect anything.")
-		},
+	config.Load()
+
+	var logicInstance logic.Logic
+	{
+		if config.Exists() {
+			accountDbRepository, err := database.NewLevelDbDatabase(viper.GetString("accountDbPath"))
+			if err != nil {
+				panic(err)
+			}
+			friendBotRepository := friendbot.NewFriendBot(viper.GetString("friendBotUrl"))
+
+			logicInstance = logic.NewLogic(accountDbRepository, friendBotRepository)
+		} else {
+			logicInstance = logic.NewLogic(nil, nil)
+		}
 	}
 
-	account.NewAccountCmd(rootCommand)
-	_init.NewInitCmd(rootCommand)
+	commandHandler := commands.NewGvelHandler(logicInstance)
+	commandHandler.Init()
 
-	err := rootCommand.Execute()
+	err := commandHandler.RootCommand.Execute()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

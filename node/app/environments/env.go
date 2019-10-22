@@ -20,7 +20,7 @@ var (
 	EnableReflectionAPI bool
 )
 
-// Init Initialize env variables
+// Init Init env variables
 func Init() {
 	DrsPublicKey = requireEnv("DRS_PUBLIC_KEY")
 	DrsSecretKey = requireEnv("DRS_SECRET_KEY")
