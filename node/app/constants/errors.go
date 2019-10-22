@@ -27,6 +27,7 @@ var (
 	ErrGetTrustedPartnerMetaAccountDetail = "fail to get account detail of trusted partner's meta account"
 	ErrGetIssuerAccountDetail             = "fail to get account detail of issuer account"
 	ErrGetIssuerAccount                   = "fail to get issuer account"
+	ErrGetAsset                           = "fail to get asset %s"
 
 	ErrVerifyTrustedPartnerAccount = "fail to verify trusted partner account"
 	ErrVerifyAssetCode             = "fail to verify asset code"
