@@ -3,15 +3,18 @@ package initialize
 import (
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 )
 
 type CommandHandler struct {
-	Logic logic.Logic
+	Logic  logic.Logic
+	Prompt console.Prompt
 }
 
-func NewCommandHandler(logic logic.Logic) *CommandHandler {
+func NewCommandHandler(logic logic.Logic, prompt console.Prompt) *CommandHandler {
 	return &CommandHandler{
-		Logic: logic,
+		Logic:  logic,
+		Prompt: prompt,
 	}
 }
 
