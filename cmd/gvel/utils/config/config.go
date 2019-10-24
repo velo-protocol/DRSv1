@@ -17,8 +17,9 @@ func Exists() bool {
 	return viper.GetBool("initialized")
 }
 
-func Load() {
-	_ = load(constants.DefaultConfigFilePath)
+func SetDefaultAccount(account string) error {
+	viper.Set("defaultAccount", account)
+	return viper.WriteConfig()
 }
 
 func load(configPath string) error {
@@ -51,6 +52,7 @@ func setupConfigFile(configPath string) error {
 	viper.SetDefault("initialized", true) // a flag to check for config file existence
 	viper.SetDefault("accountDbPath", path.Join(configPath, "/db/account"))
 	viper.SetDefault("friendBotUrl", constants.DefaultFriendBotUrl)
+	viper.SetDefault("defaultAccount", "")
 
 	err = viper.WriteConfig()
 	if err != nil {
@@ -58,4 +60,22 @@ func setupConfigFile(configPath string) error {
 	}
 
 	return nil
+}
+
+type configuration struct{}
+
+func NewConfiguration() *configuration {
+	return &configuration{}
+}
+
+func (configuration *configuration) Load() {
+	_ = load(constants.DefaultConfigFilePath)
+}
+
+func (configuration *configuration) GetDefaultAccount() string {
+	return viper.GetString("defaultAccount")
+}
+
+func (configuration *configuration) SetDefaultAccount(account string) error {
+	return SetDefaultAccount(account)
 }

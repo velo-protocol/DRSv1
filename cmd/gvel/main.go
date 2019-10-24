@@ -13,7 +13,9 @@ import (
 )
 
 func main() {
-	config.Load()
+	appConfig := config.NewConfiguration()
+	appConfig.Load()
+
 	console.InitLogger()
 
 	var logicInstance logic.Logic
@@ -25,9 +27,9 @@ func main() {
 			}
 			friendBotRepository := friendbot.NewFriendBot(viper.GetString("friendBotUrl"))
 
-			logicInstance = logic.NewLogic(accountDbRepository, friendBotRepository)
+			logicInstance = logic.NewLogic(accountDbRepository, friendBotRepository, appConfig)
 		} else {
-			logicInstance = logic.NewLogic(nil, nil)
+			logicInstance = logic.NewLogic(nil, nil, appConfig)
 		}
 	}
 
@@ -37,6 +39,6 @@ func main() {
 	err := commandHandler.RootCommand.Execute()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(console.ExitError)
 	}
 }

@@ -32,17 +32,28 @@ func (accountCommand *CommandHandler) Command() *cobra.Command {
 	}
 
 	command.AddCommand(
-		&cobra.Command{
-			Use:   "create",
-			Short: "Create an account and store on your disk",
-			Run:   accountCommand.Create,
-		},
-		&cobra.Command{
-			Use:   "list",
-			Short: "Print all accounts that were created",
-			Run:   accountCommand.List,
-		},
+		accountCommand.GetCreateCommand(),
+		accountCommand.GetListCommand(),
 	)
 
 	return command
+}
+
+func (accountCommand *CommandHandler) GetCreateCommand() *cobra.Command {
+	command := &cobra.Command{
+		Use:   "create",
+		Short: "Create an account and store on your disk",
+		Run:   accountCommand.Create,
+	}
+
+	command.Flags().BoolP("default", "d", false, "set as default account")
+	return command
+}
+
+func (accountCommand *CommandHandler) GetListCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "Print all accounts that were created",
+		Run:   accountCommand.List,
+	}
 }
