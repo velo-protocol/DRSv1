@@ -9,7 +9,7 @@ import (
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
 )
 
-func (lo *logic) CreateAccount(passphrase string) (*keypair.Full, error) {
+func (lo *logic) CreateAccount(input *entity.CreateAccountInput) (*entity.CreateAccountOutput, error) {
 	newKP, err := keypair.Random()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to random a new key pair")
@@ -22,7 +22,7 @@ func (lo *logic) CreateAccount(passphrase string) (*keypair.Full, error) {
 
 	dbkey := fmt.Sprintf("%s", newKP.Address())
 
-	encryptedSeed, nonce, err := crypto.Encrypt([]byte(newKP.Seed()), passphrase)
+	encryptedSeed, nonce, err := crypto.Encrypt([]byte(newKP.Seed()), input.Passphrase)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to encrypt seed key")
 	}
@@ -43,5 +43,17 @@ func (lo *logic) CreateAccount(passphrase string) (*keypair.Full, error) {
 		return nil, errors.Wrap(err, "failed to save stellar account")
 	}
 
-	return newKP, nil
+	// set default account
+	mustSetDefault := lo.AppConfig.GetDefaultAccount() == "" || input.SetAsDefaultAccount
+	if mustSetDefault {
+		err = lo.AppConfig.SetDefaultAccount(newKP.Address())
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to write config file")
+		}
+	}
+
+	return &entity.CreateAccountOutput{
+		GeneratedKeyPair: newKP,
+		IsDefault:        mustSetDefault,
+	}, nil
 }

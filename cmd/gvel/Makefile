@@ -5,7 +5,7 @@ test/run:
 format:
 	go fmt ./...
 
-build:
+gvel/build:
 	go build .
 
 mockgen/logic:
@@ -36,7 +36,16 @@ mockgen/console:
 		-mock_names Prompt=MockPrompt \
 		-package mockutils
 
+mockgen/config:
+	mockgen \
+		-source=./utils/config/interface.go \
+		-destination=./utils/mocks/configuration.go \
+		-mock_names Prompt=MockConfiguration \
+		-package mockutils
+
 mockgen/all:
 	make mockgen/db
 	make mockgen/friendbot
 	make mockgen/logic
+	make mockgen/console
+	make mockgen/config

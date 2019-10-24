@@ -9,16 +9,18 @@ import (
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/mocks"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/mocks"
 	"os"
 	"testing"
 )
 
 type helper struct {
-	logic          logic.Logic
-	mockDB         *mocks.MockDbRepo
-	mockFriendBot  *mocks.MockFriendBotRepo
-	mockController *gomock.Controller
-	done           func()
+	logic             logic.Logic
+	mockDB            *mocks.MockDbRepo
+	mockFriendBot     *mocks.MockFriendBotRepo
+	mockConfiguration *mockutils.MockConfiguration
+	mockController    *gomock.Controller
+	done              func()
 }
 
 func initTest(t *testing.T) helper {
@@ -26,15 +28,17 @@ func initTest(t *testing.T) helper {
 
 	mockDB := mocks.NewMockDbRepo(mockCtrl)
 	mockFriendBot := mocks.NewMockFriendBotRepo(mockCtrl)
+	mockConfiguration := mockutils.NewMockConfiguration(mockCtrl)
 
 	logger, _ := test.NewNullLogger()
 	console.Logger = logger
 
 	return helper{
-		logic:          logic.NewLogic(mockDB, mockFriendBot),
-		mockDB:         mockDB,
-		mockFriendBot:  mockFriendBot,
-		mockController: mockCtrl,
+		logic:             logic.NewLogic(mockDB, mockFriendBot, mockConfiguration),
+		mockDB:            mockDB,
+		mockFriendBot:     mockFriendBot,
+		mockController:    mockCtrl,
+		mockConfiguration: mockConfiguration,
 		done: func() {
 			viper.Reset()
 			_ = os.RemoveAll("./.velo")
