@@ -3,7 +3,7 @@ package logic
 import (
 	"github.com/spf13/viper"
 	"github.com/syndtr/goleveldb/leveldb"
-	"gitlab.com/velo-labs/cen/cmd/gvel/config"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 )
 
 func (lo *logic) Init(configFilePath string) error {

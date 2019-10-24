@@ -3,10 +3,9 @@ package initialize
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/constants"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
-	"log"
 )
 
 func (initCommand *CommandHandler) Init(cmd *cobra.Command, args []string) {
@@ -19,6 +18,6 @@ func (initCommand *CommandHandler) Init(cmd *cobra.Command, args []string) {
 		console.ExitWithError(console.ExitError, err)
 	}
 
-	log.Printf("gvel has been initialized\n")
-	log.Printf("using config file at: %s\n", constants.DefaultConfigFilePath)
+	console.Logger.Printf("gvel has been initialized\n")
+	console.Logger.Printf("using config file at: %s\n", constants.DefaultConfigFilePath)
 }

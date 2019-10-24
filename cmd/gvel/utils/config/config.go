@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"gitlab.com/velo-labs/cen/cmd/gvel/constants"
-	"log"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 	"os"
 	"path"
 )
@@ -31,7 +31,7 @@ func setupConfigFile(configPath string) error {
 	_ = load(configPath)
 
 	if Exists() {
-		log.Println("config file found")
+		console.Logger.Error("config file found")
 		return nil
 	}
 
