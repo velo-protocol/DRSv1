@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"gitlab.com/velo-labs/cen/cmd/gvel/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/friendbot"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 	"os"
 )

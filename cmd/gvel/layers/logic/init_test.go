@@ -1,23 +1,35 @@
 package logic_test
 
 import (
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"os"
 	"testing"
 )
 
 func TestLogic_Init(t *testing.T) {
-	t.Run("happy - setConfigFile", func(t *testing.T) {
-		lo := logic.NewLogic(nil, nil)
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.done()
 
-		err := lo.Init("./.velo")
+		err := helper.logic.Init("./.velo")
 		assert.NoError(t, err)
 
-		_, err = os.Stat("./.velo")
+		_, err = os.Stat("./.velo/config.json")
 		assert.NoError(t, err)
 
-		err = os.RemoveAll("./.velo")
+		_, err = os.Stat("./.velo/db/account")
 		assert.NoError(t, err)
+	})
+
+	t.Run("fail, setupConfigFile returns error", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.done()
+
+		// force setupConfigFile to return error
+		viper.Set("initialized", true)
+
+		err := helper.logic.Init("./.velo")
+		assert.Error(t, err)
 	})
 }

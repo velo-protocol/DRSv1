@@ -3,8 +3,8 @@ package account
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 )
 
