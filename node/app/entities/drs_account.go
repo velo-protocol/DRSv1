@@ -7,6 +7,7 @@ import (
 )
 
 type DrsAccountData struct {
+	DrsReserve                string `mapstructure:"DrsReserve"`
 	TrustedPartnerListAddress string `mapstructure:"TrustedPartnerList"`
 	RegulatorListAddress      string `mapstructure:"RegulatorList"`
 	PriceFeederListAddress    string `mapstructure:"PriceFeederList"`

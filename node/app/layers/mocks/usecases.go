@@ -113,3 +113,16 @@ func (m *MockUseCase) GetExchangeRate(ctx context.Context, input *entities.GetEx
 func (mr *MockUseCaseMockRecorder) GetExchangeRate(ctx, input interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExchangeRate", reflect.TypeOf((*MockUseCase)(nil).GetExchangeRate), ctx, input)
 }
+
+// GetCollateralHealthCheck mocks base method
+func (m *MockUseCase) GetCollateralHealthCheck(ctx context.Context) (*entities.GetCollateralHealthCheckOutput, errors.NodeError) {
+	ret := m.ctrl.Call(m, "GetCollateralHealthCheck", ctx)
+	ret0, _ := ret[0].(*entities.GetCollateralHealthCheckOutput)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
+}
+
+// GetCollateralHealthCheck indicates an expected call of GetCollateralHealthCheck
+func (mr *MockUseCaseMockRecorder) GetCollateralHealthCheck(ctx interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockUseCase)(nil).GetCollateralHealthCheck), ctx)
+}

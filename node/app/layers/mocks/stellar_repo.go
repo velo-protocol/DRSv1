@@ -12,31 +12,31 @@ import (
 	reflect "reflect"
 )
 
-// MockRepo is a mock of Repo interface
-type MockRepo struct {
+// MockStellarRepo is a mock of Repo interface
+type MockStellarRepo struct {
 	ctrl     *gomock.Controller
-	recorder *MockRepoMockRecorder
+	recorder *MockStellarRepoMockRecorder
 }
 
-// MockRepoMockRecorder is the mock recorder for MockRepo
-type MockRepoMockRecorder struct {
-	mock *MockRepo
+// MockStellarRepoMockRecorder is the mock recorder for MockStellarRepo
+type MockStellarRepoMockRecorder struct {
+	mock *MockStellarRepo
 }
 
-// NewMockRepo creates a new mock instance
-func NewMockRepo(ctrl *gomock.Controller) *MockRepo {
-	mock := &MockRepo{ctrl: ctrl}
-	mock.recorder = &MockRepoMockRecorder{mock}
+// NewMockStellarRepo creates a new mock instance
+func NewMockStellarRepo(ctrl *gomock.Controller) *MockStellarRepo {
+	mock := &MockStellarRepo{ctrl: ctrl}
+	mock.recorder = &MockStellarRepoMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockRepo) EXPECT() *MockRepoMockRecorder {
+func (m *MockStellarRepo) EXPECT() *MockStellarRepoMockRecorder {
 	return m.recorder
 }
 
 // GetAccount mocks base method
-func (m *MockRepo) GetAccount(stellarAddress string) (*horizon.Account, error) {
+func (m *MockStellarRepo) GetAccount(stellarAddress string) (*horizon.Account, error) {
 	ret := m.ctrl.Call(m, "GetAccount", stellarAddress)
 	ret0, _ := ret[0].(*horizon.Account)
 	ret1, _ := ret[1].(error)
@@ -44,12 +44,12 @@ func (m *MockRepo) GetAccount(stellarAddress string) (*horizon.Account, error) {
 }
 
 // GetAccount indicates an expected call of GetAccount
-func (mr *MockRepoMockRecorder) GetAccount(stellarAddress interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccount", reflect.TypeOf((*MockRepo)(nil).GetAccount), stellarAddress)
+func (mr *MockStellarRepoMockRecorder) GetAccount(stellarAddress interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccount", reflect.TypeOf((*MockStellarRepo)(nil).GetAccount), stellarAddress)
 }
 
 // GetAccounts mocks base method
-func (m *MockRepo) GetAccounts(stellarAddresses ...string) ([]horizon.Account, error) {
+func (m *MockStellarRepo) GetAccounts(stellarAddresses ...string) ([]horizon.Account, error) {
 	varargs := []interface{}{}
 	for _, a := range stellarAddresses {
 		varargs = append(varargs, a)
@@ -61,12 +61,12 @@ func (m *MockRepo) GetAccounts(stellarAddresses ...string) ([]horizon.Account, e
 }
 
 // GetAccounts indicates an expected call of GetAccounts
-func (mr *MockRepoMockRecorder) GetAccounts(stellarAddresses ...interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccounts", reflect.TypeOf((*MockRepo)(nil).GetAccounts), stellarAddresses...)
+func (mr *MockStellarRepoMockRecorder) GetAccounts(stellarAddresses ...interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccounts", reflect.TypeOf((*MockStellarRepo)(nil).GetAccounts), stellarAddresses...)
 }
 
 // GetAccountData mocks base method
-func (m *MockRepo) GetAccountData(stellarAddress string) (map[string]string, error) {
+func (m *MockStellarRepo) GetAccountData(stellarAddress string) (map[string]string, error) {
 	ret := m.ctrl.Call(m, "GetAccountData", stellarAddress)
 	ret0, _ := ret[0].(map[string]string)
 	ret1, _ := ret[1].(error)
@@ -74,12 +74,12 @@ func (m *MockRepo) GetAccountData(stellarAddress string) (map[string]string, err
 }
 
 // GetAccountData indicates an expected call of GetAccountData
-func (mr *MockRepoMockRecorder) GetAccountData(stellarAddress interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountData", reflect.TypeOf((*MockRepo)(nil).GetAccountData), stellarAddress)
+func (mr *MockStellarRepoMockRecorder) GetAccountData(stellarAddress interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountData", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountData), stellarAddress)
 }
 
 // GetAccountDecodedData mocks base method
-func (m *MockRepo) GetAccountDecodedData(stellarAddress string) (map[string]string, error) {
+func (m *MockStellarRepo) GetAccountDecodedData(stellarAddress string) (map[string]string, error) {
 	ret := m.ctrl.Call(m, "GetAccountDecodedData", stellarAddress)
 	ret0, _ := ret[0].(map[string]string)
 	ret1, _ := ret[1].(error)
@@ -87,12 +87,12 @@ func (m *MockRepo) GetAccountDecodedData(stellarAddress string) (map[string]stri
 }
 
 // GetAccountDecodedData indicates an expected call of GetAccountDecodedData
-func (mr *MockRepoMockRecorder) GetAccountDecodedData(stellarAddress interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedData", reflect.TypeOf((*MockRepo)(nil).GetAccountDecodedData), stellarAddress)
+func (mr *MockStellarRepoMockRecorder) GetAccountDecodedData(stellarAddress interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedData", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedData), stellarAddress)
 }
 
 // GetAccountDecodedDataByKey mocks base method
-func (m *MockRepo) GetAccountDecodedDataByKey(stellarAddress, key string) (string, error) {
+func (m *MockStellarRepo) GetAccountDecodedDataByKey(stellarAddress, key string) (string, error) {
 	ret := m.ctrl.Call(m, "GetAccountDecodedDataByKey", stellarAddress, key)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
@@ -100,12 +100,12 @@ func (m *MockRepo) GetAccountDecodedDataByKey(stellarAddress, key string) (strin
 }
 
 // GetAccountDecodedDataByKey indicates an expected call of GetAccountDecodedDataByKey
-func (mr *MockRepoMockRecorder) GetAccountDecodedDataByKey(stellarAddress, key interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedDataByKey", reflect.TypeOf((*MockRepo)(nil).GetAccountDecodedDataByKey), stellarAddress, key)
+func (mr *MockStellarRepoMockRecorder) GetAccountDecodedDataByKey(stellarAddress, key interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedDataByKey", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedDataByKey), stellarAddress, key)
 }
 
 // GetDrsAccountData mocks base method
-func (m *MockRepo) GetDrsAccountData() (*entities.DrsAccountData, error) {
+func (m *MockStellarRepo) GetDrsAccountData() (*entities.DrsAccountData, error) {
 	ret := m.ctrl.Call(m, "GetDrsAccountData")
 	ret0, _ := ret[0].(*entities.DrsAccountData)
 	ret1, _ := ret[1].(error)
@@ -113,12 +113,12 @@ func (m *MockRepo) GetDrsAccountData() (*entities.DrsAccountData, error) {
 }
 
 // GetDrsAccountData indicates an expected call of GetDrsAccountData
-func (mr *MockRepoMockRecorder) GetDrsAccountData() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDrsAccountData", reflect.TypeOf((*MockRepo)(nil).GetDrsAccountData))
+func (mr *MockStellarRepoMockRecorder) GetDrsAccountData() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDrsAccountData", reflect.TypeOf((*MockStellarRepo)(nil).GetDrsAccountData))
 }
 
 // GetMedianPriceFromPriceAccount mocks base method
-func (m *MockRepo) GetMedianPriceFromPriceAccount(priceAccountAddress string) (decimal.Decimal, error) {
+func (m *MockStellarRepo) GetMedianPriceFromPriceAccount(priceAccountAddress string) (decimal.Decimal, error) {
 	ret := m.ctrl.Call(m, "GetMedianPriceFromPriceAccount", priceAccountAddress)
 	ret0, _ := ret[0].(decimal.Decimal)
 	ret1, _ := ret[1].(error)
@@ -126,12 +126,12 @@ func (m *MockRepo) GetMedianPriceFromPriceAccount(priceAccountAddress string) (d
 }
 
 // GetMedianPriceFromPriceAccount indicates an expected call of GetMedianPriceFromPriceAccount
-func (mr *MockRepoMockRecorder) GetMedianPriceFromPriceAccount(priceAccountAddress interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedianPriceFromPriceAccount", reflect.TypeOf((*MockRepo)(nil).GetMedianPriceFromPriceAccount), priceAccountAddress)
+func (mr *MockStellarRepoMockRecorder) GetMedianPriceFromPriceAccount(priceAccountAddress interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedianPriceFromPriceAccount", reflect.TypeOf((*MockStellarRepo)(nil).GetMedianPriceFromPriceAccount), priceAccountAddress)
 }
 
 // SubmitTransaction mocks base method
-func (m *MockRepo) SubmitTransaction(txB64 string) (*horizon.TransactionSuccess, error) {
+func (m *MockStellarRepo) SubmitTransaction(txB64 string) (*horizon.TransactionSuccess, error) {
 	ret := m.ctrl.Call(m, "SubmitTransaction", txB64)
 	ret0, _ := ret[0].(*horizon.TransactionSuccess)
 	ret1, _ := ret[1].(error)
@@ -139,12 +139,12 @@ func (m *MockRepo) SubmitTransaction(txB64 string) (*horizon.TransactionSuccess,
 }
 
 // SubmitTransaction indicates an expected call of SubmitTransaction
-func (mr *MockRepoMockRecorder) SubmitTransaction(txB64 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitTransaction", reflect.TypeOf((*MockRepo)(nil).SubmitTransaction), txB64)
+func (mr *MockStellarRepoMockRecorder) SubmitTransaction(txB64 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitTransaction", reflect.TypeOf((*MockStellarRepo)(nil).SubmitTransaction), txB64)
 }
 
 // GetAsset mocks base method
-func (m *MockRepo) GetAsset(getAssetInput entities.GetAssetInput) (*horizon.AssetsPage, error) {
+func (m *MockStellarRepo) GetAsset(getAssetInput entities.GetAssetInput) (*horizon.AssetsPage, error) {
 	ret := m.ctrl.Call(m, "GetAsset", getAssetInput)
 	ret0, _ := ret[0].(*horizon.AssetsPage)
 	ret1, _ := ret[1].(error)
@@ -152,6 +152,6 @@ func (m *MockRepo) GetAsset(getAssetInput entities.GetAssetInput) (*horizon.Asse
 }
 
 // GetAsset indicates an expected call of GetAsset
-func (mr *MockRepoMockRecorder) GetAsset(getAssetInput interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAsset", reflect.TypeOf((*MockRepo)(nil).GetAsset), getAssetInput)
+func (mr *MockStellarRepoMockRecorder) GetAsset(getAssetInput interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAsset", reflect.TypeOf((*MockStellarRepo)(nil).GetAsset), getAssetInput)
 }
