@@ -57,4 +57,14 @@ func Example() {
 	log.Println("Asset Issuer: ", reply.Issuer)
 	log.Println("Redeemable Collateral: ", reply.RedeemableCollateral)
 	log.Println("Redeemable Price Per Unit: ", reply.RedeemablePricePerUnit)
+
+	replyCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+	if err != nil {
+		panic(err)
+	}
+	log.Println("Asset Code: ", replyCollateralHealthCheck.AssetCode)
+	log.Println("Asset Issuer: ", replyCollateralHealthCheck.AssetIssuer)
+	log.Println("requiredAmount: ", replyCollateralHealthCheck.RequiredAmount)
+	log.Println("poolAmount: ", replyCollateralHealthCheck.PoolAmount)
+
 }

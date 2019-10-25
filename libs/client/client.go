@@ -35,6 +35,7 @@ type ClientInterface interface {
 	RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (*horizon.TransactionSuccess, error)
 
 	GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateRequest, error)
+	GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.Empty) (*cenGrpc.GetCollateralHealthCheckReply, error)
 }
 
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
@@ -168,4 +169,8 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 
 func (client *Client) GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateReply, error) {
 	return client.veloNodeClient.GetExchangeRate(ctx, request)
+}
+
+func (client *Client) GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.Empty) (*cenGrpc.GetCollateralHealthCheckReply, error) {
+	return client.veloNodeClient.GetCollateralHealthCheck(ctx, request)
 }

@@ -74,3 +74,6 @@ mockgen/all:
 	make mockgen/usecase
 	make mockgen/subusecase
 	make mockgen/repo m=stellar M=Stellar
+
+mockgen/grpc:
+	mockgen -source=../grpc/velo_node.pb.go -destination=../grpc/mocks/velo_node.pb.go -package mock_grpc

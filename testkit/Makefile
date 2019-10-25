@@ -15,3 +15,10 @@ submit/velotx:
 	grpcurl -plaintext \
 		-d '{"signedVeloTxXdr":"$(xdr)"}' \
         localhost:8080  grpc.VeloNode/SubmitVeloTx
+
+
+grpc/get-collateral-health-check:
+	go run ./get_collateral_health_check/main.go
+
+grpc/get-exchange-rate:
+	go run ./get_exchange_rate/main.go
