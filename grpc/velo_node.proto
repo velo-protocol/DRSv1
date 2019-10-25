@@ -37,7 +37,7 @@ message Empty {
 
 message GetCollateralHealthCheckReply {
     string assetCode = 1;
-    string issuer = 2;
+    string assetIssuer = 2;
     string requiredAmount = 3;
     string poolAmount = 4;
 }
