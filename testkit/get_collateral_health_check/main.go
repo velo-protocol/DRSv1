@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	client, err := vclient.NewDefaultTestNetClient("localhost:8080", "SAXIAVMNDS4VOM3W7J55T36V3DLY2PKDFHFCQWJTXE5JLUCBONJGUUBM")
+	client, err := vclient.NewDefaultTestNetClient("localhost:8080", "SC6OED46ETTH56IZ2YLCHTKWQZTIK3VFB54HXRSWSJMPBVSTK2H7YE7V")
 	if err != nil {
 		panic(err)
 	}
