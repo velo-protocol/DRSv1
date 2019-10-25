@@ -9,6 +9,8 @@ service VeloNode {
     }
     rpc GetCollateralHealthCheck (Empty) returns (GetCollateralHealthCheckReply) {
     }
+    rpc RebalanceReserve (Empty) returns (RebalanceReserveReply) {
+    }
 }
 
 message VeloTxRequest {
@@ -36,6 +38,18 @@ message Empty {
 }
 
 message GetCollateralHealthCheckReply {
+    string assetCode = 1;
+    string assetIssuer = 2;
+    string requiredAmount = 3;
+    string poolAmount = 4;
+}
+
+message RebalanceReserveReply {
+    repeated RebalanceCollateral items = 1;
+    string SignedStellarTxXdr = 2;
+}
+
+message RebalanceCollateral {
     string assetCode = 1;
     string assetIssuer = 2;
     string requiredAmount = 3;
