@@ -133,7 +133,7 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 	return &entities.GetCollateralHealthCheckOutput{
 		AssetCode:      string(vxdr.AssetVELO),
 		AssetIssuer:    env.VeloIssuerPublicKey,
-		RequiredAmount: collateral,
-		PoolAmount:     poolAmount,
+		RequiredAmount: collateral.Truncate(7),
+		PoolAmount:     poolAmount.Truncate(7),
 	}, nil
 }
