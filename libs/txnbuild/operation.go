@@ -23,6 +23,8 @@ func operationFromXDR(vXdrOp vxdr.VeloOp) (VeloOp, error) {
 		newVeloOp = &MintCredit{}
 	case vxdr.OperationTypeRedeemCredit:
 		newVeloOp = &RedeemCredit{}
+	case vxdr.OperationTypeRebalanceReserve:
+		newVeloOp = &RebalanceReserve{}
 	}
 
 	err := newVeloOp.FromXDR(vXdrOp)
