@@ -7,6 +7,8 @@ service VeloNode {
     }
     rpc GetExchangeRate (GetExchangeRateRequest) returns (GetExchangeRateReply) {
     }
+    rpc GetCollateralHealthCheck (Empty) returns (GetCollateralHealthCheckReply) {
+    }
 }
 
 message VeloTxRequest {
@@ -28,4 +30,14 @@ message GetExchangeRateReply {
     string issuer = 2;
     string redeemableCollateral = 3;
     string redeemablePricePerUnit = 4;
+}
+
+message Empty {
+}
+
+message GetCollateralHealthCheckReply {
+    string assetCode = 1;
+    string issuer = 2;
+    string requiredAmount = 3;
+    string poolAmount = 4;
 }
