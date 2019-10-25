@@ -160,3 +160,91 @@ func TestClient_executeVeloTx(t *testing.T) {
 		assert.Contains(t, err.Error(), "cannot connect to horizon")
 	})
 }
+
+func TestGrpc_GetExchangeRate(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		assetCode := "vTHB"
+		assetIssuer := "GCNMY2YGZZNUDMHB3EA36FYWW63ZRAWJX5RQZTZXDLRWCK73H77F264J"
+		RedeemableCollateral := "VELO"
+		RedeemablePricePerUnit := "1.5"
+		helper := initTest(t)
+
+		helper.mockVeloNodeClient.EXPECT().
+			GetExchangeRate(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetExchangeRateRequest{
+				AssetCode: assetCode,
+				Issuer:    assetIssuer,
+			})).
+			Return(&cenGrpc.GetExchangeRateReply{
+				AssetCode:              assetCode,
+				Issuer:                 assetIssuer,
+				RedeemableCollateral:   RedeemableCollateral,
+				RedeemablePricePerUnit: RedeemablePricePerUnit,
+			}, nil)
+
+		getExchangeRate, err := helper.client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{
+			AssetCode: assetCode,
+			Issuer:    assetIssuer,
+		})
+
+		assert.NoError(t, err)
+		assert.NotNil(t, getExchangeRate)
+		assert.Equal(t, assetCode, getExchangeRate.AssetCode)
+		assert.Equal(t, assetIssuer, getExchangeRate.Issuer)
+		assert.Equal(t, RedeemableCollateral, getExchangeRate.RedeemableCollateral)
+		assert.Equal(t, RedeemablePricePerUnit, getExchangeRate.RedeemablePricePerUnit)
+	})
+	t.Run("error, fail from sdk", func(t *testing.T) {
+		helper := initTest(t)
+
+		helper.mockVeloNodeClient.EXPECT().
+			GetExchangeRate(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetExchangeRateRequest{})).
+			Return(nil, errors.New("some error has occurs"))
+
+		getExchangeRate, err := helper.client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{})
+
+		assert.Error(t, err)
+		assert.Nil(t, getExchangeRate)
+		assert.Equal(t, "some error has occurs", err.Error())
+	})
+}
+
+func TestGrpc_GetCollateralHealthCheck(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		assetCode := "vTHB"
+		assetIssuer := "GCNMY2YGZZNUDMHB3EA36FYWW63ZRAWJX5RQZTZXDLRWCK73H77F264J"
+		RequiredAmount := "350"
+		PoolAmount := "250"
+		helper := initTest(t)
+
+		helper.mockVeloNodeClient.EXPECT().
+			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.Empty{})).
+			Return(&cenGrpc.GetCollateralHealthCheckReply{
+				AssetCode:      assetCode,
+				AssetIssuer:    assetIssuer,
+				RequiredAmount: RequiredAmount,
+				PoolAmount:     PoolAmount,
+			}, nil)
+
+		getCollateralHealthCheck, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+
+		assert.NoError(t, err)
+		assert.NotNil(t, getCollateralHealthCheck)
+		assert.Equal(t, assetCode, getCollateralHealthCheck.AssetCode)
+		assert.Equal(t, assetIssuer, getCollateralHealthCheck.AssetIssuer)
+		assert.Equal(t, RequiredAmount, getCollateralHealthCheck.RequiredAmount)
+		assert.Equal(t, PoolAmount, getCollateralHealthCheck.PoolAmount)
+	})
+	t.Run("error, fail from sdk", func(t *testing.T) {
+		helper := initTest(t)
+
+		helper.mockVeloNodeClient.EXPECT().
+			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.Empty{})).
+			Return(nil, errors.New("some error has occurs"))
+
+		getExchangeRate, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+
+		assert.Error(t, err)
+		assert.Nil(t, getExchangeRate)
+		assert.Equal(t, "some error has occurs", err.Error())
+	})
+}
