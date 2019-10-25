@@ -49,6 +49,11 @@ func (drsAccountData *DrsAccountData) DecodeBase64() error {
 	}
 
 	var err error
+	drsAccountData.DrsReserve, err = utils.DecodeBase64(drsAccountData.DrsReserve)
+	if err != nil {
+		return errors.Wrap(err, "fail to decode drs reserve address")
+	}
+
 	drsAccountData.TrustedPartnerListAddress, err = utils.DecodeBase64(drsAccountData.TrustedPartnerListAddress)
 	if err != nil {
 		return errors.Wrap(err, "fail to decode trusted partner list address")
