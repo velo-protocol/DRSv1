@@ -90,10 +90,6 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 				return nil, nerrors.ErrPrecondition{Message: errors.Wrapf(err, "invalid stable amount format").Error()}
 			}
 
-			if !stableAmount.GreaterThan(decimal.Zero) {
-				return nil, nerrors.ErrPrecondition{Message: constants.ErrStableCreditAmountMustBeGreaterThanZero}
-			}
-
 			var collateralPerStable = decimal.Decimal{}
 			switch vxdr.Currency(issuerAccount.PeggedCurrency) {
 			case vxdr.CurrencyTHB:
