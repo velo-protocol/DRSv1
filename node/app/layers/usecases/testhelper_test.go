@@ -23,7 +23,13 @@ var (
 	secretKey2 = testhelpers.SecretKey2
 
 	publicKey3 = testhelpers.PublicKey3
-	secretKey3 = testhelpers.PublicKey3
+	secretKey3 = testhelpers.SecretKey3
+
+	publicKey4 = testhelpers.PublicKey4
+	secretKey4 = testhelpers.SecretKey4
+
+	publicKey5 = testhelpers.PublicKey5
+	secretKey5 = testhelpers.SecretKey5
 
 	drsPublicKey = testhelpers.DrsPublicKey
 	drsSecretKey = testhelpers.DrsSecretKey

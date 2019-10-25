@@ -23,6 +23,7 @@ var (
 
 	ErrGetAccountDetail                   = "fail to get account detail of %s"
 	ErrGetDrsAccountDetail                = "fail to get account detail of drs account"
+	ErrGetDrsReserveAccountDetail         = "fail to get account detail of drs reserve"
 	ErrGetTrustedPartnerAccountDetail     = "fail to get account detail of trusted partner account"
 	ErrGetTrustedPartnerMetaAccountDetail = "fail to get account detail of trusted partner's meta account"
 	ErrGetIssuerAccountDetail             = "fail to get account detail of issuer account"
@@ -44,9 +45,10 @@ var (
 	ErrCreateIssuerKeyPair             = "fail to create issuer KP"
 	ErrCreateDistributorKeyPair        = "fail to create distributor KP"
 
-	ErrAssetCodeToBeIssuedNotSetup      = "assetCodeToBeIssued %s have not been setup yet"
-	ErrGetPriceOfPeggedCurrency         = "fail to get price of pegged currency"
-	ErrPeggedValueMustBeGreaterThanZero = "pegged value must be greater than zero"
-	ErrMedianPriceMustBeGreaterThanZero = "median price must be greater than zero"
-	ErrInvalidIssuerAccount             = "invalid issuer account, %s"
+	ErrAssetCodeToBeIssuedNotSetup             = "assetCodeToBeIssued %s have not been setup yet"
+	ErrGetPriceOfPeggedCurrency                = "fail to get price of pegged currency"
+	ErrPeggedValueMustBeGreaterThanZero        = "pegged value must be greater than zero"
+	ErrMedianPriceMustBeGreaterThanZero        = "median price must be greater than zero"
+	ErrStableCreditAmountMustBeGreaterThanZero = "stable credit amount must be greater than zero"
+	ErrInvalidIssuerAccount                    = "invalid issuer account, %s"
 )
