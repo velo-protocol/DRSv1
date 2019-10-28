@@ -23,6 +23,7 @@ type helper struct {
 	mockController        *gomock.Controller
 	keyPair               *keypair.Full
 	logHook               *test.Hook
+	tableLogHook          *test.Hook
 	done                  func()
 
 	cmd       *cobra.Command
@@ -40,9 +41,15 @@ func initTest(t *testing.T) *helper {
 	handler := account.NewCommandHandler(mockLogic, mockPrompt, mockConfig)
 	cmd := handler.Command()
 
+	// logger
 	logger, hook := test.NewNullLogger()
 	console.Logger = logger
 
+	// table logger
+	tableLogger, tableLogHook := test.NewNullLogger()
+	console.TableLogger = tableLogger
+
+	// overwrite os.Exit
 	monkey.Patch(os.Exit, func(code int) { panic(code) })
 
 	return &helper{
@@ -52,6 +59,7 @@ func initTest(t *testing.T) *helper {
 		mockController:        mockCtrl,
 		keyPair:               keyPair,
 		logHook:               hook,
+		tableLogHook:          tableLogHook,
 		done: func() {
 			hook.Reset()
 			monkey.UnpatchAll()

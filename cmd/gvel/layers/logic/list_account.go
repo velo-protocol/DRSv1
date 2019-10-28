@@ -12,6 +12,8 @@ func (lo *logic) ListAccount() (*[]entity.StellarAccount, error) {
 		return nil, errors.Wrap(err, "failed to get account from db")
 	}
 
+	defaultAccount := lo.AppConfig.GetDefaultAccount()
+
 	var accounts []entity.StellarAccount
 	for _, accountBytes := range accountsBytes {
 		var tmpAccount entity.StellarAccount
@@ -20,6 +22,8 @@ func (lo *logic) ListAccount() (*[]entity.StellarAccount, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal account")
 		}
+
+		tmpAccount.IsDefault = defaultAccount == tmpAccount.Address
 
 		accounts = append(accounts, tmpAccount)
 	}
