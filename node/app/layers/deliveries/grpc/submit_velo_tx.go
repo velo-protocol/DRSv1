@@ -27,7 +27,9 @@ func (handler *handler) SubmitVeloTx(ctx context.Context, req *spec.VeloTxReques
 	case vxdr.OperationTypeMintCredit:
 		return handler.handleMintCreditOperation(ctx, &veloTx)
 	case vxdr.OperationTypeRedeemCredit:
-		return handler.handlerRedeemCreditOperation(ctx, &veloTx)
+		return handler.handleRedeemCreditOperation(ctx, &veloTx)
+	case vxdr.OperationTypeRebalanceReserve:
+		return handler.handleRebalanceReserve(ctx, &veloTx)
 	default: // this case should never occur, if the cen/libs and cen/node is aligned
 		return nil, nerrors.ErrInvalidArgument{
 			Message: constants.ErrUnknownVeloOperationType,

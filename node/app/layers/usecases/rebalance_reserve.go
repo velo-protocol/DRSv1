@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"github.com/AlekSi/pointer"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	"github.com/stellar/go/txnbuild"
@@ -52,7 +53,7 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 	medianPriceThb, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsCollateralAccount.PriceThbVeloAddress)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Wrap(err, constants.ErrMedianPriceMustBeGreaterThanZero).Error(),
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
 		}
 	}
 
@@ -60,7 +61,7 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 	medianPriceUsd, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsCollateralAccount.PriceUsdVeloAddress)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Wrap(err, constants.ErrMedianPriceMustBeGreaterThanZero).Error(),
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
 		}
 	}
 
@@ -68,7 +69,7 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 	medianPriceSgd, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsCollateralAccount.PriceSgdVeloAddress)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Wrap(err, constants.ErrMedianPriceMustBeGreaterThanZero).Error(),
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
 		}
 	}
 
@@ -230,6 +231,9 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 			}
 		}
 		rebalanceOutput.SignedStellarTxXdr = &signedTx
+	} else {
+		rebalanceOutput.SignedStellarTxXdr = pointer.ToString("")
 	}
+
 	return rebalanceOutput, nil
 }

@@ -89,24 +89,6 @@ func (mr *MockVeloNodeClientMockRecorder) GetCollateralHealthCheck(ctx, in inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockVeloNodeClient)(nil).GetCollateralHealthCheck), varargs...)
 }
 
-// RebalanceReserve mocks base method
-func (m *MockVeloNodeClient) RebalanceReserve(ctx context.Context, in *grpc.RebalanceReserveRequest, opts ...grpc0.CallOption) (*grpc.RebalanceReserveReply, error) {
-	varargs := []interface{}{ctx, in}
-	for _, a := range opts {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "RebalanceReserve", varargs...)
-	ret0, _ := ret[0].(*grpc.RebalanceReserveReply)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// RebalanceReserve indicates an expected call of RebalanceReserve
-func (mr *MockVeloNodeClientMockRecorder) RebalanceReserve(ctx, in interface{}, opts ...interface{}) *gomock.Call {
-	varargs := append([]interface{}{ctx, in}, opts...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceReserve", reflect.TypeOf((*MockVeloNodeClient)(nil).RebalanceReserve), varargs...)
-}
-
 // MockVeloNodeServer is a mock of VeloNodeServer interface
 type MockVeloNodeServer struct {
 	ctrl     *gomock.Controller
@@ -167,17 +149,4 @@ func (m *MockVeloNodeServer) GetCollateralHealthCheck(arg0 context.Context, arg1
 // GetCollateralHealthCheck indicates an expected call of GetCollateralHealthCheck
 func (mr *MockVeloNodeServerMockRecorder) GetCollateralHealthCheck(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockVeloNodeServer)(nil).GetCollateralHealthCheck), arg0, arg1)
-}
-
-// RebalanceReserve mocks base method
-func (m *MockVeloNodeServer) RebalanceReserve(arg0 context.Context, arg1 *grpc.RebalanceReserveRequest) (*grpc.RebalanceReserveReply, error) {
-	ret := m.ctrl.Call(m, "RebalanceReserve", arg0, arg1)
-	ret0, _ := ret[0].(*grpc.RebalanceReserveReply)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// RebalanceReserve indicates an expected call of RebalanceReserve
-func (mr *MockVeloNodeServerMockRecorder) RebalanceReserve(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceReserve", reflect.TypeOf((*MockVeloNodeServer)(nil).RebalanceReserve), arg0, arg1)
 }

@@ -37,7 +37,6 @@ func (m *MockStellarRepo) EXPECT() *MockStellarRepoMockRecorder {
 
 // GetAccount mocks base method
 func (m *MockStellarRepo) GetAccount(stellarAddress string) (*horizon.Account, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccount", stellarAddress)
 	ret0, _ := ret[0].(*horizon.Account)
 	ret1, _ := ret[1].(error)
@@ -46,13 +45,11 @@ func (m *MockStellarRepo) GetAccount(stellarAddress string) (*horizon.Account, e
 
 // GetAccount indicates an expected call of GetAccount
 func (mr *MockStellarRepoMockRecorder) GetAccount(stellarAddress interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccount", reflect.TypeOf((*MockStellarRepo)(nil).GetAccount), stellarAddress)
 }
 
 // GetAccounts mocks base method
 func (m *MockStellarRepo) GetAccounts(stellarAddresses ...string) ([]horizon.Account, error) {
-	m.ctrl.T.Helper()
 	varargs := []interface{}{}
 	for _, a := range stellarAddresses {
 		varargs = append(varargs, a)
@@ -65,13 +62,11 @@ func (m *MockStellarRepo) GetAccounts(stellarAddresses ...string) ([]horizon.Acc
 
 // GetAccounts indicates an expected call of GetAccounts
 func (mr *MockStellarRepoMockRecorder) GetAccounts(stellarAddresses ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccounts", reflect.TypeOf((*MockStellarRepo)(nil).GetAccounts), stellarAddresses...)
 }
 
 // GetAccountData mocks base method
 func (m *MockStellarRepo) GetAccountData(stellarAddress string) (map[string]string, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountData", stellarAddress)
 	ret0, _ := ret[0].(map[string]string)
 	ret1, _ := ret[1].(error)
@@ -80,13 +75,11 @@ func (m *MockStellarRepo) GetAccountData(stellarAddress string) (map[string]stri
 
 // GetAccountData indicates an expected call of GetAccountData
 func (mr *MockStellarRepoMockRecorder) GetAccountData(stellarAddress interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountData", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountData), stellarAddress)
 }
 
 // GetAccountDecodedData mocks base method
 func (m *MockStellarRepo) GetAccountDecodedData(stellarAddress string) (map[string]string, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountDecodedData", stellarAddress)
 	ret0, _ := ret[0].(map[string]string)
 	ret1, _ := ret[1].(error)
@@ -95,13 +88,11 @@ func (m *MockStellarRepo) GetAccountDecodedData(stellarAddress string) (map[stri
 
 // GetAccountDecodedData indicates an expected call of GetAccountDecodedData
 func (mr *MockStellarRepoMockRecorder) GetAccountDecodedData(stellarAddress interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedData", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedData), stellarAddress)
 }
 
 // GetAccountDecodedDataByKey mocks base method
 func (m *MockStellarRepo) GetAccountDecodedDataByKey(stellarAddress, key string) (string, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountDecodedDataByKey", stellarAddress, key)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
@@ -110,13 +101,11 @@ func (m *MockStellarRepo) GetAccountDecodedDataByKey(stellarAddress, key string)
 
 // GetAccountDecodedDataByKey indicates an expected call of GetAccountDecodedDataByKey
 func (mr *MockStellarRepoMockRecorder) GetAccountDecodedDataByKey(stellarAddress, key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDecodedDataByKey", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountDecodedDataByKey), stellarAddress, key)
 }
 
 // GetDrsAccountData mocks base method
 func (m *MockStellarRepo) GetDrsAccountData() (*entities.DrsAccountData, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDrsAccountData")
 	ret0, _ := ret[0].(*entities.DrsAccountData)
 	ret1, _ := ret[1].(error)
@@ -125,13 +114,11 @@ func (m *MockStellarRepo) GetDrsAccountData() (*entities.DrsAccountData, error) 
 
 // GetDrsAccountData indicates an expected call of GetDrsAccountData
 func (mr *MockStellarRepoMockRecorder) GetDrsAccountData() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDrsAccountData", reflect.TypeOf((*MockStellarRepo)(nil).GetDrsAccountData))
 }
 
 // GetMedianPriceFromPriceAccount mocks base method
 func (m *MockStellarRepo) GetMedianPriceFromPriceAccount(priceAccountAddress string) (decimal.Decimal, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMedianPriceFromPriceAccount", priceAccountAddress)
 	ret0, _ := ret[0].(decimal.Decimal)
 	ret1, _ := ret[1].(error)
@@ -140,13 +127,11 @@ func (m *MockStellarRepo) GetMedianPriceFromPriceAccount(priceAccountAddress str
 
 // GetMedianPriceFromPriceAccount indicates an expected call of GetMedianPriceFromPriceAccount
 func (mr *MockStellarRepoMockRecorder) GetMedianPriceFromPriceAccount(priceAccountAddress interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedianPriceFromPriceAccount", reflect.TypeOf((*MockStellarRepo)(nil).GetMedianPriceFromPriceAccount), priceAccountAddress)
 }
 
 // SubmitTransaction mocks base method
 func (m *MockStellarRepo) SubmitTransaction(txB64 string) (*horizon.TransactionSuccess, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitTransaction", txB64)
 	ret0, _ := ret[0].(*horizon.TransactionSuccess)
 	ret1, _ := ret[1].(error)
@@ -155,13 +140,11 @@ func (m *MockStellarRepo) SubmitTransaction(txB64 string) (*horizon.TransactionS
 
 // SubmitTransaction indicates an expected call of SubmitTransaction
 func (mr *MockStellarRepoMockRecorder) SubmitTransaction(txB64 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitTransaction", reflect.TypeOf((*MockStellarRepo)(nil).SubmitTransaction), txB64)
 }
 
 // GetAsset mocks base method
 func (m *MockStellarRepo) GetAsset(getAssetInput entities.GetAssetInput) (*horizon.AssetsPage, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAsset", getAssetInput)
 	ret0, _ := ret[0].(*horizon.AssetsPage)
 	ret1, _ := ret[1].(error)
@@ -170,13 +153,11 @@ func (m *MockStellarRepo) GetAsset(getAssetInput entities.GetAssetInput) (*horiz
 
 // GetAsset indicates an expected call of GetAsset
 func (mr *MockStellarRepoMockRecorder) GetAsset(getAssetInput interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAsset", reflect.TypeOf((*MockStellarRepo)(nil).GetAsset), getAssetInput)
 }
 
 // GetAccountBalances mocks base method
 func (m *MockStellarRepo) GetAccountBalances(stellarAddress string) ([]horizon.Balance, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountBalances", stellarAddress)
 	ret0, _ := ret[0].([]horizon.Balance)
 	ret1, _ := ret[1].(error)
@@ -185,6 +166,5 @@ func (m *MockStellarRepo) GetAccountBalances(stellarAddress string) ([]horizon.B
 
 // GetAccountBalances indicates an expected call of GetAccountBalances
 func (mr *MockStellarRepoMockRecorder) GetAccountBalances(stellarAddress interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountBalances", reflect.TypeOf((*MockStellarRepo)(nil).GetAccountBalances), stellarAddress)
 }

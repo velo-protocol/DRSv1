@@ -3,21 +3,13 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"github.com/jinzhu/copier"
 	spec "gitlab.com/velo-labs/cen/grpc"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 )
 
-func (handler handler) RebalanceReserve(ctx context.Context, req *spec.RebalanceReserveRequest) (*spec.RebalanceReserveReply, error) {
-	veloTx, vtxErr := vtxnbuild.TransactionFromXDR(req.GetSignedVeloTxXdr())
-	if vtxErr != nil {
-		return nil, nerrors.ErrInvalidArgument{
-			Message: vtxErr.Error(),
-		}.GRPCError()
-	}
-
+func (handler *handler) handleRebalanceReserve(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
 	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.RebalanceReserveOp
 	if op == nil {
 		return nil, nerrors.ErrInvalidArgument{
@@ -25,11 +17,13 @@ func (handler handler) RebalanceReserve(ctx context.Context, req *spec.Rebalance
 		}.GRPCError()
 	}
 
-	rebalanceReserve, err := handler.UseCase.RebalanceReserve(ctx, &veloTx)
+	rebalanceReserveOutput, err := handler.UseCase.RebalanceReserve(ctx, veloTx)
 	if err != nil {
-		return nil, err
+		return nil, err.GRPCError()
 	}
 
-	_ = copier.Copy(&spec.RebalanceReserveReply{}, rebalanceReserve)
-	return &spec.RebalanceReserveReply{}, nil
+	return &spec.VeloTxReply{
+		SignedStellarTxXdr: *rebalanceReserveOutput.SignedStellarTxXdr,
+		Message:            constants.ReplyRebalanceReserveSuccess,
+	}, nil
 }
