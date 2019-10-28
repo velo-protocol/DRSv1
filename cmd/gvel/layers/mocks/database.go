@@ -32,6 +32,20 @@ func (m *MockDbRepo) EXPECT() *MockDbRepoMockRecorder {
 	return m.recorder
 }
 
+// Init mocks base method
+func (m *MockDbRepo) Init(path string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Init", path)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Init indicates an expected call of Init
+func (mr *MockDbRepoMockRecorder) Init(path interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Init", reflect.TypeOf((*MockDbRepo)(nil).Init), path)
+}
+
 // Save mocks base method
 func (m *MockDbRepo) Save(key, value []byte) error {
 	m.ctrl.T.Helper()

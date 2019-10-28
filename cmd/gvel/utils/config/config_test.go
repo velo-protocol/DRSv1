@@ -13,7 +13,7 @@ func TestInitConfigFile(t *testing.T) {
 		helper := initTest()
 		defer helper.done()
 
-		err := InitConfigFile("./.gvel")
+		err := helper.config.InitConfigFile("./.gvel")
 		assert.NoError(t, err)
 
 		_, err = os.Stat("./.gvel/config.json")
@@ -28,9 +28,9 @@ func TestInitConfigFile(t *testing.T) {
 		helper := initTest()
 		defer helper.done()
 
-		viper.Set("initialized", true)
+		helper.config.viper.Set("initialized", true)
 
-		err := InitConfigFile("./.gvel")
+		err := helper.config.InitConfigFile("./.gvel")
 		assert.NoError(t, err)
 		assert.Equal(t, helper.loggerHook.LastEntry().Message, "config file found")
 	})

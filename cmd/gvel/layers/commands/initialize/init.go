@@ -4,12 +4,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/constants"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 )
 
 func (initCommand *CommandHandler) Init(cmd *cobra.Command, args []string) {
-	if config.Exists() {
+	if initCommand.AppConfig.Exists() {
 		console.ExitWithError(console.ExitError, errors.Errorf("gvel has already been initialized, configuration can be found at %s", constants.DefaultConfigFilePath))
 	}
 

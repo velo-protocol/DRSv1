@@ -9,14 +9,16 @@ import (
 )
 
 type CommandHandler struct {
-	Logic  logic.Logic
-	Prompt console.Prompt
+	Logic     logic.Logic
+	Prompt    console.Prompt
+	AppConfig config.Configuration
 }
 
-func NewCommandHandler(logic logic.Logic, prompt console.Prompt) *CommandHandler {
+func NewCommandHandler(logic logic.Logic, prompt console.Prompt, config config.Configuration) *CommandHandler {
 	return &CommandHandler{
-		Logic:  logic,
-		Prompt: prompt,
+		Logic:     logic,
+		Prompt:    prompt,
+		AppConfig: config,
 	}
 }
 
@@ -25,7 +27,7 @@ func (accountCommand *CommandHandler) Command() *cobra.Command {
 		Use:   "account <arg>",
 		Short: "Use account command for managing the account interacting with Velo",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			if !config.Exists() {
+			if !accountCommand.AppConfig.Exists() {
 				console.ExitWithError(console.ExitError, errors.New("config file not found, please run `gvel init`"))
 			}
 		},

@@ -17,6 +17,7 @@ type helper struct {
 	loggerHook     *test.Hook
 	mockLogic      *mocks.MockLogic
 	mockPrompt     *mockutils.MockPrompt
+	mockConfig     *mockutils.MockConfiguration
 	mockController *gomock.Controller
 	done           func()
 }
@@ -25,6 +26,7 @@ func initTest(t *testing.T) *helper {
 	mockCtrl := gomock.NewController(t)
 	mockLogic := mocks.NewMockLogic(mockCtrl)
 	mockPrompt := mockutils.NewMockPrompt(mockCtrl)
+	mockConfig := mockutils.NewMockConfiguration(mockCtrl)
 
 	logger, hook := test.NewNullLogger()
 	console.Logger = logger
@@ -32,9 +34,10 @@ func initTest(t *testing.T) *helper {
 	monkey.Patch(os.Exit, func(code int) { panic(code) })
 
 	return &helper{
-		commandHandler: initialize.NewCommandHandler(mockLogic, mockPrompt),
+		commandHandler: initialize.NewCommandHandler(mockLogic, mockPrompt, mockConfig),
 		mockLogic:      mockLogic,
 		mockPrompt:     mockPrompt,
+		mockConfig:     mockConfig,
 		mockController: mockCtrl,
 		loggerHook:     hook,
 		done: func() {

@@ -9,52 +9,51 @@ import (
 	"path"
 )
 
-func InitConfigFile(configFilePath string) error {
-	return setupConfigFile(configFilePath)
+type configuration struct {
+	viper *viper.Viper
 }
 
-func Exists() bool {
-	return viper.GetBool("initialized")
+func NewConfiguration() *configuration {
+	return &configuration{
+		viper: viper.GetViper(),
+	}
 }
 
-func SetDefaultAccount(account string) error {
-	viper.Set("defaultAccount", account)
-	return viper.WriteConfig()
+func (configuration *configuration) LoadDefault() {
+	_ = configuration.Load(constants.DefaultConfigFilePath)
 }
 
-func load(configPath string) error {
-	viper.SetConfigType("json")
-	viper.SetConfigFile(path.Join(configPath, "/config.json"))
-	return viper.ReadInConfig()
+func (configuration *configuration) Load(configPath string) error {
+	configuration.viper.SetConfigType("json")
+	configuration.viper.SetConfigFile(path.Join(configPath, "/config.json"))
+	return configuration.viper.ReadInConfig()
 }
 
-func setupConfigFile(configPath string) error {
-	_ = load(configPath)
+func (configuration *configuration) InitConfigFile(configFilePath string) error {
+	_ = configuration.Load(configFilePath)
 
-	if Exists() {
+	if configuration.Exists() {
 		console.Logger.Error("config file found")
 		return nil
 	}
 
-	err := os.MkdirAll(configPath, os.ModePerm)
+	err := os.MkdirAll(configFilePath, os.ModePerm)
 	if err != nil {
 		return errors.Wrap(err, "failed to create a config folder")
 	}
 
-	err = os.MkdirAll(path.Join(configPath, "/db/account"), os.ModePerm)
+	err = os.MkdirAll(path.Join(configFilePath, "/db/account"), os.ModePerm)
 	if err != nil {
 		return errors.Wrap(err, "failed to create a db folder")
 	}
 
-	//viper.SetDefault("configPath", path.Join(configPath, "/config.json"))
-
 	// Set default config
-	viper.SetDefault("initialized", true) // a flag to check for config file existence
-	viper.SetDefault("accountDbPath", path.Join(configPath, "/db/account"))
-	viper.SetDefault("friendBotUrl", constants.DefaultFriendBotUrl)
-	viper.SetDefault("defaultAccount", "")
+	configuration.viper.SetDefault("initialized", true) // a flag to check for config file existence
+	configuration.viper.SetDefault("accountDbPath", path.Join(configFilePath, "/db/account"))
+	configuration.viper.SetDefault("friendBotUrl", constants.DefaultFriendBotUrl)
+	configuration.viper.SetDefault("defaultAccount", "")
 
-	err = viper.WriteConfig()
+	err = configuration.viper.WriteConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to write a config to the disk")
 	}
@@ -62,20 +61,23 @@ func setupConfigFile(configPath string) error {
 	return nil
 }
 
-type configuration struct{}
-
-func NewConfiguration() *configuration {
-	return &configuration{}
-}
-
-func (configuration *configuration) Load() {
-	_ = load(constants.DefaultConfigFilePath)
+func (configuration *configuration) Exists() bool {
+	return configuration.viper.GetBool("initialized")
 }
 
 func (configuration *configuration) GetDefaultAccount() string {
-	return viper.GetString("defaultAccount")
+	return configuration.viper.GetString("defaultAccount")
 }
 
 func (configuration *configuration) SetDefaultAccount(account string) error {
-	return SetDefaultAccount(account)
+	configuration.viper.Set("defaultAccount", account)
+	return configuration.viper.WriteConfig()
+}
+
+func (configuration *configuration) GetAccountDbPath() string {
+	return configuration.viper.GetString("accountDbPath")
+}
+
+func (configuration *configuration) GetFriendBotUrl() string {
+	return configuration.viper.GetString("friendBotUrl")
 }

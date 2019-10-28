@@ -32,6 +32,34 @@ func (m *MockConfiguration) EXPECT() *MockConfigurationMockRecorder {
 	return m.recorder
 }
 
+// InitConfigFile mocks base method
+func (m *MockConfiguration) InitConfigFile(configFilePath string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InitConfigFile", configFilePath)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InitConfigFile indicates an expected call of InitConfigFile
+func (mr *MockConfigurationMockRecorder) InitConfigFile(configFilePath interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitConfigFile", reflect.TypeOf((*MockConfiguration)(nil).InitConfigFile), configFilePath)
+}
+
+// Exists mocks base method
+func (m *MockConfiguration) Exists() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Exists")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Exists indicates an expected call of Exists
+func (mr *MockConfigurationMockRecorder) Exists() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exists", reflect.TypeOf((*MockConfiguration)(nil).Exists))
+}
+
 // GetDefaultAccount mocks base method
 func (m *MockConfiguration) GetDefaultAccount() string {
 	m.ctrl.T.Helper()
@@ -58,4 +86,18 @@ func (m *MockConfiguration) SetDefaultAccount(account string) error {
 func (mr *MockConfigurationMockRecorder) SetDefaultAccount(account interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockConfiguration)(nil).SetDefaultAccount), account)
+}
+
+// GetAccountDbPath mocks base method
+func (m *MockConfiguration) GetAccountDbPath() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccountDbPath")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetAccountDbPath indicates an expected call of GetAccountDbPath
+func (mr *MockConfigurationMockRecorder) GetAccountDbPath() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDbPath", reflect.TypeOf((*MockConfiguration)(nil).GetAccountDbPath))
 }

@@ -8,6 +8,7 @@ import (
 )
 
 type helper struct {
+	config     *configuration
 	loggerHook *test.Hook
 	done       func()
 }
@@ -17,6 +18,7 @@ func initTest() *helper {
 	console.Logger = logger
 
 	return &helper{
+		config:     NewConfiguration(),
 		loggerHook: hook,
 		done: func() {
 			hook.Reset()
