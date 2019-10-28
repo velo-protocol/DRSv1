@@ -256,7 +256,7 @@ func TestGrpc_RebalanceReserve(t *testing.T) {
 		requiredAmount := "350"
 		poolAmount := "250"
 
-		rebalanceCollateral := []*cenGrpc.RebalanceCollateral{{
+		rebalanceCollateral := []*cenGrpc.Collateral{{
 			AssetCode:      assetCode,
 			AssetIssuer:    assetIssuer,
 			RequiredAmount: requiredAmount,
@@ -268,7 +268,7 @@ func TestGrpc_RebalanceReserve(t *testing.T) {
 		helper.mockVeloNodeClient.EXPECT().
 			RebalanceReserve(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.RebalanceReserveRequest{})).
 			Return(&cenGrpc.RebalanceReserveReply{
-				Items:              rebalanceCollateral,
+				Collaterals:        rebalanceCollateral,
 				SignedStellarTxXdr: "AAAAAOOa4D2CPULHjY8jeGzx6g/FL0QUeIpm5juox5lt04wpAAAAZAAFkFAAAAABAAAAAAAAAAEAAAAKMzIzMjA5NjQ2NQAAAAAAAQAAAAEAAAAA45rgPYI9QseNjyN4bPHqD8UvRBR4imbmO6jHmW3TjCkAAAABAAAAAE3j7m7lhZ39noA3ToXWDjJ9QuMmmp/1UaIg0chYzRSlAAAAAAAAAAJMTD+AAAAAAAAAAAFt04wpAAAAQAxFRWcepbQoisfiZ0PG7XhPIBl2ssiD9ymMVpsDyLoHyWXboJLaqibNbiPUHk/KEToTVg7G/JCZ06Mfj0daVAc=",
 			}, nil)
 
