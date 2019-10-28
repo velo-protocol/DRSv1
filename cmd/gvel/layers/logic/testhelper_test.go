@@ -48,6 +48,7 @@ func initTest(t *testing.T) helper {
 
 func stellarAccountsBytes() [][]byte {
 	stellarAccountBytes, _ := json.Marshal(entity.StellarAccount{
+		Address:       "GA...",
 		EncryptedSeed: []byte("fake-seed"),
 		Nonce:         []byte("aaaa"),
 	})

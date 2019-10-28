@@ -1,8 +1,12 @@
 package console
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/sirupsen/logrus"
+	"os"
+)
 
 var Logger *logrus.Logger
+var TableLogger *logrus.Logger
 
 func InitLogger() {
 	Logger = logrus.New()
@@ -19,4 +23,14 @@ func InitLogger() {
 		QuoteEmptyFields:          false,
 		FieldMap:                  nil,
 	}
+
+	TableLogger = logrus.New()
+	TableLogger.Out = os.Stdout
+	TableLogger.Formatter = &tableFormatter{}
+}
+
+type tableFormatter struct{}
+
+func (tableFormatter *tableFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	return []byte(entry.Message), nil
 }

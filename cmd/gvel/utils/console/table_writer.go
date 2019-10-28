@@ -1,13 +1,16 @@
 package console
 
 import (
+	"bytes"
 	"github.com/olekukonko/tablewriter"
-	"os"
 )
 
 func WriteTable(headers []string, data [][]string) {
-	table := tablewriter.NewWriter(os.Stdout)
+	var buffer bytes.Buffer
+	table := tablewriter.NewWriter(&buffer)
 	table.SetHeader(headers)
 	table.AppendBulk(data)
 	table.Render()
+
+	TableLogger.Println(buffer.String())
 }
