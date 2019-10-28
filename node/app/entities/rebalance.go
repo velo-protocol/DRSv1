@@ -1,7 +1,7 @@
 package entities
 
 type RebalanceOutput struct {
-	Collaterals        []Collateral
+	Collaterals        []*Collateral
 	SignedStellarTxXdr string
 }
 

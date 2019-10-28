@@ -126,3 +126,16 @@ func (m *MockUseCase) GetCollateralHealthCheck(ctx context.Context) (*entities.G
 func (mr *MockUseCaseMockRecorder) GetCollateralHealthCheck(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockUseCase)(nil).GetCollateralHealthCheck), ctx)
 }
+
+// RebalanceReserve mocks base method
+func (m *MockUseCase) RebalanceReserve(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.RebalanceOutput, errors.NodeError) {
+	ret := m.ctrl.Call(m, "RebalanceReserve", ctx, veloTx)
+	ret0, _ := ret[0].(*entities.RebalanceOutput)
+	ret1, _ := ret[1].(errors.NodeError)
+	return ret0, ret1
+}
+
+// RebalanceReserve indicates an expected call of RebalanceReserve
+func (mr *MockUseCaseMockRecorder) RebalanceReserve(ctx, veloTx interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceReserve", reflect.TypeOf((*MockUseCase)(nil).RebalanceReserve), ctx, veloTx)
+}

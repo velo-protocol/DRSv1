@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/grpc"
 	"gitlab.com/velo-labs/cen/node/app/entities"
-	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
 
@@ -30,7 +30,7 @@ func TestHandler_GetCollateralHealthCheck(t *testing.T) {
 			PoolAmount:     poolAmount,
 		}, nil)
 
-		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.GetCollateralHealthCheckEmpty{})
+		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.GetCollateralHealthCheckRequest{})
 		assert.NoError(t, err)
 		assert.NotNil(t, getCollateralHealthCheckOutput)
 		assert.Equal(t, assetCode, getCollateralHealthCheckOutput.AssetCode)
@@ -46,7 +46,7 @@ func TestHandler_GetCollateralHealthCheck(t *testing.T) {
 
 		helper.mockUseCase.EXPECT().GetCollateralHealthCheck(context.Background()).Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
-		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.GetCollateralHealthCheckEmpty{})
+		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.GetCollateralHealthCheckRequest{})
 		assert.Error(t, err)
 		assert.Nil(t, getCollateralHealthCheckOutput)
 	})

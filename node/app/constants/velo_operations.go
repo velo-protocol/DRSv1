@@ -1,9 +1,10 @@
 package constants
 
 const (
-	VeloOpWhitelist    = "Whitelist"
-	VeloOpSetupCredit  = "SetupCredit"
-	VeloOpPriceUpdate  = "PriceUpdate"
-	VeloOpMintCredit   = "MintCredit"
-	VeloOpRedeemCredit = "RedeemCredit"
+	VeloOpWhitelist        = "Whitelist"
+	VeloOpSetupCredit      = "SetupCredit"
+	VeloOpPriceUpdate      = "PriceUpdate"
+	VeloOpMintCredit       = "MintCredit"
+	VeloOpRedeemCredit     = "RedeemCredit"
+	VeloOpRebalanceReserve = "RebalanceReserve"
 )

@@ -45,14 +45,15 @@ message GetCollateralHealthCheckReply {
 }
 
 message RebalanceReserveRequest {
+    string signedVeloTxXdr = 1;
 }
 
 message RebalanceReserveReply {
-    repeated RebalanceCollateral items = 1;
+    repeated Collateral collaterals = 1;
     string SignedStellarTxXdr = 2;
 }
 
-message RebalanceCollateral {
+message Collateral {
     string assetCode = 1;
     string assetIssuer = 2;
     string requiredAmount = 3;
