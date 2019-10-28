@@ -19,6 +19,7 @@ type helper struct {
 	accountCommandHandler *account.CommandHandler
 	mockLogic             *mocks.MockLogic
 	mockPrompt            *mockutils.MockPrompt
+	mockConfig            *mockutils.MockConfiguration
 	mockController        *gomock.Controller
 	keyPair               *keypair.Full
 	logHook               *test.Hook
@@ -33,9 +34,10 @@ func initTest(t *testing.T) *helper {
 	mockCtrl := gomock.NewController(t)
 	mockLogic := mocks.NewMockLogic(mockCtrl)
 	mockPrompt := mockutils.NewMockPrompt(mockCtrl)
+	mockConfig := mockutils.NewMockConfiguration(mockCtrl)
 	keyPair, _ := keypair.Random()
 
-	handler := account.NewCommandHandler(mockLogic, mockPrompt)
+	handler := account.NewCommandHandler(mockLogic, mockPrompt, mockConfig)
 	cmd := handler.Command()
 
 	logger, hook := test.NewNullLogger()

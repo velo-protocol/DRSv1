@@ -9,7 +9,7 @@ type levelDbDatabase struct {
 	conn *leveldb.DB
 }
 
-func NewLevelDbDatabase(path string) (*levelDbDatabase, error) {
+func NewLevelDb(path string) (*levelDbDatabase, error) {
 	conn, err := leveldb.OpenFile(path, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open leveldb")
@@ -18,6 +18,11 @@ func NewLevelDbDatabase(path string) (*levelDbDatabase, error) {
 	return &levelDbDatabase{
 		conn: conn,
 	}, nil
+}
+
+func (database *levelDbDatabase) Init(path string) error {
+	_, err := NewLevelDb(path)
+	return err
 }
 
 func (database *levelDbDatabase) Save(key []byte, value []byte) error {

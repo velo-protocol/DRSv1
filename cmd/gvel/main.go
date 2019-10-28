@@ -1,31 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"github.com/spf13/viper"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/friendbot"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
-	"os"
 )
 
 func main() {
 	appConfig := config.NewConfiguration()
-	appConfig.Load()
+	appConfig.LoadDefault()
 
 	console.InitLogger()
 
 	var logicInstance logic.Logic
 	{
-		if config.Exists() {
-			accountDbRepository, err := database.NewLevelDbDatabase(viper.GetString("accountDbPath"))
+		if appConfig.Exists() {
+			accountDbRepository, err := database.NewLevelDb(appConfig.GetAccountDbPath())
 			if err != nil {
-				panic(err)
+				console.ExitWithError(console.ExitError, err)
 			}
-			friendBotRepository := friendbot.NewFriendBot(viper.GetString("friendBotUrl"))
+			friendBotRepository := friendbot.NewFriendBot(appConfig.GetFriendBotUrl())
 
 			logicInstance = logic.NewLogic(accountDbRepository, friendBotRepository, appConfig)
 		} else {
@@ -33,12 +30,11 @@ func main() {
 		}
 	}
 
-	commandHandler := commands.NewGvelHandler(logicInstance)
+	commandHandler := commands.NewGvelHandler(logicInstance, appConfig)
 	commandHandler.Init()
 
 	err := commandHandler.RootCommand.Execute()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(console.ExitError)
+		console.ExitWithError(console.ExitError, err)
 	}
 }

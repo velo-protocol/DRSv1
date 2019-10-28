@@ -1,9 +1,8 @@
 package logic_test
 
 import (
-	"github.com/spf13/viper"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"os"
 	"testing"
 )
 
@@ -12,13 +11,19 @@ func TestLogic_Init(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		err := helper.logic.Init("./.velo")
-		assert.NoError(t, err)
+		helper.mockConfiguration.EXPECT().
+			InitConfigFile("./").
+			Return(nil)
 
-		_, err = os.Stat("./.velo/config.json")
-		assert.NoError(t, err)
+		helper.mockConfiguration.EXPECT().
+			GetAccountDbPath().
+			Return("./db/accounts")
 
-		_, err = os.Stat("./.velo/db/account")
+		helper.mockDB.EXPECT().
+			Init("./db/accounts").
+			Return(nil)
+
+		err := helper.logic.Init("./")
 		assert.NoError(t, err)
 	})
 
@@ -26,10 +31,31 @@ func TestLogic_Init(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		// force setupConfigFile to return error
-		viper.Set("initialized", true)
+		helper.mockConfiguration.EXPECT().
+			InitConfigFile("./").
+			Return(errors.New("some error has occurred"))
 
-		err := helper.logic.Init("./.velo")
+		err := helper.logic.Init("./")
+		assert.Error(t, err)
+	})
+
+	t.Run("fail, database init returns error", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.done()
+
+		helper.mockConfiguration.EXPECT().
+			InitConfigFile("./").
+			Return(nil)
+
+		helper.mockConfiguration.EXPECT().
+			GetAccountDbPath().
+			Return("./db/accounts")
+
+		helper.mockDB.EXPECT().
+			Init("./db/accounts").
+			Return(errors.New("some error has occurred"))
+
+		err := helper.logic.Init("./")
 		assert.Error(t, err)
 	})
 }
