@@ -1,7 +1,7 @@
 pipeline {
     agent { label "slave" }
     environment{
-        sonarqubeURL="http://sonarqube.velo-nonprod.com:9000"
+        sonarqubeURL="http://sonarqube.lightnet-nonprod.com:9000"
         branchName = sh(
                 script: "printf \$(git rev-parse --abbrev-ref HEAD | sed -e \"s|/|-|g\")",
                 returnStdout: true
