@@ -26,7 +26,7 @@ func main() {
 
 			logicInstance = logic.NewLogic(accountDbRepository, friendBotRepository, appConfig)
 		} else {
-			logicInstance = logic.NewLogic(nil, nil, appConfig)
+			logicInstance = logic.NewLogic(&database.LevelDbDatabase{}, nil, appConfig)
 		}
 	}
 

@@ -5,35 +5,35 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-type levelDbDatabase struct {
+type LevelDbDatabase struct {
 	conn *leveldb.DB
 }
 
-func NewLevelDb(path string) (*levelDbDatabase, error) {
+func NewLevelDb(path string) (*LevelDbDatabase, error) {
 	conn, err := leveldb.OpenFile(path, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open leveldb")
 	}
 
-	return &levelDbDatabase{
+	return &LevelDbDatabase{
 		conn: conn,
 	}, nil
 }
 
-func (database *levelDbDatabase) Init(path string) error {
+func (database *LevelDbDatabase) Init(path string) error {
 	_, err := NewLevelDb(path)
 	return err
 }
 
-func (database *levelDbDatabase) Save(key []byte, value []byte) error {
+func (database *LevelDbDatabase) Save(key []byte, value []byte) error {
 	return database.conn.Put(key, value, nil)
 }
 
-func (database *levelDbDatabase) Get(key []byte) ([]byte, error) {
+func (database *LevelDbDatabase) Get(key []byte) ([]byte, error) {
 	return database.conn.Get(key, nil)
 }
 
-func (database *levelDbDatabase) GetAll() ([][]byte, error) {
+func (database *LevelDbDatabase) GetAll() ([][]byte, error) {
 	var all [][]byte
 
 	iter := database.conn.NewIterator(nil, nil)
