@@ -30,7 +30,7 @@ func TestHandler_GetCollateralHealthCheck(t *testing.T) {
 			PoolAmount:     poolAmount,
 		}, nil)
 
-		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.Empty{})
+		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.GetCollateralHealthCheckEmpty{})
 		assert.NoError(t, err)
 		assert.NotNil(t, getCollateralHealthCheckOutput)
 		assert.Equal(t, assetCode, getCollateralHealthCheckOutput.AssetCode)
@@ -46,7 +46,7 @@ func TestHandler_GetCollateralHealthCheck(t *testing.T) {
 
 		helper.mockUseCase.EXPECT().GetCollateralHealthCheck(context.Background()).Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
-		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.Empty{})
+		getCollateralHealthCheckOutput, err := helper.handler.GetCollateralHealthCheck(context.Background(), &grpc.GetCollateralHealthCheckEmpty{})
 		assert.Error(t, err)
 		assert.Nil(t, getCollateralHealthCheckOutput)
 	})

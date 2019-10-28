@@ -35,7 +35,8 @@ type ClientInterface interface {
 	RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (*horizon.TransactionSuccess, error)
 
 	GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateRequest, error)
-	GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.Empty) (*cenGrpc.GetCollateralHealthCheckReply, error)
+	GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.GetCollateralHealthCheckRequest) (*cenGrpc.GetCollateralHealthCheckReply, error)
+	RebalanceReserve(ctx context.Context, request *cenGrpc.RebalanceReserveRequest) (*cenGrpc.RebalanceReserveReply, error)
 }
 
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
@@ -171,6 +172,10 @@ func (client *Client) GetExchangeRate(ctx context.Context, request *cenGrpc.GetE
 	return client.veloNodeClient.GetExchangeRate(ctx, request)
 }
 
-func (client *Client) GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.Empty) (*cenGrpc.GetCollateralHealthCheckReply, error) {
+func (client *Client) GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.GetCollateralHealthCheckRequest) (*cenGrpc.GetCollateralHealthCheckReply, error) {
 	return client.veloNodeClient.GetCollateralHealthCheck(ctx, request)
+}
+
+func (client *Client) RebalanceReserve(ctx context.Context, request *cenGrpc.RebalanceReserveRequest) (*cenGrpc.RebalanceReserveReply, error) {
+	return client.veloNodeClient.RebalanceReserve(ctx, request)
 }

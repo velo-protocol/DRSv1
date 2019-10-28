@@ -86,7 +86,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 		})
 
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "cannot connect to VeloCen via gRPC")
+		assert.Contains(t, err.Error(), "cannot connect to Velo Node")
 	})
 	t.Run("error, velo node client returns an error", func(t *testing.T) {
 		helper := initTest(t)
@@ -210,41 +210,89 @@ func TestGrpc_GetExchangeRate(t *testing.T) {
 
 func TestGrpc_GetCollateralHealthCheck(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		assetCode := "vTHB"
+		assetCode := "VELO"
 		assetIssuer := "GCNMY2YGZZNUDMHB3EA36FYWW63ZRAWJX5RQZTZXDLRWCK73H77F264J"
-		RequiredAmount := "350"
-		PoolAmount := "250"
+		requiredAmount := "350"
+		poolAmount := "250"
 		helper := initTest(t)
 
 		helper.mockVeloNodeClient.EXPECT().
-			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.Empty{})).
+			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetCollateralHealthCheckRequest{})).
 			Return(&cenGrpc.GetCollateralHealthCheckReply{
 				AssetCode:      assetCode,
 				AssetIssuer:    assetIssuer,
-				RequiredAmount: RequiredAmount,
-				PoolAmount:     PoolAmount,
+				RequiredAmount: requiredAmount,
+				PoolAmount:     poolAmount,
 			}, nil)
 
-		getCollateralHealthCheck, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+		getCollateralHealthCheck, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
 
 		assert.NoError(t, err)
 		assert.NotNil(t, getCollateralHealthCheck)
 		assert.Equal(t, assetCode, getCollateralHealthCheck.AssetCode)
 		assert.Equal(t, assetIssuer, getCollateralHealthCheck.AssetIssuer)
-		assert.Equal(t, RequiredAmount, getCollateralHealthCheck.RequiredAmount)
-		assert.Equal(t, PoolAmount, getCollateralHealthCheck.PoolAmount)
+		assert.Equal(t, requiredAmount, getCollateralHealthCheck.RequiredAmount)
+		assert.Equal(t, poolAmount, getCollateralHealthCheck.PoolAmount)
 	})
 	t.Run("error, fail from sdk", func(t *testing.T) {
 		helper := initTest(t)
 
 		helper.mockVeloNodeClient.EXPECT().
-			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.Empty{})).
+			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetCollateralHealthCheckRequest{})).
 			Return(nil, errors.New("some error has occurs"))
 
-		getExchangeRate, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+		getExchangeRate, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
 
 		assert.Error(t, err)
 		assert.Nil(t, getExchangeRate)
+		assert.Equal(t, "some error has occurs", err.Error())
+	})
+}
+
+func TestGrpc_RebalanceReserve(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		assetCode := "VELO"
+		assetIssuer := "GCNMY2YGZZNUDMHB3EA36FYWW63ZRAWJX5RQZTZXDLRWCK73H77F264J"
+		requiredAmount := "350"
+		poolAmount := "250"
+
+		rebalanceCollateral := []*cenGrpc.RebalanceCollateral{{
+			AssetCode:      assetCode,
+			AssetIssuer:    assetIssuer,
+			RequiredAmount: requiredAmount,
+			PoolAmount:     poolAmount,
+		}}
+
+		helper := initTest(t)
+
+		helper.mockVeloNodeClient.EXPECT().
+			RebalanceReserve(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.RebalanceReserveRequest{})).
+			Return(&cenGrpc.RebalanceReserveReply{
+				Items:              rebalanceCollateral,
+				SignedStellarTxXdr: "AAAAAOOa4D2CPULHjY8jeGzx6g/FL0QUeIpm5juox5lt04wpAAAAZAAFkFAAAAABAAAAAAAAAAEAAAAKMzIzMjA5NjQ2NQAAAAAAAQAAAAEAAAAA45rgPYI9QseNjyN4bPHqD8UvRBR4imbmO6jHmW3TjCkAAAABAAAAAE3j7m7lhZ39noA3ToXWDjJ9QuMmmp/1UaIg0chYzRSlAAAAAAAAAAJMTD+AAAAAAAAAAAFt04wpAAAAQAxFRWcepbQoisfiZ0PG7XhPIBl2ssiD9ymMVpsDyLoHyWXboJLaqibNbiPUHk/KEToTVg7G/JCZ06Mfj0daVAc=",
+			}, nil)
+
+		rebalanceReserve, err := helper.client.RebalanceReserve(context.Background(), &cenGrpc.RebalanceReserveRequest{})
+
+		assert.NoError(t, err)
+		assert.NotNil(t, rebalanceReserve)
+		assert.Equal(t, assetCode, rebalanceCollateral[0].AssetCode)
+		assert.Equal(t, assetIssuer, rebalanceCollateral[0].AssetIssuer)
+		assert.Equal(t, requiredAmount, rebalanceCollateral[0].RequiredAmount)
+		assert.Equal(t, poolAmount, rebalanceCollateral[0].PoolAmount)
+	})
+
+	t.Run("error, fail from sdk", func(t *testing.T) {
+		helper := initTest(t)
+
+		helper.mockVeloNodeClient.EXPECT().
+			RebalanceReserve(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.RebalanceReserveRequest{})).
+			Return(nil, errors.New("some error has occurs"))
+
+		rebalanceReserve, err := helper.client.RebalanceReserve(context.Background(), &cenGrpc.RebalanceReserveRequest{})
+
+		assert.Error(t, err)
+		assert.Nil(t, rebalanceReserve)
 		assert.Equal(t, "some error has occurs", err.Error())
 	})
 }

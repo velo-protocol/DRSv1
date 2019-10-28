@@ -5,7 +5,7 @@ import (
 	spec "gitlab.com/velo-labs/cen/grpc"
 )
 
-func (handler handler) GetCollateralHealthCheck(ctx context.Context, empty *spec.Empty) (*spec.GetCollateralHealthCheckReply, error) {
+func (handler handler) GetCollateralHealthCheck(ctx context.Context, empty *spec.GetCollateralHealthCheckRequest) (*spec.GetCollateralHealthCheckReply, error) {
 
 	getCollateralHealthCheck, err := handler.UseCase.GetCollateralHealthCheck(ctx)
 	if err != nil {

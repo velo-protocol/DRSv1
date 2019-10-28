@@ -17,7 +17,7 @@ func main() {
 		_ = client.Close()
 	}()
 
-	getCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+	getCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
 	if err != nil {
 		panic(err)
 	}

@@ -58,7 +58,7 @@ func Example() {
 	log.Println("Redeemable Collateral: ", reply.RedeemableCollateral)
 	log.Println("Redeemable Price Per Unit: ", reply.RedeemablePricePerUnit)
 
-	replyCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.Empty{})
+	replyCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
 	if err != nil {
 		panic(err)
 	}
