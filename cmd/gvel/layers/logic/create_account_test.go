@@ -1,6 +1,7 @@
 package logic_test
 
 import (
+	"fmt"
 	"github.com/golang/mock/gomock"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -33,6 +34,10 @@ func TestLogic_CreateAccount(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, output.GeneratedKeyPair)
 		assert.True(t, output.IsDefault)
+
+		logEntries := helper.logHook.AllEntries()
+		assert.Contains(t, logEntries[0].Message, fmt.Sprintf("Creating account with"))
+		assert.Contains(t, logEntries[0].Message, fmt.Sprintf("with starting balance 10000 XLM."))
 	})
 
 	t.Run("success, default flag is set to false, but no default account is defined before", func(t *testing.T) {
@@ -59,6 +64,10 @@ func TestLogic_CreateAccount(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, output.GeneratedKeyPair)
 		assert.True(t, output.IsDefault)
+
+		logEntries := helper.logHook.AllEntries()
+		assert.Contains(t, logEntries[0].Message, fmt.Sprintf("Creating account with"))
+		assert.Contains(t, logEntries[0].Message, fmt.Sprintf("with starting balance 10000 XLM."))
 	})
 
 	t.Run("error - failed to get free lumens from friendbot", func(t *testing.T) {

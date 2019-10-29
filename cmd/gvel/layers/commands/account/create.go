@@ -14,7 +14,6 @@ func (accountCommand *CommandHandler) Create(cmd *cobra.Command, args []string) 
 
 	passphrase := accountCommand.Prompt.RequestPassphrase()
 
-	console.Logger.Println("generating a new stellar account")
 	output, err := accountCommand.Logic.CreateAccount(&entity.CreateAccountInput{
 		Passphrase:          passphrase,
 		SetAsDefaultAccount: setAsDefault,
@@ -23,5 +22,5 @@ func (accountCommand *CommandHandler) Create(cmd *cobra.Command, args []string) 
 		console.ExitWithError(console.ExitError, err)
 	}
 
-	console.Logger.Printf("%s has been created\n", output.GeneratedKeyPair.Address())
+	console.Logger.Printf("A new account is created with address %s Please remember to keep your passphrase safe. You will not be able to recover this passphrase.", output.GeneratedKeyPair.Address())
 }
