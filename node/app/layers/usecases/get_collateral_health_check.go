@@ -54,9 +54,9 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 		}
 	}
 
-	var collateral = decimal.Zero
+	var drsCollateralRequiredAmount = decimal.Zero
 
-	// calculate collateral amount
+	// calculate drs collateral required amount amount
 	for _, tpMetaAddress := range tpListData {
 		tpMetaData, err := useCase.StellarRepo.GetAccountDecodedData(tpMetaAddress)
 		if err != nil {
@@ -65,7 +65,7 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 			}
 		}
 
-		// calculate collateral amount per tp
+		// calculate drs collateral required amount amount per tp
 		var collateralPerTp = decimal.Zero
 		for stableCredit := range tpMetaData {
 			assetDetail := strings.Split(stableCredit, "_")
@@ -90,46 +90,53 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 				return nil, nerrors.ErrPrecondition{Message: errors.Wrapf(err, "invalid stable amount format").Error()}
 			}
 
-			var collateralPerStable = decimal.Decimal{}
+			var collateralPerCredit decimal.Decimal
 			switch vxdr.Currency(issuerAccount.PeggedCurrency) {
 			case vxdr.CurrencyTHB:
-				collateralPerStable = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceThb)
+				collateralPerCredit = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceThb)
 			case vxdr.CurrencySGD:
-				collateralPerStable = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceSgd)
+				collateralPerCredit = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceSgd)
 			case vxdr.CurrencyUSD:
-				collateralPerStable = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceUsd)
+				collateralPerCredit = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceUsd)
+			default:
+				return nil, nerrors.ErrInternal{Message: constants.ErrPeggedCurrencyIsNotSupport}
 
 			}
-			// sum total collateral of tp
-			collateralPerTp = collateralPerTp.Add(collateralPerStable)
+			// sum total drs collateral required amount of tp
+			collateralPerTp = collateralPerTp.Add(collateralPerCredit)
 		}
-		// sum total collateral amount
-		collateral = collateral.Add(collateralPerTp)
+		// sum total drs collateral required amount amount
+		drsCollateralRequiredAmount = drsCollateralRequiredAmount.Add(collateralPerTp)
 	}
 
-	//get drs reserve account
-	account, err := useCase.StellarRepo.GetAccount(drsAccount.DrsReserve)
+	// get drs collateral amount
+	drsCollateralBalances, err := useCase.StellarRepo.GetAccountBalances(env.DrsPublicKey)
 	if err != nil {
-		return nil, nerrors.ErrInternal{Message: constants.ErrGetDrsReserveAccountDetail}
+		return nil, nerrors.ErrInternal{Message: errors.Wrap(err, constants.ErrGetDrsAccountBalance).Error()}
 	}
 
-	// get drs reserve collateral amount
-	var poolAmount = decimal.Zero
-	for _, balance := range account.Balances {
+	var drsCollateralAmount = decimal.Zero
+	var drsCollateralAssetCode string
+	var drsCollateralAssetIssuer string
+	for _, balance := range drsCollateralBalances {
 		if balance.Code == string(vxdr.AssetVELO) && balance.Issuer == env.VeloIssuerPublicKey {
 			balanceDecimal, err := decimal.NewFromString(balance.Balance)
 			if err != nil {
 				return nil, nerrors.ErrInternal{Message: err.Error()}
 			}
-
-			poolAmount = balanceDecimal
+			drsCollateralAssetCode = balance.Code
+			drsCollateralAssetIssuer = balance.Issuer
+			drsCollateralAmount = balanceDecimal
 		}
+	}
+	if drsCollateralAssetIssuer == "" || drsCollateralAssetCode == "" {
+		return nil, nerrors.ErrInternal{Message: constants.ErrDrsCollateralTrustlineNotFound}
 	}
 
 	return &entities.GetCollateralHealthCheckOutput{
 		AssetCode:      string(vxdr.AssetVELO),
 		AssetIssuer:    env.VeloIssuerPublicKey,
-		RequiredAmount: collateral.Truncate(7),
-		PoolAmount:     poolAmount.Truncate(7),
+		RequiredAmount: drsCollateralRequiredAmount.Truncate(7),
+		PoolAmount:     drsCollateralAmount.Truncate(7),
 	}, nil
 }

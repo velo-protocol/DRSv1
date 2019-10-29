@@ -27,7 +27,6 @@ var (
 
 	ErrGetAccountDetail                   = "fail to get account detail of %s"
 	ErrGetDrsAccountDetail                = "fail to get account detail of drs account"
-	ErrGetDrsReserveAccountDetail         = "fail to get account detail of drs reserve"
 	ErrGetTrustedPartnerAccountDetail     = "fail to get account detail of trusted partner account"
 	ErrGetTrustedPartnerMetaAccountDetail = "fail to get account detail of trusted partner's meta account"
 	ErrGetIssuerAccountDetail             = "fail to get account detail of issuer account"
