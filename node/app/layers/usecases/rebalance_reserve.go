@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"github.com/AlekSi/pointer"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	"github.com/stellar/go/txnbuild"
@@ -232,7 +231,9 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 		}
 		rebalanceOutput.SignedStellarTxXdr = &signedTx
 	} else {
-		rebalanceOutput.SignedStellarTxXdr = pointer.ToString("")
+		return nil, nerrors.ErrPrecondition{
+			Message: errors.New(constants.ErrRebalanceIsNotRequired).Error(),
+		}
 	}
 
 	return rebalanceOutput, nil
