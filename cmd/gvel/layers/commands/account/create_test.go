@@ -33,8 +33,8 @@ func TestCommandHandler_Create(t *testing.T) {
 		helper.accountCommandHandler.Create(helper.createCmd, nil)
 
 		logEntries := helper.logHook.AllEntries()
-		assert.Equal(t, "generating a new stellar account", logEntries[0].Message)
-		assert.Equal(t, fmt.Sprintf("%s has been created\n", helper.keyPair.Address()), logEntries[1].Message)
+		assert.Contains(t, logEntries[0].Message, fmt.Sprintf("A new account is created with address"))
+		assert.Contains(t, logEntries[0].Message, fmt.Sprintf("Please remember to keep your passphrase safe. You will not be able to recover this passphrase."))
 	})
 	t.Run("fail, logic.CreateAccount returns error", func(t *testing.T) {
 		helper := initTest(t)

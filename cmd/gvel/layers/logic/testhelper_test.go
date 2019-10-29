@@ -20,6 +20,7 @@ type helper struct {
 	mockFriendBot     *mocks.MockFriendBotRepo
 	mockConfiguration *mockutils.MockConfiguration
 	mockController    *gomock.Controller
+	logHook           *test.Hook
 	done              func()
 }
 
@@ -30,7 +31,7 @@ func initTest(t *testing.T) helper {
 	mockFriendBot := mocks.NewMockFriendBotRepo(mockCtrl)
 	mockConfiguration := mockutils.NewMockConfiguration(mockCtrl)
 
-	logger, _ := test.NewNullLogger()
+	logger, hook := test.NewNullLogger()
 	console.Logger = logger
 
 	return helper{
@@ -38,6 +39,7 @@ func initTest(t *testing.T) helper {
 		mockDB:            mockDB,
 		mockFriendBot:     mockFriendBot,
 		mockController:    mockCtrl,
+		logHook:           hook,
 		mockConfiguration: mockConfiguration,
 		done: func() {
 			viper.Reset()
