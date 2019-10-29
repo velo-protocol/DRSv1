@@ -26,7 +26,7 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 	medianPriceThb, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsAccount.PriceThbVeloAddress)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Wrap(err, constants.ErrMedianPriceMustBeGreaterThanZero).Error(),
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
 		}
 	}
 
@@ -34,7 +34,7 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 	medianPriceUsd, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsAccount.PriceUsdVeloAddress)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Wrap(err, constants.ErrMedianPriceMustBeGreaterThanZero).Error(),
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
 		}
 	}
 
@@ -42,7 +42,7 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 	medianPriceSgd, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsAccount.PriceSgdVeloAddress)
 	if err != nil {
 		return nil, nerrors.ErrPrecondition{
-			Message: errors.Wrap(err, constants.ErrMedianPriceMustBeGreaterThanZero).Error(),
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
 		}
 	}
 
