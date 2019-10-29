@@ -8,4 +8,5 @@ const (
 	ReplyPriceUpdateSuccess  = "Price update transaction returned. " + replyWarningSuffix
 	ReplyMintCreditSuccess   = "Mint price-stable credit transaction returned. You can mint %s %s in exchange for %s %s. " + replyWarningSuffix
 	ReplyRedeemCreditSuccess = "Redemption transaction returned. " + replyWarningSuffix
+	ReplyRebalanceReserveSuccess = "Rebalance reserve transaction returned. " + replyWarningSuffix
 )

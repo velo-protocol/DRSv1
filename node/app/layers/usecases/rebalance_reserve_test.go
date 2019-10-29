@@ -357,7 +357,7 @@ func TestUseCase_RebalanceReserve(t *testing.T) {
 		assert.Equal(t, drsMediumCollateralAmount.String(), output.Collaterals[0].PoolAmount.String())
 		assert.True(t, output.Collaterals[0].RequiredAmount.GreaterThan(decimal.Zero))
 
-		assert.Nil(t, output.SignedStellarTxXdr)
+		assert.Equal(t, "", *output.SignedStellarTxXdr)
 
 	})
 
@@ -685,7 +685,7 @@ func TestUseCase_RebalanceReserve(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
-		assert.Contains(t, err.Error(), constants.ErrMedianPriceMustBeGreaterThanZero)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceOfPeggedCurrency)
 	})
 
 	t.Run("Error - can't get median Price usd", func(t *testing.T) {
@@ -724,7 +724,7 @@ func TestUseCase_RebalanceReserve(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
-		assert.Contains(t, err.Error(), constants.ErrMedianPriceMustBeGreaterThanZero)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceOfPeggedCurrency)
 	})
 
 	t.Run("Error - can't get median Price sgd", func(t *testing.T) {
@@ -768,7 +768,7 @@ func TestUseCase_RebalanceReserve(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
-		assert.Contains(t, err.Error(), constants.ErrMedianPriceMustBeGreaterThanZero)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceOfPeggedCurrency)
 	})
 
 	t.Run("Error - can't get tp list data", func(t *testing.T) {
