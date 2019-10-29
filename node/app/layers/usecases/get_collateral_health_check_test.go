@@ -531,7 +531,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
-		assert.Contains(t, err.Error(), constants.ErrMedianPriceMustBeGreaterThanZero)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceOfPeggedCurrency)
 	})
 
 	t.Run("Error - can't get median Price usd", func(t *testing.T) {
@@ -558,7 +558,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
-		assert.Contains(t, err.Error(), constants.ErrMedianPriceMustBeGreaterThanZero)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceOfPeggedCurrency)
 	})
 
 	t.Run("Error - can't get median Price sgd", func(t *testing.T) {
@@ -590,7 +590,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
-		assert.Contains(t, err.Error(), constants.ErrMedianPriceMustBeGreaterThanZero)
+		assert.Contains(t, err.Error(), constants.ErrGetPriceOfPeggedCurrency)
 	})
 
 	t.Run("Error - can't get tp list data", func(t *testing.T) {
