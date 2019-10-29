@@ -8,4 +8,5 @@ type Logic interface {
 	Init(configFilePath string) error
 	CreateAccount(input *entity.CreateAccountInput) (*entity.CreateAccountOutput, error)
 	ListAccount() (*[]entity.StellarAccount, error)
+	SetDefaultAccount(input *entity.SetDefaultAccountInput) (*entity.SetDefaultAccountOutput, error)
 }

@@ -26,9 +26,10 @@ type helper struct {
 	tableLogHook          *test.Hook
 	done                  func()
 
-	cmd       *cobra.Command
-	createCmd *cobra.Command
-	listCmd   *cobra.Command
+	cmd        *cobra.Command
+	createCmd  *cobra.Command
+	listCmd    *cobra.Command
+	defaultCmd *cobra.Command
 }
 
 func initTest(t *testing.T) *helper {
@@ -65,8 +66,9 @@ func initTest(t *testing.T) *helper {
 			monkey.UnpatchAll()
 		},
 
-		cmd:       cmd,
-		createCmd: cmd.Commands()[0],
-		listCmd:   cmd.Commands()[1],
+		cmd:        cmd,
+		createCmd:  cmd.Commands()[0],
+		listCmd:    cmd.Commands()[1],
+		defaultCmd: cmd.Commands()[2],
 	}
 }

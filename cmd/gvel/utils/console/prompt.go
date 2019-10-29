@@ -1,7 +1,9 @@
 package console
 
 import (
+	"fmt"
 	"github.com/bgentry/speakeasy"
+	"github.com/manifoldco/promptui"
 	"github.com/pkg/errors"
 )
 
@@ -30,5 +32,40 @@ func NewPrompt() Prompt {
 }
 
 func (prompt *prompt) RequestPassphrase() string {
-	return RequestPassphrase()
+	passphrase, err := (&promptui.Prompt{
+		Label: "Please enter passphrase ",
+		Mask:  '*',
+	}).Run()
+	if err != nil {
+		ExitWithError(ExitBadArgs, err)
+	}
+
+	_, err = (&promptui.Prompt{
+		Label: "Please repeat a passphrase to confirm ",
+		Mask:  '*',
+		Validate: func(s string) error {
+			if s != passphrase {
+				return errors.New("passphrase does not match")
+			}
+			return nil
+		},
+	}).Run()
+	if err != nil {
+		ExitWithError(ExitBadArgs, err)
+	}
+
+	return passphrase
+}
+
+func (prompt *prompt) RequestString(label string, validate promptui.ValidateFunc) string {
+	userInput, err := (&promptui.Prompt{
+		Label:    fmt.Sprintf("%s ", label),
+		Validate: validate,
+	}).Run()
+
+	if err != nil {
+		ExitWithError(ExitBadArgs, err)
+	}
+
+	return userInput
 }

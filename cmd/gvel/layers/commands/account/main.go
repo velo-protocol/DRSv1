@@ -36,6 +36,7 @@ func (accountCommand *CommandHandler) Command() *cobra.Command {
 	command.AddCommand(
 		accountCommand.GetCreateCommand(),
 		accountCommand.GetListCommand(),
+		accountCommand.GetDefaultCommand(),
 	)
 
 	return command
@@ -57,5 +58,13 @@ func (accountCommand *CommandHandler) GetListCommand() *cobra.Command {
 		Use:   "list",
 		Short: "Print all accounts that were created",
 		Run:   accountCommand.List,
+	}
+}
+
+func (accountCommand *CommandHandler) GetDefaultCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "default",
+		Short: "Set default account to be used as signer",
+		Run:   accountCommand.Default,
 	}
 }

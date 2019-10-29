@@ -6,6 +6,7 @@ package mockutils
 
 import (
 	gomock "github.com/golang/mock/gomock"
+	promptui "github.com/manifoldco/promptui"
 	reflect "reflect"
 )
 
@@ -44,4 +45,18 @@ func (m *MockPrompt) RequestPassphrase() string {
 func (mr *MockPromptMockRecorder) RequestPassphrase() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestPassphrase", reflect.TypeOf((*MockPrompt)(nil).RequestPassphrase))
+}
+
+// RequestString mocks base method
+func (m *MockPrompt) RequestString(label string, validate promptui.ValidateFunc) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RequestString", label, validate)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// RequestString indicates an expected call of RequestString
+func (mr *MockPromptMockRecorder) RequestString(label, validate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestString", reflect.TypeOf((*MockPrompt)(nil).RequestString), label, validate)
 }
