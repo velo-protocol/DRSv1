@@ -16,4 +16,5 @@ type Repo interface {
 	GetMedianPriceFromPriceAccount(priceAccountAddress string) (decimal.Decimal, error)
 	SubmitTransaction(txB64 string) (*horizon.TransactionSuccess, error)
 	GetAsset(getAssetInput entities.GetAssetInput) (*horizon.AssetsPage, error)
+	GetAccountBalances(stellarAddress string) ([]horizon.Balance, error)
 }

@@ -38,6 +38,7 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 
 // SetupCredit mocks base method
 func (m *MockUseCase) SetupCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetupCredit", ctx, veloTx)
 	ret0, _ := ret[0].(*string)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -46,11 +47,13 @@ func (m *MockUseCase) SetupCredit(ctx context.Context, veloTx *txnbuild.VeloTx) 
 
 // SetupCredit indicates an expected call of SetupCredit
 func (mr *MockUseCaseMockRecorder) SetupCredit(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockUseCase)(nil).SetupCredit), ctx, veloTx)
 }
 
 // CreateWhitelist mocks base method
 func (m *MockUseCase) CreateWhitelist(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateWhitelist", ctx, veloTx)
 	ret0, _ := ret[0].(*string)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -59,11 +62,13 @@ func (m *MockUseCase) CreateWhitelist(ctx context.Context, veloTx *txnbuild.Velo
 
 // CreateWhitelist indicates an expected call of CreateWhitelist
 func (mr *MockUseCaseMockRecorder) CreateWhitelist(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWhitelist", reflect.TypeOf((*MockUseCase)(nil).CreateWhitelist), ctx, veloTx)
 }
 
 // UpdatePrice mocks base method
 func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePrice", ctx, veloTx)
 	ret0, _ := ret[0].(*string)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -72,11 +77,13 @@ func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) 
 
 // UpdatePrice indicates an expected call of UpdatePrice
 func (mr *MockUseCaseMockRecorder) UpdatePrice(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePrice", reflect.TypeOf((*MockUseCase)(nil).UpdatePrice), ctx, veloTx)
 }
 
 // MintCredit mocks base method
 func (m *MockUseCase) MintCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.MintCreditOutput, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "MintCredit", ctx, veloTx)
 	ret0, _ := ret[0].(*entities.MintCreditOutput)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -85,11 +92,13 @@ func (m *MockUseCase) MintCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (
 
 // MintCredit indicates an expected call of MintCredit
 func (mr *MockUseCaseMockRecorder) MintCredit(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCredit", reflect.TypeOf((*MockUseCase)(nil).MintCredit), ctx, veloTx)
 }
 
 // RedeemCredit mocks base method
 func (m *MockUseCase) RedeemCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.RedeemCreditOutput, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RedeemCredit", ctx, veloTx)
 	ret0, _ := ret[0].(*entities.RedeemCreditOutput)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -98,11 +107,13 @@ func (m *MockUseCase) RedeemCredit(ctx context.Context, veloTx *txnbuild.VeloTx)
 
 // RedeemCredit indicates an expected call of RedeemCredit
 func (mr *MockUseCaseMockRecorder) RedeemCredit(ctx, veloTx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RedeemCredit", reflect.TypeOf((*MockUseCase)(nil).RedeemCredit), ctx, veloTx)
 }
 
 // GetExchangeRate mocks base method
 func (m *MockUseCase) GetExchangeRate(ctx context.Context, input *entities.GetExchangeRateInput) (*entities.GetExchangeRateOutPut, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetExchangeRate", ctx, input)
 	ret0, _ := ret[0].(*entities.GetExchangeRateOutPut)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -111,11 +122,13 @@ func (m *MockUseCase) GetExchangeRate(ctx context.Context, input *entities.GetEx
 
 // GetExchangeRate indicates an expected call of GetExchangeRate
 func (mr *MockUseCaseMockRecorder) GetExchangeRate(ctx, input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExchangeRate", reflect.TypeOf((*MockUseCase)(nil).GetExchangeRate), ctx, input)
 }
 
 // GetCollateralHealthCheck mocks base method
 func (m *MockUseCase) GetCollateralHealthCheck(ctx context.Context) (*entities.GetCollateralHealthCheckOutput, errors.NodeError) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCollateralHealthCheck", ctx)
 	ret0, _ := ret[0].(*entities.GetCollateralHealthCheckOutput)
 	ret1, _ := ret[1].(errors.NodeError)
@@ -124,6 +137,7 @@ func (m *MockUseCase) GetCollateralHealthCheck(ctx context.Context) (*entities.G
 
 // GetCollateralHealthCheck indicates an expected call of GetCollateralHealthCheck
 func (mr *MockUseCaseMockRecorder) GetCollateralHealthCheck(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockUseCase)(nil).GetCollateralHealthCheck), ctx)
 }
 

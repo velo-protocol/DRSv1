@@ -12,7 +12,6 @@ import (
 
 func TestHandler_RebalanceReserve(t *testing.T) {
 
-
 	t.Run("error, use case return error", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockController.Finish()
