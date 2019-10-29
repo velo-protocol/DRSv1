@@ -185,7 +185,7 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 			Operations: []txnbuild.Operation{
 				&txnbuild.Payment{
 					Destination: drsCollateralAccount.DrsReserve,
-					Amount:      drsCollateralAmount.Sub(drsCollateralRequiredAmount).String(),
+					Amount:      drsCollateralAmount.Sub(drsCollateralRequiredAmount).Truncate(7).String(),
 					Asset: txnbuild.CreditAsset{
 						Code:   drsCollateralAssetCode,
 						Issuer: drsCollateralAssetIssuer,
@@ -212,7 +212,7 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 			Operations: []txnbuild.Operation{
 				&txnbuild.Payment{
 					Destination: drsCollateralKP.Address(),
-					Amount:      drsCollateralRequiredAmount.Sub(drsCollateralAmount).String(),
+					Amount:      drsCollateralRequiredAmount.Sub(drsCollateralAmount).Truncate(7).String(),
 					Asset: txnbuild.CreditAsset{
 						Code:   drsCollateralAssetCode,
 						Issuer: drsCollateralAssetIssuer,
