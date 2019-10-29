@@ -55,4 +55,5 @@ var (
 	ErrStableCreditAmountMustBeGreaterThanZero = "stable credit amount must be greater than zero"
 	ErrInvalidIssuerAccount                    = "invalid issuer account, %s"
 	ErrPeggedCurrencyIsNotSupport              = "pegged currency is not support"
+	ErrRebalanceIsNotRequired                  = "rebalance is not required reserve and collateral are in equilibrium"
 )

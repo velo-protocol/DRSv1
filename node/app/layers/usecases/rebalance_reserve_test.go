@@ -350,15 +350,9 @@ func TestUseCase_RebalanceReserve(t *testing.T) {
 
 		output, err := helper.useCase.RebalanceReserve(context.Background(), veloTx)
 
-		assert.NoError(t, err)
-		assert.NotNil(t, output)
-		assert.Equal(t, collateralAssetIssuer, output.Collaterals[0].AssetIssuer)
-		assert.Equal(t, collateralAssetCode, output.Collaterals[0].AssetCode)
-		assert.Equal(t, drsMediumCollateralAmount.String(), output.Collaterals[0].PoolAmount.String())
-		assert.True(t, output.Collaterals[0].RequiredAmount.GreaterThan(decimal.Zero))
-
-		assert.Equal(t, "", *output.SignedStellarTxXdr)
-
+		assert.Error(t, err)
+		assert.Nil(t, output)
+		assert.Equal(t, constants.ErrRebalanceIsNotRequired, err.Error())
 	})
 
 	t.Run("Success, pegged currency THB", func(t *testing.T) {
