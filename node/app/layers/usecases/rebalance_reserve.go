@@ -159,13 +159,16 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 		return nil, nerrors.ErrInternal{Message: constants.ErrDrsCollateralTrustlineNotFound}
 	}
 
+	drsCollateralRequiredAmount = drsCollateralRequiredAmount.Truncate(7)
+	drsCollateralAmount = drsCollateralAmount.Truncate(7)
+
 	rebalanceOutput := &entities.RebalanceOutput{
 		Collaterals: []*entities.Collateral{
 			{
 				AssetCode:      drsCollateralAssetCode,
 				AssetIssuer:    drsCollateralAssetIssuer,
-				RequiredAmount: drsCollateralRequiredAmount.Truncate(7),
-				PoolAmount:     drsCollateralAmount.Truncate(7),
+				RequiredAmount: drsCollateralRequiredAmount,
+				PoolAmount:     drsCollateralAmount,
 			},
 		},
 	}
