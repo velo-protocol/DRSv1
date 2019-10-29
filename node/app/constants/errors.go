@@ -21,6 +21,10 @@ var (
 	ErrGetTrustedPartnerListAccountData = "fail to get data of trusted partner list account"
 	ErrGetPriceFeederListAccountData    = "fail to get data of price feeder list account"
 
+	ErrGetDrsAccountBalance = "fail to get balances of drs account"
+
+	ErrDrsCollateralTrustlineNotFound = "collateral trustline not found in drs account"
+
 	ErrGetAccountDetail                   = "fail to get account detail of %s"
 	ErrGetDrsAccountDetail                = "fail to get account detail of drs account"
 	ErrGetDrsReserveAccountDetail         = "fail to get account detail of drs reserve"
@@ -51,4 +55,5 @@ var (
 	ErrMedianPriceMustBeGreaterThanZero        = "median price must be greater than zero"
 	ErrStableCreditAmountMustBeGreaterThanZero = "stable credit amount must be greater than zero"
 	ErrInvalidIssuerAccount                    = "invalid issuer account, %s"
+	ErrPeggedCurrencyIsNotSupport              = "pegged currency is not support"
 )
