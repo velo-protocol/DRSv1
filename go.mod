@@ -10,6 +10,7 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/jarcoal/httpmock v0.0.0-20161210151336-4442edb3db31
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
+	github.com/manifoldco/promptui v0.3.2
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/olekukonko/tablewriter v0.0.1
@@ -23,4 +24,5 @@ require (
 	github.com/syndtr/goleveldb v1.0.0
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	google.golang.org/grpc v1.24.0
+	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c // indirect
 )

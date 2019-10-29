@@ -76,3 +76,18 @@ func (mr *MockLogicMockRecorder) ListAccount() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccount", reflect.TypeOf((*MockLogic)(nil).ListAccount))
 }
+
+// SetDefaultAccount mocks base method
+func (m *MockLogic) SetDefaultAccount(input *entity.SetDefaultAccountInput) (*entity.SetDefaultAccountOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetDefaultAccount", input)
+	ret0, _ := ret[0].(*entity.SetDefaultAccountOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetDefaultAccount indicates an expected call of SetDefaultAccount
+func (mr *MockLogicMockRecorder) SetDefaultAccount(input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockLogic)(nil).SetDefaultAccount), input)
+}

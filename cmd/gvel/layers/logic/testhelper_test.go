@@ -46,14 +46,18 @@ func initTest(t *testing.T) helper {
 	}
 }
 
-func stellarAccountsBytes() [][]byte {
+func arrayOfStellarAccountsBytes() [][]byte {
+	return [][]byte{
+		stellarAccountsBytes(),
+	}
+}
+
+func stellarAccountsBytes() []byte {
 	stellarAccountBytes, _ := json.Marshal(entity.StellarAccount{
 		Address:       "GA...",
 		EncryptedSeed: []byte("fake-seed"),
 		Nonce:         []byte("aaaa"),
 	})
 
-	return [][]byte{
-		stellarAccountBytes,
-	}
+	return stellarAccountBytes
 }

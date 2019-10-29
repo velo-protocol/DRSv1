@@ -9,8 +9,9 @@ import (
 func TestLogic_ListAccount(t *testing.T) {
 	t.Run("happy", func(t *testing.T) {
 		helper := initTest(t)
+		defer helper.done()
 
-		mockedStellarAccountsBytes := stellarAccountsBytes()
+		mockedStellarAccountsBytes := arrayOfStellarAccountsBytes()
 
 		helper.mockDB.EXPECT().
 			GetAll().
@@ -29,7 +30,7 @@ func TestLogic_ListAccount(t *testing.T) {
 	t.Run("happy, default account not found", func(t *testing.T) {
 		helper := initTest(t)
 
-		mockedStellarAccountsBytes := stellarAccountsBytes()
+		mockedStellarAccountsBytes := arrayOfStellarAccountsBytes()
 
 		helper.mockDB.EXPECT().
 			GetAll().
@@ -48,6 +49,7 @@ func TestLogic_ListAccount(t *testing.T) {
 
 	t.Run("error - failed to load accounts from db", func(t *testing.T) {
 		helper := initTest(t)
+		defer helper.done()
 
 		helper.mockDB.EXPECT().GetAll().Return(nil, errors.New("error here"))
 
@@ -59,6 +61,7 @@ func TestLogic_ListAccount(t *testing.T) {
 
 	t.Run("error - failed to unmarshal stored data to entity", func(t *testing.T) {
 		helper := initTest(t)
+		defer helper.done()
 
 		helper.mockDB.EXPECT().
 			GetAll().
