@@ -36,7 +36,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		stableCreditAsset2  = "vTHB"
 		stableCreditIssuer2 = publicKey1
 
-		reserveAmount         = decimal.NewFromFloat(2050.125)
+		collateralPoolAmount  = decimal.NewFromFloat(2050.125)
 		collateralAssetCode   = string(vxdr.AssetVELO)
 		collateralAssetIssuer = env.VeloIssuerPublicKey
 	)
@@ -99,14 +99,12 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(&horizon.Account{
-			Balances: []horizon.Balance{
-				{
-					Balance: reserveAmount.String(),
-					Asset: base.Asset{
-						Code:   collateralAssetCode,
-						Issuer: collateralAssetIssuer,
-					},
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return([]horizon.Balance{
+			{
+				Balance: collateralPoolAmount.String(),
+				Asset: base.Asset{
+					Code:   collateralAssetCode,
+					Issuer: collateralAssetIssuer,
 				},
 			},
 		}, nil)
@@ -117,7 +115,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.NotNil(t, output)
 		assert.Equal(t, collateralAssetCode, output.AssetCode)
 		assert.Equal(t, collateralAssetIssuer, output.AssetIssuer)
-		assert.Equal(t, reserveAmount.String(), output.PoolAmount.String())
+		assert.Equal(t, collateralPoolAmount.String(), output.PoolAmount.String())
 		assert.True(t, output.RequiredAmount.GreaterThan(decimal.Zero))
 	})
 
@@ -179,14 +177,12 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(&horizon.Account{
-			Balances: []horizon.Balance{
-				{
-					Balance: reserveAmount.String(),
-					Asset: base.Asset{
-						Code:   collateralAssetCode,
-						Issuer: collateralAssetIssuer,
-					},
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return([]horizon.Balance{
+			{
+				Balance: collateralPoolAmount.String(),
+				Asset: base.Asset{
+					Code:   collateralAssetCode,
+					Issuer: collateralAssetIssuer,
 				},
 			},
 		}, nil)
@@ -197,7 +193,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.NotNil(t, output)
 		assert.Equal(t, collateralAssetCode, output.AssetCode)
 		assert.Equal(t, collateralAssetIssuer, output.AssetIssuer)
-		assert.Equal(t, reserveAmount.String(), output.PoolAmount.String())
+		assert.Equal(t, collateralPoolAmount.String(), output.PoolAmount.String())
 		assert.True(t, output.RequiredAmount.GreaterThan(decimal.Zero))
 	})
 
@@ -259,14 +255,12 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(&horizon.Account{
-			Balances: []horizon.Balance{
-				{
-					Balance: reserveAmount.String(),
-					Asset: base.Asset{
-						Code:   collateralAssetCode,
-						Issuer: collateralAssetIssuer,
-					},
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return([]horizon.Balance{
+			{
+				Balance: collateralPoolAmount.String(),
+				Asset: base.Asset{
+					Code:   collateralAssetCode,
+					Issuer: collateralAssetIssuer,
 				},
 			},
 		}, nil)
@@ -277,7 +271,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.NotNil(t, output)
 		assert.Equal(t, collateralAssetCode, output.AssetCode)
 		assert.Equal(t, collateralAssetIssuer, output.AssetIssuer)
-		assert.Equal(t, reserveAmount.String(), output.PoolAmount.String())
+		assert.Equal(t, collateralPoolAmount.String(), output.PoolAmount.String())
 		assert.True(t, output.RequiredAmount.GreaterThan(decimal.Zero))
 	})
 
@@ -368,14 +362,12 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(&horizon.Account{
-			Balances: []horizon.Balance{
-				{
-					Balance: reserveAmount.String(),
-					Asset: base.Asset{
-						Code:   collateralAssetCode,
-						Issuer: collateralAssetIssuer,
-					},
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return([]horizon.Balance{
+			{
+				Balance: collateralPoolAmount.String(),
+				Asset: base.Asset{
+					Code:   collateralAssetCode,
+					Issuer: collateralAssetIssuer,
 				},
 			},
 		}, nil)
@@ -386,7 +378,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.NotNil(t, output)
 		assert.Equal(t, collateralAssetCode, output.AssetCode)
 		assert.Equal(t, collateralAssetIssuer, output.AssetIssuer)
-		assert.Equal(t, reserveAmount.String(), output.PoolAmount.String())
+		assert.Equal(t, collateralPoolAmount.String(), output.PoolAmount.String())
 		assert.True(t, output.RequiredAmount.GreaterThan(decimal.Zero))
 	})
 
@@ -484,14 +476,12 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(&horizon.Account{
-			Balances: []horizon.Balance{
-				{
-					Balance: reserveAmount.String(),
-					Asset: base.Asset{
-						Code:   collateralAssetCode,
-						Issuer: collateralAssetIssuer,
-					},
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return([]horizon.Balance{
+			{
+				Balance: collateralPoolAmount.String(),
+				Asset: base.Asset{
+					Code:   collateralAssetCode,
+					Issuer: collateralAssetIssuer,
 				},
 			},
 		}, nil)
@@ -502,7 +492,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.NotNil(t, output)
 		assert.Equal(t, collateralAssetCode, output.AssetCode)
 		assert.Equal(t, collateralAssetIssuer, output.AssetIssuer)
-		assert.Equal(t, reserveAmount.String(), output.PoolAmount.String())
+		assert.Equal(t, collateralPoolAmount.String(), output.PoolAmount.String())
 		assert.True(t, output.RequiredAmount.GreaterThan(decimal.Zero))
 	})
 
@@ -883,7 +873,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.Contains(t, err.Error(), "invalid stable amount format")
 	})
 
-	t.Run("Error - can,t get drs reserve", func(t *testing.T) {
+	t.Run("Error - can,t get drs collateral balances", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
@@ -941,17 +931,17 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(nil, errors.New("can't get drs reserve "))
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return(nil, errors.New("can't get drs reserve "))
 
 		output, err := helper.useCase.GetCollateralHealthCheck(context.Background())
 
 		assert.Error(t, err)
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
-		assert.Equal(t, constants.ErrGetDrsReserveAccountDetail, err.Error())
+		assert.Contains(t, err.Error(), constants.ErrGetDrsAccountBalance)
 	})
 
-	t.Run("Error - invalid drs reserve amount format", func(t *testing.T) {
+	t.Run("Error - invalid drs collateral pool amount format", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
@@ -1009,8 +999,8 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 			},
 		}, nil)
 
-		helper.mockStellarRepo.EXPECT().GetAccount(drsAccountDataEnity.DrsReserve).Return(&horizon.Account{
-			Balances: []horizon.Balance{
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return(
+			[]horizon.Balance{
 				{
 					Balance: "amount",
 					Asset: base.Asset{
@@ -1018,8 +1008,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 						Issuer: collateralAssetIssuer,
 					},
 				},
-			},
-		}, nil)
+			}, nil)
 
 		output, err := helper.useCase.GetCollateralHealthCheck(context.Background())
 
