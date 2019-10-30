@@ -36,7 +36,6 @@ func (m *MockVeloRepo) EXPECT() *MockVeloRepoMockRecorder {
 
 // Client mocks base method
 func (m *MockVeloRepo) Client(keyPair *keypair.Full) client.ClientInterface {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Client", keyPair)
 	ret0, _ := ret[0].(client.ClientInterface)
 	return ret0
@@ -44,6 +43,5 @@ func (m *MockVeloRepo) Client(keyPair *keypair.Full) client.ClientInterface {
 
 // Client indicates an expected call of Client
 func (mr *MockVeloRepoMockRecorder) Client(keyPair interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Client", reflect.TypeOf((*MockVeloRepo)(nil).Client), keyPair)
 }

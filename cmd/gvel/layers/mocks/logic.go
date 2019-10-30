@@ -35,7 +35,6 @@ func (m *MockLogic) EXPECT() *MockLogicMockRecorder {
 
 // Init mocks base method
 func (m *MockLogic) Init(configFilePath string) error {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Init", configFilePath)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -43,13 +42,11 @@ func (m *MockLogic) Init(configFilePath string) error {
 
 // Init indicates an expected call of Init
 func (mr *MockLogicMockRecorder) Init(configFilePath interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Init", reflect.TypeOf((*MockLogic)(nil).Init), configFilePath)
 }
 
 // CreateAccount mocks base method
 func (m *MockLogic) CreateAccount(input *entity.CreateAccountInput) (*entity.CreateAccountOutput, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccount", input)
 	ret0, _ := ret[0].(*entity.CreateAccountOutput)
 	ret1, _ := ret[1].(error)
@@ -58,13 +55,11 @@ func (m *MockLogic) CreateAccount(input *entity.CreateAccountInput) (*entity.Cre
 
 // CreateAccount indicates an expected call of CreateAccount
 func (mr *MockLogicMockRecorder) CreateAccount(input interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccount", reflect.TypeOf((*MockLogic)(nil).CreateAccount), input)
 }
 
 // ListAccount mocks base method
 func (m *MockLogic) ListAccount() (*[]entity.StellarAccount, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccount")
 	ret0, _ := ret[0].(*[]entity.StellarAccount)
 	ret1, _ := ret[1].(error)
@@ -73,13 +68,11 @@ func (m *MockLogic) ListAccount() (*[]entity.StellarAccount, error) {
 
 // ListAccount indicates an expected call of ListAccount
 func (mr *MockLogicMockRecorder) ListAccount() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccount", reflect.TypeOf((*MockLogic)(nil).ListAccount))
 }
 
 // SetDefaultAccount mocks base method
 func (m *MockLogic) SetDefaultAccount(input *entity.SetDefaultAccountInput) (*entity.SetDefaultAccountOutput, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetDefaultAccount", input)
 	ret0, _ := ret[0].(*entity.SetDefaultAccountOutput)
 	ret1, _ := ret[1].(error)
@@ -88,13 +81,11 @@ func (m *MockLogic) SetDefaultAccount(input *entity.SetDefaultAccountInput) (*en
 
 // SetDefaultAccount indicates an expected call of SetDefaultAccount
 func (mr *MockLogicMockRecorder) SetDefaultAccount(input interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockLogic)(nil).SetDefaultAccount), input)
 }
 
 // SetupCredit mocks base method
 func (m *MockLogic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error) {
-	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetupCredit", input)
 	ret0, _ := ret[0].(*entity.SetupCreditOutput)
 	ret1, _ := ret[1].(error)
@@ -103,6 +94,18 @@ func (m *MockLogic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCr
 
 // SetupCredit indicates an expected call of SetupCredit
 func (mr *MockLogicMockRecorder) SetupCredit(input interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockLogic)(nil).SetupCredit), input)
+}
+
+// ImportAccount mocks base method
+func (m *MockLogic) ImportAccount(input *entity.ImportAccountInput) (*entity.ImportAccountOutput, error) {
+	ret := m.ctrl.Call(m, "ImportAccount", input)
+	ret0, _ := ret[0].(*entity.ImportAccountOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ImportAccount indicates an expected call of ImportAccount
+func (mr *MockLogicMockRecorder) ImportAccount(input interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportAccount", reflect.TypeOf((*MockLogic)(nil).ImportAccount), input)
 }
