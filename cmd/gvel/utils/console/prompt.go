@@ -32,7 +32,7 @@ func NewPrompt() Prompt {
 }
 
 func (prompt *prompt) RequestPassphrase() string {
-	passphrase := prompt.RequestHiddenString("Please enter passphrase ", nil)
+	passphrase := prompt.RequestHiddenString("Please enter passphrase", nil)
 
 	_, err := (&promptui.Prompt{
 		Label: "Please repeat a passphrase to confirm ",
