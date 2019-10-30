@@ -109,3 +109,16 @@ func (m *MockLogic) ImportAccount(input *entity.ImportAccountInput) (*entity.Imp
 func (mr *MockLogicMockRecorder) ImportAccount(input interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportAccount", reflect.TypeOf((*MockLogic)(nil).ImportAccount), input)
 }
+
+// MintCredit mocks base method
+func (m *MockLogic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOutput, error) {
+	ret := m.ctrl.Call(m, "MintCredit", input)
+	ret0, _ := ret[0].(*entity.MintCreditOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MintCredit indicates an expected call of MintCredit
+func (mr *MockLogicMockRecorder) MintCredit(input interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCredit", reflect.TypeOf((*MockLogic)(nil).MintCredit), input)
+}

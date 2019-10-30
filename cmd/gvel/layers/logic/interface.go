@@ -11,4 +11,5 @@ type Logic interface {
 	SetDefaultAccount(input *entity.SetDefaultAccountInput) (*entity.SetDefaultAccountOutput, error)
 	SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error)
 	ImportAccount(input *entity.ImportAccountInput) (*entity.ImportAccountOutput, error)
+	MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOutput, error)
 }
