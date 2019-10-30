@@ -16,16 +16,16 @@ func TestCommandHandler_Setup(t *testing.T) {
 		defer helper.done()
 
 		helper.mockPrompt.EXPECT().
-			RequestString("Please input asset code ", nil).
+			RequestString("Please input asset code", nil).
 			Return("vTHB")
 		helper.mockPrompt.EXPECT().
-			RequestString("Please input pegged value ", nil).
+			RequestString("Please input pegged value", nil).
 			Return("1")
 		helper.mockPrompt.EXPECT().
-			RequestString("Please input pegged currency ", nil).
+			RequestString("Please input pegged currency", nil).
 			Return("THB")
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please enter passphrase ", nil).
+			RequestHiddenString("Please enter passphrase", nil).
 			Return("password")
 		helper.mockLogic.EXPECT().
 			SetupCredit(gomock.AssignableToTypeOf(&entity.SetupCreditInput{})).
@@ -34,14 +34,14 @@ func TestCommandHandler_Setup(t *testing.T) {
 				PeggedValue:    "1",
 				PeggedCurrency: "THB",
 				SourceAddress:  "GA...",
-				TxResult:       &horizon.TransactionSuccess{},
+				TxResult:       &horizon.TransactionSuccess{Hash: "AAA..."},
 			}, nil)
 
 		helper.creditCommandHandler.Setup(helper.setupCmd, nil)
 
 		logEntries := helper.logHook.Entries
-		assert.Equal(t, "Setting up stable credit", logEntries[0].Message)
-		assert.Equal(t, "Stable credit vTHB set up for account GA... successfully.", logEntries[1].Message)
+		assert.Equal(t, "Stable credit vTHB set up for account GA... successfully.", logEntries[0].Message)
+		assert.Equal(t, "Stellar Transaction Hash ✉️ : AAA...", logEntries[1].Message)
 	})
 
 	t.Run("error, logic.SetupCredit returns error", func(t *testing.T) {
@@ -49,16 +49,16 @@ func TestCommandHandler_Setup(t *testing.T) {
 		defer helper.done()
 
 		helper.mockPrompt.EXPECT().
-			RequestString("Please input asset code ", nil).
+			RequestString("Please input asset code", nil).
 			Return("vTHB")
 		helper.mockPrompt.EXPECT().
-			RequestString("Please input pegged value ", nil).
+			RequestString("Please input pegged value", nil).
 			Return("1")
 		helper.mockPrompt.EXPECT().
-			RequestString("Please input pegged currency ", nil).
+			RequestString("Please input pegged currency", nil).
 			Return("THB")
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please enter passphrase ", nil).
+			RequestHiddenString("Please enter passphrase", nil).
 			Return("password")
 		helper.mockLogic.EXPECT().
 			SetupCredit(gomock.AssignableToTypeOf(&entity.SetupCreditInput{})).
@@ -67,8 +67,5 @@ func TestCommandHandler_Setup(t *testing.T) {
 		assert.PanicsWithValue(t, console.ExitError, func() {
 			helper.creditCommandHandler.Setup(helper.setupCmd, nil)
 		})
-
-		logEntries := helper.logHook.Entries
-		assert.Equal(t, "Setting up stable credit", logEntries[0].Message)
 	})
 }

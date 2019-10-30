@@ -44,6 +44,9 @@ func initTest(t *testing.T) helper {
 	logger, hook := test.NewNullLogger()
 	console.Logger = logger
 
+	// to omit what loader print
+	console.DefaultLoadWriter = console.Logger.Out
+
 	return helper{
 		logic:             logic.NewLogic(mockDB, mockFriendBot, mockVelo, mockConfiguration),
 		mockDB:            mockDB,

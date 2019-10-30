@@ -15,7 +15,9 @@ func (lo *logic) CreateAccount(input *entity.CreateAccountInput) (*entity.Create
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to random a new key pair")
 	}
-	console.Logger.Printf("Creating account with %s with starting balance 10000 XLM.", newKP.Address())
+
+	console.StartLoading("Creating account with %s with starting balance 10000 XLM.", newKP.Address())
+	defer console.StopLoading()
 
 	err = lo.FriendBot.GetFreeLumens(newKP.Address())
 	if err != nil {
