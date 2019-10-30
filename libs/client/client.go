@@ -25,19 +25,6 @@ type Client struct {
 	grpcConnection *grpc.ClientConn
 }
 
-type ClientInterface interface {
-	Close() error
-
-	Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (*horizon.TransactionSuccess, error)
-	SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCredit) (*horizon.TransactionSuccess, error)
-	PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpdate) (*horizon.TransactionSuccess, error)
-	MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredit) (*horizon.TransactionSuccess, error)
-	RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (*horizon.TransactionSuccess, error)
-
-	GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateRequest, error)
-	GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.GetCollateralHealthCheckRequest) (*cenGrpc.GetCollateralHealthCheckReply, error)
-}
-
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
@@ -90,6 +77,10 @@ func newClient(horizonClient horizonclient.ClientInterface, networkPassphrase st
 
 func (client *Client) Close() (err error) {
 	return client.grpcConnection.Close()
+}
+
+func (client *Client) SetKeyPair(keyPair *keypair.Full) {
+	client.keyPair = keyPair
 }
 
 func (client *Client) Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (*horizon.TransactionSuccess, error) {

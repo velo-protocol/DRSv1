@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/account"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/credit"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/initialize"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
@@ -15,6 +16,7 @@ type GvelHandler struct {
 	RootCommand    *cobra.Command
 	InitCommand    *cobra.Command
 	AccountCommand *cobra.Command
+	CreditCommand  *cobra.Command
 	Prompt         console.Prompt
 	AppConfig      config.Configuration
 }
@@ -52,9 +54,17 @@ func (gvelHandler *GvelHandler) Init() {
 			Command()
 	}
 
+	// init CreditCommand
+	if gvelHandler.CreditCommand == nil {
+		gvelHandler.CreditCommand = credit.
+			NewCommandHandler(gvelHandler.Logic, gvelHandler.Prompt, gvelHandler.AppConfig).
+			Command()
+	}
+
 	// Add commands to root
 	gvelHandler.RootCommand.AddCommand(
 		gvelHandler.InitCommand,
 		gvelHandler.AccountCommand,
+		gvelHandler.CreditCommand,
 	)
 }

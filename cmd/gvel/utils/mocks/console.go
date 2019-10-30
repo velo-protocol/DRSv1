@@ -60,3 +60,17 @@ func (mr *MockPromptMockRecorder) RequestString(label, validate interface{}) *go
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestString", reflect.TypeOf((*MockPrompt)(nil).RequestString), label, validate)
 }
+
+// RequestHiddenString mocks base method
+func (m *MockPrompt) RequestHiddenString(label string, validate promptui.ValidateFunc) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RequestHiddenString", label, validate)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// RequestHiddenString indicates an expected call of RequestHiddenString
+func (mr *MockPromptMockRecorder) RequestHiddenString(label, validate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestHiddenString", reflect.TypeOf((*MockPrompt)(nil).RequestHiddenString), label, validate)
+}

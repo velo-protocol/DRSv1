@@ -60,20 +60,6 @@ func (mr *MockConfigurationMockRecorder) Exists() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exists", reflect.TypeOf((*MockConfiguration)(nil).Exists))
 }
 
-// GetDefaultAccount mocks base method
-func (m *MockConfiguration) GetDefaultAccount() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDefaultAccount")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// GetDefaultAccount indicates an expected call of GetDefaultAccount
-func (mr *MockConfigurationMockRecorder) GetDefaultAccount() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDefaultAccount", reflect.TypeOf((*MockConfiguration)(nil).GetDefaultAccount))
-}
-
 // SetDefaultAccount mocks base method
 func (m *MockConfiguration) SetDefaultAccount(account string) error {
 	m.ctrl.T.Helper()
@@ -88,6 +74,20 @@ func (mr *MockConfigurationMockRecorder) SetDefaultAccount(account interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockConfiguration)(nil).SetDefaultAccount), account)
 }
 
+// GetDefaultAccount mocks base method
+func (m *MockConfiguration) GetDefaultAccount() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDefaultAccount")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetDefaultAccount indicates an expected call of GetDefaultAccount
+func (mr *MockConfigurationMockRecorder) GetDefaultAccount() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDefaultAccount", reflect.TypeOf((*MockConfiguration)(nil).GetDefaultAccount))
+}
+
 // GetAccountDbPath mocks base method
 func (m *MockConfiguration) GetAccountDbPath() string {
 	m.ctrl.T.Helper()
@@ -100,4 +100,60 @@ func (m *MockConfiguration) GetAccountDbPath() string {
 func (mr *MockConfigurationMockRecorder) GetAccountDbPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDbPath", reflect.TypeOf((*MockConfiguration)(nil).GetAccountDbPath))
+}
+
+// GetFriendBotUrl mocks base method
+func (m *MockConfiguration) GetFriendBotUrl() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFriendBotUrl")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetFriendBotUrl indicates an expected call of GetFriendBotUrl
+func (mr *MockConfigurationMockRecorder) GetFriendBotUrl() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFriendBotUrl", reflect.TypeOf((*MockConfiguration)(nil).GetFriendBotUrl))
+}
+
+// GetHorizonUrl mocks base method
+func (m *MockConfiguration) GetHorizonUrl() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHorizonUrl")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetHorizonUrl indicates an expected call of GetHorizonUrl
+func (mr *MockConfigurationMockRecorder) GetHorizonUrl() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHorizonUrl", reflect.TypeOf((*MockConfiguration)(nil).GetHorizonUrl))
+}
+
+// GetVeloNodeUrl mocks base method
+func (m *MockConfiguration) GetVeloNodeUrl() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetVeloNodeUrl")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetVeloNodeUrl indicates an expected call of GetVeloNodeUrl
+func (mr *MockConfigurationMockRecorder) GetVeloNodeUrl() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVeloNodeUrl", reflect.TypeOf((*MockConfiguration)(nil).GetVeloNodeUrl))
+}
+
+// GetNetworkPassphrase mocks base method
+func (m *MockConfiguration) GetNetworkPassphrase() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNetworkPassphrase")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetNetworkPassphrase indicates an expected call of GetNetworkPassphrase
+func (mr *MockConfigurationMockRecorder) GetNetworkPassphrase() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNetworkPassphrase", reflect.TypeOf((*MockConfiguration)(nil).GetNetworkPassphrase))
 }
