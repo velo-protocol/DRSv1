@@ -25,7 +25,7 @@ func StartLoading(format string, args ...interface{}) {
 
 	loadSpinner = spinner.New(defaultCharset, 100*time.Millisecond)
 	loadSpinner.FinalMSG = message + "\n"
-	loadSpinner.Suffix = " " + message
+	loadSpinner.Suffix = " " + message + "\n"
 	loadSpinner.HideCursor = true
 	loadSpinner.Writer = DefaultLoadWriter
 	loadSpinner.Start()

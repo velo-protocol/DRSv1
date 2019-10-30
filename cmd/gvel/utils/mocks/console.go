@@ -35,6 +35,7 @@ func (m *MockPrompt) EXPECT() *MockPromptMockRecorder {
 
 // RequestPassphrase mocks base method
 func (m *MockPrompt) RequestPassphrase() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RequestPassphrase")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -42,11 +43,13 @@ func (m *MockPrompt) RequestPassphrase() string {
 
 // RequestPassphrase indicates an expected call of RequestPassphrase
 func (mr *MockPromptMockRecorder) RequestPassphrase() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestPassphrase", reflect.TypeOf((*MockPrompt)(nil).RequestPassphrase))
 }
 
 // RequestString mocks base method
 func (m *MockPrompt) RequestString(label string, validate promptui.ValidateFunc) string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RequestString", label, validate)
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -54,11 +57,13 @@ func (m *MockPrompt) RequestString(label string, validate promptui.ValidateFunc)
 
 // RequestString indicates an expected call of RequestString
 func (mr *MockPromptMockRecorder) RequestString(label, validate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestString", reflect.TypeOf((*MockPrompt)(nil).RequestString), label, validate)
 }
 
 // RequestHiddenString mocks base method
 func (m *MockPrompt) RequestHiddenString(label string, validate promptui.ValidateFunc) string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RequestHiddenString", label, validate)
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -66,5 +71,6 @@ func (m *MockPrompt) RequestHiddenString(label string, validate promptui.Validat
 
 // RequestHiddenString indicates an expected call of RequestHiddenString
 func (mr *MockPromptMockRecorder) RequestHiddenString(label, validate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestHiddenString", reflect.TypeOf((*MockPrompt)(nil).RequestHiddenString), label, validate)
 }
