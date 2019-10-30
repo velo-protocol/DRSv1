@@ -25,6 +25,7 @@ const (
 
 // ExitWithError Exit Command with error
 func ExitWithError(code int, err error) {
+	StopLoading()
 	Logger.Error(err.Error())
 	os.Exit(code)
 }

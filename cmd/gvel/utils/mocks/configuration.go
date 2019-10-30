@@ -34,6 +34,7 @@ func (m *MockConfiguration) EXPECT() *MockConfigurationMockRecorder {
 
 // InitConfigFile mocks base method
 func (m *MockConfiguration) InitConfigFile(configFilePath string) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "InitConfigFile", configFilePath)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -41,11 +42,13 @@ func (m *MockConfiguration) InitConfigFile(configFilePath string) error {
 
 // InitConfigFile indicates an expected call of InitConfigFile
 func (mr *MockConfigurationMockRecorder) InitConfigFile(configFilePath interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitConfigFile", reflect.TypeOf((*MockConfiguration)(nil).InitConfigFile), configFilePath)
 }
 
 // Exists mocks base method
 func (m *MockConfiguration) Exists() bool {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Exists")
 	ret0, _ := ret[0].(bool)
 	return ret0
@@ -53,11 +56,13 @@ func (m *MockConfiguration) Exists() bool {
 
 // Exists indicates an expected call of Exists
 func (mr *MockConfigurationMockRecorder) Exists() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exists", reflect.TypeOf((*MockConfiguration)(nil).Exists))
 }
 
 // SetDefaultAccount mocks base method
 func (m *MockConfiguration) SetDefaultAccount(account string) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetDefaultAccount", account)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -65,11 +70,13 @@ func (m *MockConfiguration) SetDefaultAccount(account string) error {
 
 // SetDefaultAccount indicates an expected call of SetDefaultAccount
 func (mr *MockConfigurationMockRecorder) SetDefaultAccount(account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockConfiguration)(nil).SetDefaultAccount), account)
 }
 
 // GetDefaultAccount mocks base method
 func (m *MockConfiguration) GetDefaultAccount() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDefaultAccount")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -77,11 +84,13 @@ func (m *MockConfiguration) GetDefaultAccount() string {
 
 // GetDefaultAccount indicates an expected call of GetDefaultAccount
 func (mr *MockConfigurationMockRecorder) GetDefaultAccount() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDefaultAccount", reflect.TypeOf((*MockConfiguration)(nil).GetDefaultAccount))
 }
 
 // GetAccountDbPath mocks base method
 func (m *MockConfiguration) GetAccountDbPath() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountDbPath")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -89,11 +98,13 @@ func (m *MockConfiguration) GetAccountDbPath() string {
 
 // GetAccountDbPath indicates an expected call of GetAccountDbPath
 func (mr *MockConfigurationMockRecorder) GetAccountDbPath() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDbPath", reflect.TypeOf((*MockConfiguration)(nil).GetAccountDbPath))
 }
 
 // GetFriendBotUrl mocks base method
 func (m *MockConfiguration) GetFriendBotUrl() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFriendBotUrl")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -101,11 +112,13 @@ func (m *MockConfiguration) GetFriendBotUrl() string {
 
 // GetFriendBotUrl indicates an expected call of GetFriendBotUrl
 func (mr *MockConfigurationMockRecorder) GetFriendBotUrl() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFriendBotUrl", reflect.TypeOf((*MockConfiguration)(nil).GetFriendBotUrl))
 }
 
 // GetHorizonUrl mocks base method
 func (m *MockConfiguration) GetHorizonUrl() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetHorizonUrl")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -113,11 +126,13 @@ func (m *MockConfiguration) GetHorizonUrl() string {
 
 // GetHorizonUrl indicates an expected call of GetHorizonUrl
 func (mr *MockConfigurationMockRecorder) GetHorizonUrl() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHorizonUrl", reflect.TypeOf((*MockConfiguration)(nil).GetHorizonUrl))
 }
 
 // GetVeloNodeUrl mocks base method
 func (m *MockConfiguration) GetVeloNodeUrl() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetVeloNodeUrl")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -125,11 +140,13 @@ func (m *MockConfiguration) GetVeloNodeUrl() string {
 
 // GetVeloNodeUrl indicates an expected call of GetVeloNodeUrl
 func (mr *MockConfigurationMockRecorder) GetVeloNodeUrl() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVeloNodeUrl", reflect.TypeOf((*MockConfiguration)(nil).GetVeloNodeUrl))
 }
 
 // GetNetworkPassphrase mocks base method
 func (m *MockConfiguration) GetNetworkPassphrase() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNetworkPassphrase")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -137,5 +154,6 @@ func (m *MockConfiguration) GetNetworkPassphrase() string {
 
 // GetNetworkPassphrase indicates an expected call of GetNetworkPassphrase
 func (mr *MockConfigurationMockRecorder) GetNetworkPassphrase() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNetworkPassphrase", reflect.TypeOf((*MockConfiguration)(nil).GetNetworkPassphrase))
 }

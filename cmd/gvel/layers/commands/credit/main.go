@@ -35,6 +35,7 @@ func (creditCommand *CommandHandler) Command() *cobra.Command {
 
 	command.AddCommand(
 		creditCommand.GetSetupCommand(),
+		creditCommand.GetMintCommand(),
 	)
 
 	return command
@@ -45,6 +46,16 @@ func (creditCommand *CommandHandler) GetSetupCommand() *cobra.Command {
 		Use:   "setup",
 		Short: "Setup a stable credit on Velo",
 		Run:   creditCommand.Setup,
+	}
+
+	return command
+}
+
+func (creditCommand *CommandHandler) GetMintCommand() *cobra.Command {
+	command := &cobra.Command{
+		Use:   "mint",
+		Short: "Mint a stable credit on Velo",
+		Run:   creditCommand.Mint,
 	}
 
 	return command
