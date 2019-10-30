@@ -29,6 +29,20 @@ mockgen/friendbot:
 		-mock_names Repository=MockFriendBotRepo \
 		-package mocks
 
+mockgen/velo:
+	mockgen \
+		-source=./layers/repositories/velo/interface.go \
+		-destination=./layers/mocks/velo.go \
+		-mock_names Repository=MockVeloRepo \
+		-package mocks \
+		-imports vclient=gitlab.com/velo-labs/cen/libs/client
+	mockgen \
+		-source=../../libs/client/interface.go \
+		-destination=./layers/mocks/velo_client.go \
+		-mock_names ClientInterface=MockVeloClient \
+		-imports vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild \
+		-package mocks
+
 mockgen/console:
 	mockgen \
 		-source=./utils/console/interface.go \
@@ -49,3 +63,4 @@ mockgen/all:
 	make mockgen/logic
 	make mockgen/console
 	make mockgen/config
+	make mockgen/velo

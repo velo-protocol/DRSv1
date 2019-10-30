@@ -18,13 +18,13 @@ func TestLogic_ListAccount(t *testing.T) {
 			Return(mockedStellarAccountsBytes, nil)
 		helper.mockConfiguration.EXPECT().
 			GetDefaultAccount().
-			Return("GA...")
+			Return(stellarAccountEntity().Address)
 
 		accounts, err := helper.logic.ListAccount()
 
 		assert.NoError(t, err)
 		assert.NotEmpty(t, accounts)
-		assert.Equal(t, ((*accounts)[0]).EncryptedSeed, []byte("fake-seed"))
+		assert.Equal(t, ((*accounts)[0]).Address, stellarAccountEntity().Address)
 		assert.True(t, ((*accounts)[0]).IsDefault)
 	})
 	t.Run("happy, default account not found", func(t *testing.T) {
@@ -43,7 +43,7 @@ func TestLogic_ListAccount(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.NotEmpty(t, accounts)
-		assert.Equal(t, ((*accounts)[0]).EncryptedSeed, []byte("fake-seed"))
+		assert.Equal(t, ((*accounts)[0]).Address, stellarAccountEntity().Address)
 		assert.False(t, ((*accounts)[0]).IsDefault)
 	})
 

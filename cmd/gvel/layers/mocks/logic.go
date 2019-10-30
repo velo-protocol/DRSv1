@@ -91,3 +91,18 @@ func (mr *MockLogicMockRecorder) SetDefaultAccount(input interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockLogic)(nil).SetDefaultAccount), input)
 }
+
+// SetupCredit mocks base method
+func (m *MockLogic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetupCredit", input)
+	ret0, _ := ret[0].(*entity.SetupCreditOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetupCredit indicates an expected call of SetupCredit
+func (mr *MockLogicMockRecorder) SetupCredit(input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockLogic)(nil).SetupCredit), input)
+}
