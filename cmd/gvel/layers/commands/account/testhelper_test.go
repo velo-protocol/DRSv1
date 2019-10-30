@@ -30,6 +30,7 @@ type helper struct {
 	createCmd  *cobra.Command
 	listCmd    *cobra.Command
 	defaultCmd *cobra.Command
+	importCmd  *cobra.Command
 }
 
 func initTest(t *testing.T) *helper {
@@ -68,7 +69,8 @@ func initTest(t *testing.T) *helper {
 
 		cmd:        cmd,
 		createCmd:  cmd.Commands()[0],
-		listCmd:    cmd.Commands()[1],
-		defaultCmd: cmd.Commands()[2],
+		defaultCmd: cmd.Commands()[1],
+		importCmd:  cmd.Commands()[2],
+		listCmd:    cmd.Commands()[3],
 	}
 }

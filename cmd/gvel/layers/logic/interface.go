@@ -10,4 +10,5 @@ type Logic interface {
 	ListAccount() (*[]entity.StellarAccount, error)
 	SetDefaultAccount(input *entity.SetDefaultAccountInput) (*entity.SetDefaultAccountOutput, error)
 	SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error)
+	ImportAccount(input *entity.ImportAccountInput) (*entity.ImportAccountOutput, error)
 }

@@ -35,8 +35,9 @@ func (accountCommand *CommandHandler) Command() *cobra.Command {
 
 	command.AddCommand(
 		accountCommand.GetCreateCommand(),
-		accountCommand.GetListCommand(),
 		accountCommand.GetDefaultCommand(),
+		accountCommand.GetImportCommand(),
+		accountCommand.GetListCommand(),
 	)
 
 	return command
@@ -67,4 +68,15 @@ func (accountCommand *CommandHandler) GetDefaultCommand() *cobra.Command {
 		Short: "Set default account to be used as signer",
 		Run:   accountCommand.Default,
 	}
+}
+
+func (accountCommand *CommandHandler) GetImportCommand() *cobra.Command {
+	command := &cobra.Command{
+		Use:   "import",
+		Short: "Import your account",
+		Run:   accountCommand.ImportAccount,
+	}
+
+	command.Flags().BoolP("default", "d", false, "set as default account")
+	return command
 }

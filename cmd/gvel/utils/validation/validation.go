@@ -11,3 +11,10 @@ func ValidateStellarAddress(input string) error {
 	}
 	return nil
 }
+
+func ValidateSeedKey(input string) error {
+	if !strkey.IsValidEd25519SecretSeed(input) {
+		return errors.New("invalid seed key format")
+	}
+	return nil
+}
