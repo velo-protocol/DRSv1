@@ -19,7 +19,7 @@ func (lo *logic) CreateAccount(input *entity.CreateAccountInput) (*entity.Create
 	console.StartLoading("Creating account with %s with starting balance 10000 XLM.", newKP.Address())
 	defer console.StopLoading()
 
-	err = lo.FriendBot.GetFreeLumens(newKP.Address())
+	err = lo.Stellar.GetFreeLumens(newKP.Address())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create a stellar account")
 	}

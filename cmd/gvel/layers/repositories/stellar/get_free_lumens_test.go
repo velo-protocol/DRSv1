@@ -1,10 +1,10 @@
-package friendbot_test
+package stellar_test
 
 import (
 	"fmt"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/friendbot"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/stellar"
 	"testing"
 )
 
@@ -16,9 +16,9 @@ func TestFb_GetFreeLumens(t *testing.T) {
 
 		httpmock.RegisterResponder("GET", fmt.Sprintf(FakeFriendBotUrl, FakeStellarAddress), mockedHttpResp)
 
-		fbRepo := friendbot.NewFriendBot(FakeFriendBotUrl)
+		stellarRepo := stellar.NewStellarWithClientInterface(FakeHorizonUrl, nil)
 
-		err := fbRepo.GetFreeLumens(FakeStellarAddress)
+		err := stellarRepo.GetFreeLumens(FakeStellarAddress)
 
 		assert.NoError(t, err)
 	})
@@ -30,9 +30,9 @@ func TestFb_GetFreeLumens(t *testing.T) {
 
 		httpmock.RegisterResponder("GET", fmt.Sprintf(FakeFriendBotUrl, FakeStellarAddress), mockedHttpResp)
 
-		fbRepo := friendbot.NewFriendBot(FakeFriendBotUrl)
+		stellarRepo := stellar.NewStellarWithClientInterface(FakeHorizonUrl, nil)
 
-		err := fbRepo.GetFreeLumens(FakeStellarAddress)
+		err := stellarRepo.GetFreeLumens(FakeStellarAddress)
 
 		assert.Error(t, err)
 	})

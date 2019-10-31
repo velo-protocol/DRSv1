@@ -24,16 +24,14 @@ func (lo *logic) ImportAccount(input *entity.ImportAccountInput) (*entity.Import
 		return nil, errors.Errorf("account %s is already exist", kp.Address())
 	}
 
+	_, err = lo.Stellar.GetStellarAccount(kp.Address())
+	if err != nil {
+		return nil, errors.Errorf("account %s not found on stellar", kp.Address())
+	}
+
 	encryptedSeed, nonce, err := crypto.Encrypt([]byte(kp.Seed()), input.Passphrase)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to encrypt seed key")
-	}
-
-	if input.SetAsDefault {
-		err = lo.AppConfig.SetDefaultAccount(kp.Address())
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to write config file")
-		}
 	}
 
 	stellarAccount := entity.StellarAccount{
