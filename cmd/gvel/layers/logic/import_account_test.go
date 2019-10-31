@@ -151,7 +151,7 @@ func TestLogic_ImportAccount(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Nil(t, output)
-		assert.Contains(t, err.Error(), "account GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45 not found on stellar")
+		assert.Contains(t, err.Error(), "failed to verify account with stellar")
 	})
 
 	t.Run("error, failed to save stellar account", func(t *testing.T) {

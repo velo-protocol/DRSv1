@@ -11,6 +11,9 @@ func (s *stellar) GetStellarAccount(stellarAddress string) (*horizon.Account, er
 		AccountID: stellarAddress,
 	})
 	if err != nil {
+		if herr, ok := err.(*horizonclient.Error); ok {
+			err = errors.New(herr.Problem.Detail)
+		}
 		return nil, errors.Wrapf(err, "fail to get account detail of %s", stellarAddress)
 	}
 

@@ -16,9 +16,9 @@ func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 	}
 
 	console.StartLoading("Minting stable credit")
-	defer console.StopLoading()
-
 	output, err := creditCommand.Logic.MintCredit(mintCreditInput)
+	console.StopLoading()
+
 	if err != nil {
 		console.ExitWithError(console.ExitError, err)
 	}
