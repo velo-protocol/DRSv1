@@ -30,6 +30,10 @@ func (creditCommand *CommandHandler) Command() *cobra.Command {
 			if !creditCommand.AppConfig.Exists() {
 				console.ExitWithError(console.ExitError, errors.New("config file not found, please run `gvel init`"))
 			}
+
+			if creditCommand.AppConfig.GetDefaultAccount() == "" {
+				console.ExitWithError(console.ExitError, errors.New("default account not found in config file, please run `gvel account create` or `gvel account import`"))
+			}
 		},
 	}
 

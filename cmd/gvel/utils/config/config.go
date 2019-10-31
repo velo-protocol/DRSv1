@@ -87,7 +87,7 @@ func (configuration *configuration) GetFriendBotUrl() string {
 }
 
 func (configuration *configuration) GetHorizonUrl() string {
-	return configuration.viper.GetString("horizonBotUrl")
+	return configuration.viper.GetString("horizonUrl")
 }
 
 func (configuration *configuration) GetVeloNodeUrl() string {
