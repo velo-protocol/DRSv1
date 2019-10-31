@@ -26,7 +26,7 @@ func (lo *logic) ImportAccount(input *entity.ImportAccountInput) (*entity.Import
 
 	_, err = lo.Stellar.GetStellarAccount(kp.Address())
 	if err != nil {
-		return nil, errors.Errorf("account %s not found on stellar", kp.Address())
+		return nil, errors.Wrap(err, "failed to verify account with stellar")
 	}
 
 	encryptedSeed, nonce, err := crypto.Encrypt([]byte(kp.Seed()), input.Passphrase)

@@ -16,9 +16,9 @@ func (creditCommand *CommandHandler) Setup(cmd *cobra.Command, args []string) {
 	}
 
 	console.StartLoading("Setting up stable credit")
-	defer console.StopLoading()
-
 	output, err := creditCommand.Logic.SetupCredit(setupCreditInput)
+	console.StopLoading()
+
 	if err != nil {
 		console.ExitWithError(console.ExitError, err)
 	}

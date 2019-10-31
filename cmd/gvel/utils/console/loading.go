@@ -10,9 +10,9 @@ import (
 
 var loadSpinner *spinner.Spinner
 var defaultCharset = []string{
-	"💞",
-	"💗",
 	"💖",
+	"💗",
+	"💞",
 }
 var DefaultLoadWriter io.Writer = color.Output
 
@@ -24,7 +24,7 @@ func StartLoading(format string, args ...interface{}) {
 	message := fmt.Sprintf(format, args...)
 
 	loadSpinner = spinner.New(defaultCharset, 100*time.Millisecond)
-	loadSpinner.FinalMSG = "\n" + message + "\n"
+	loadSpinner.FinalMSG = fmt.Sprintf("\n%s %s\n", defaultCharset[0], message)
 	loadSpinner.Suffix = " " + message
 	loadSpinner.HideCursor = true
 	loadSpinner.Writer = DefaultLoadWriter
