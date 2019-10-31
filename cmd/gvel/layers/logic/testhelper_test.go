@@ -20,7 +20,7 @@ import (
 type helper struct {
 	logic             logic.Logic
 	mockDB            *mocks.MockDbRepo
-	mockFriendBot     *mocks.MockFriendBotRepo
+	mockStellar       *mocks.MockStellarRepo
 	mockVelo          *mocks.MockVeloRepo
 	mockVeloClient    *mocks.MockVeloClient
 	mockConfiguration *mockutils.MockConfiguration
@@ -34,7 +34,7 @@ func initTest(t *testing.T) helper {
 	mockCtrl := gomock.NewController(t)
 
 	mockDB := mocks.NewMockDbRepo(mockCtrl)
-	mockFriendBot := mocks.NewMockFriendBotRepo(mockCtrl)
+	mockFriendBot := mocks.NewMockStellarRepo(mockCtrl)
 	mockVelo := mocks.NewMockVeloRepo(mockCtrl)
 	mockVeloClient := mocks.NewMockVeloClient(mockCtrl)
 	mockConfiguration := mockutils.NewMockConfiguration(mockCtrl)
@@ -50,7 +50,7 @@ func initTest(t *testing.T) helper {
 	return helper{
 		logic:             logic.NewLogic(mockDB, mockFriendBot, mockVelo, mockConfiguration),
 		mockDB:            mockDB,
-		mockFriendBot:     mockFriendBot,
+		mockStellar:       mockFriendBot,
 		mockVelo:          mockVelo,
 		mockVeloClient:    mockVeloClient,
 		mockController:    mockCtrl,

@@ -13,7 +13,7 @@ func TestLogic_CreateAccount(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		helper.mockFriendBot.EXPECT().
+		helper.mockStellar.EXPECT().
 			GetFreeLumens(gomock.Any()).Return(nil)
 
 		helper.mockDB.EXPECT().
@@ -39,7 +39,7 @@ func TestLogic_CreateAccount(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		helper.mockFriendBot.EXPECT().
+		helper.mockStellar.EXPECT().
 			GetFreeLumens(gomock.Any()).Return(nil)
 
 		helper.mockDB.EXPECT().
@@ -65,7 +65,7 @@ func TestLogic_CreateAccount(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		helper.mockFriendBot.EXPECT().
+		helper.mockStellar.EXPECT().
 			GetFreeLumens(gomock.Any()).Return(errors.New("error happens here"))
 
 		_, err := helper.logic.CreateAccount(&entity.CreateAccountInput{
@@ -78,7 +78,7 @@ func TestLogic_CreateAccount(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		helper.mockFriendBot.EXPECT().
+		helper.mockStellar.EXPECT().
 			GetFreeLumens(gomock.Any()).Return(nil)
 
 		helper.mockDB.EXPECT().
@@ -94,7 +94,7 @@ func TestLogic_CreateAccount(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
-		helper.mockFriendBot.EXPECT().
+		helper.mockStellar.EXPECT().
 			GetFreeLumens(gomock.Any()).Return(nil)
 
 		helper.mockDB.EXPECT().

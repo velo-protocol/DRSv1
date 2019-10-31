@@ -21,7 +21,7 @@ func TestInitConfigFile(t *testing.T) {
 
 		assert.True(t, viper.GetBool("initialized"))
 		assert.Equal(t, ".gvel/db/account", viper.GetString("accountDbPath"))
-		assert.Equal(t, constants.DefaultFriendBotUrl, viper.GetString("friendBotUrl"))
+		assert.Equal(t, constants.DefaultHorizonUrl, viper.GetString("horizonUrl"))
 	})
 
 	t.Run("success, config file is already exist, no error", func(t *testing.T) {

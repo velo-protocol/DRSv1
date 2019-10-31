@@ -22,11 +22,11 @@ mockgen/db:
 		-mock_names Repository=MockDbRepo \
 		-package mocks
 
-mockgen/friendbot:
+mockgen/stellar:
 	mockgen \
-		-source=./layers/repositories/friendbot/interface.go \
-		-destination=./layers/mocks/friendbot.go \
-		-mock_names Repository=MockFriendBotRepo \
+		-source=./layers/repositories/stellar/interface.go \
+		-destination=./layers/mocks/stellar.go \
+		-mock_names Repository=MockStellarRepo \
 		-package mocks
 
 mockgen/velo:
@@ -59,7 +59,7 @@ mockgen/config:
 
 mockgen/all:
 	make mockgen/db
-	make mockgen/friendbot
+	make mockgen/stellar
 	make mockgen/logic
 	make mockgen/console
 	make mockgen/config

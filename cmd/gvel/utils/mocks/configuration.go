@@ -102,20 +102,6 @@ func (mr *MockConfigurationMockRecorder) GetAccountDbPath() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountDbPath", reflect.TypeOf((*MockConfiguration)(nil).GetAccountDbPath))
 }
 
-// GetFriendBotUrl mocks base method
-func (m *MockConfiguration) GetFriendBotUrl() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFriendBotUrl")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// GetFriendBotUrl indicates an expected call of GetFriendBotUrl
-func (mr *MockConfigurationMockRecorder) GetFriendBotUrl() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFriendBotUrl", reflect.TypeOf((*MockConfiguration)(nil).GetFriendBotUrl))
-}
-
 // GetHorizonUrl mocks base method
 func (m *MockConfiguration) GetHorizonUrl() string {
 	m.ctrl.T.Helper()
@@ -156,4 +142,18 @@ func (m *MockConfiguration) GetNetworkPassphrase() string {
 func (mr *MockConfigurationMockRecorder) GetNetworkPassphrase() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNetworkPassphrase", reflect.TypeOf((*MockConfiguration)(nil).GetNetworkPassphrase))
+}
+
+// GetIsTestNet mocks base method
+func (m *MockConfiguration) GetIsTestNet() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetIsTestNet")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// GetIsTestNet indicates an expected call of GetIsTestNet
+func (mr *MockConfigurationMockRecorder) GetIsTestNet() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIsTestNet", reflect.TypeOf((*MockConfiguration)(nil).GetIsTestNet))
 }

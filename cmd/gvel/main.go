@@ -1,10 +1,11 @@
 package main
 
 import (
+	"github.com/stellar/go/clients/horizonclient"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/friendbot"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/stellar"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/velo"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
@@ -25,14 +26,21 @@ func main() {
 				console.ExitWithError(console.ExitError, err)
 			}
 
-			// friend bot
-			friendBotRepository := friendbot.NewFriendBot(appConfig.GetFriendBotUrl())
+			// stellar
+			var horizonClient *horizonclient.Client
+			if appConfig.GetIsTestNet() {
+				horizonClient = horizonclient.DefaultTestNetClient
+			} else {
+				horizonClient = horizonclient.DefaultPublicNetClient
+			}
+			horizonClient.HorizonURL = appConfig.GetHorizonUrl()
+			stellarRepository := stellar.NewStellar(horizonClient)
 
 			// velo
 			veloRepository := velo.NewVelo(appConfig.GetVeloNodeUrl(), appConfig.GetHorizonUrl(), appConfig.GetNetworkPassphrase())
 
 			// logic
-			logicInstance = logic.NewLogic(accountDbRepository, friendBotRepository, veloRepository, appConfig)
+			logicInstance = logic.NewLogic(accountDbRepository, stellarRepository, veloRepository, appConfig)
 
 		} else {
 			logicInstance = logic.NewLogic(&database.LevelDbDatabase{}, nil, nil, appConfig)

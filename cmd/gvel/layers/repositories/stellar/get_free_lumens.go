@@ -1,4 +1,4 @@
-package friendbot
+package stellar
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func (fb *friendBot) GetFreeLumens(stellarAddress string) error {
-	resp, err := http.Get(fmt.Sprintf(fb.FriendBotURL, stellarAddress))
+func (s *stellar) GetFreeLumens(stellarAddress string) error {
+	resp, err := http.Get(fmt.Sprintf(s.FriendBotURL, stellarAddress))
 	if err != nil {
 		return errors.Wrap(err, "failed to get free lumens from friendbot")
 	}

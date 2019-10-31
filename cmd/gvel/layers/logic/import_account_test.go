@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang/mock/gomock"
+	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	"testing"
@@ -19,8 +20,9 @@ func TestLogic_ImportAccount(t *testing.T) {
 			Get([]byte("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45")).
 			Return(nil, errors.New("leveldb: not found"))
 
-		helper.mockConfiguration.EXPECT().
-			SetDefaultAccount(gomock.Any()).Return(nil)
+		helper.mockStellar.EXPECT().
+			GetStellarAccount("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45").
+			Return(&horizon.Account{}, nil)
 
 		helper.mockDB.EXPECT().
 			Save(gomock.Any(), gomock.Any()).Return(nil)
@@ -51,8 +53,9 @@ func TestLogic_ImportAccount(t *testing.T) {
 			Get([]byte("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45")).
 			Return(nil, errors.New("leveldb: not found"))
 
-		helper.mockConfiguration.EXPECT().
-			SetDefaultAccount(gomock.Any()).Return(nil)
+		helper.mockStellar.EXPECT().
+			GetStellarAccount("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45").
+			Return(&horizon.Account{}, nil)
 
 		helper.mockDB.EXPECT().
 			Save(gomock.Any(), gomock.Any()).Return(nil)
@@ -78,16 +81,6 @@ func TestLogic_ImportAccount(t *testing.T) {
 	t.Run("error, failed to convert seed key to key pair", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
-
-		helper.mockDB.EXPECT().
-			Get([]byte("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45")).
-			Return(nil, errors.New("leveldb: not found"))
-
-		helper.mockConfiguration.EXPECT().
-			SetDefaultAccount(gomock.Any()).Return(nil)
-
-		helper.mockDB.EXPECT().
-			Save(gomock.Any(), gomock.Any()).Return(nil)
 
 		output, err := helper.logic.ImportAccount(&entity.ImportAccountInput{
 			Passphrase:   "strong_password!",
@@ -138,7 +131,7 @@ func TestLogic_ImportAccount(t *testing.T) {
 		assert.Equal(t, fmt.Sprintf("account %s is already exist", "GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45"), err.Error())
 	})
 
-	t.Run("error, failed to write config file", func(t *testing.T) {
+	t.Run("error, failed to get stellar account from horizon", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
@@ -146,9 +139,9 @@ func TestLogic_ImportAccount(t *testing.T) {
 			Get([]byte("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45")).
 			Return(nil, errors.New("leveldb: not found"))
 
-		helper.mockConfiguration.EXPECT().
-			SetDefaultAccount(gomock.Any()).
-			Return(errors.New("some error has occurred"))
+		helper.mockStellar.EXPECT().
+			GetStellarAccount("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45").
+			Return(nil, errors.New("some error has occurred"))
 
 		output, err := helper.logic.ImportAccount(&entity.ImportAccountInput{
 			Passphrase:   "strong_password!",
@@ -158,7 +151,7 @@ func TestLogic_ImportAccount(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Nil(t, output)
-		assert.Contains(t, err.Error(), "failed to write config file")
+		assert.Contains(t, err.Error(), "account GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45 not found on stellar")
 	})
 
 	t.Run("error, failed to save stellar account", func(t *testing.T) {
@@ -169,8 +162,9 @@ func TestLogic_ImportAccount(t *testing.T) {
 			Get([]byte("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45")).
 			Return(nil, errors.New("leveldb: not found"))
 
-		helper.mockConfiguration.EXPECT().
-			SetDefaultAccount(gomock.Any()).Return(nil)
+		helper.mockStellar.EXPECT().
+			GetStellarAccount("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45").
+			Return(&horizon.Account{}, nil)
 
 		helper.mockDB.EXPECT().
 			Save(gomock.Any(), gomock.Any()).Return(errors.New("some error has occurred"))
@@ -194,8 +188,9 @@ func TestLogic_ImportAccount(t *testing.T) {
 			Get([]byte("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45")).
 			Return(nil, errors.New("leveldb: not found"))
 
-		helper.mockConfiguration.EXPECT().
-			SetDefaultAccount(gomock.Any()).Return(nil)
+		helper.mockStellar.EXPECT().
+			GetStellarAccount("GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45").
+			Return(&horizon.Account{}, nil)
 
 		helper.mockDB.EXPECT().
 			Save(gomock.Any(), gomock.Any()).Return(nil)
