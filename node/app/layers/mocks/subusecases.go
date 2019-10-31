@@ -36,6 +36,7 @@ func (m *MockSubUseCase) EXPECT() *MockSubUseCaseMockRecorder {
 
 // GetIssuerAccount mocks base method
 func (m *MockSubUseCase) GetIssuerAccount(ctx context.Context, input *entities.GetIssuerAccountInput) (*entities.GetIssuerAccountOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetIssuerAccount", ctx, input)
 	ret0, _ := ret[0].(*entities.GetIssuerAccountOutput)
 	ret1, _ := ret[1].(error)
@@ -44,11 +45,13 @@ func (m *MockSubUseCase) GetIssuerAccount(ctx context.Context, input *entities.G
 
 // GetIssuerAccount indicates an expected call of GetIssuerAccount
 func (mr *MockSubUseCaseMockRecorder) GetIssuerAccount(ctx, input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIssuerAccount", reflect.TypeOf((*MockSubUseCase)(nil).GetIssuerAccount), ctx, input)
 }
 
 // GetTrustedPartnerFromIssuerAccount mocks base method
 func (m *MockSubUseCase) GetTrustedPartnerFromIssuerAccount(ctx context.Context, input *entities.GetTrustedPartnerFromIssuerAccountInput) (*entities.GetTrustedPartnerFromIssuerAccountOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTrustedPartnerFromIssuerAccount", ctx, input)
 	ret0, _ := ret[0].(*entities.GetTrustedPartnerFromIssuerAccountOutput)
 	ret1, _ := ret[1].(error)
@@ -57,5 +60,6 @@ func (m *MockSubUseCase) GetTrustedPartnerFromIssuerAccount(ctx context.Context,
 
 // GetTrustedPartnerFromIssuerAccount indicates an expected call of GetTrustedPartnerFromIssuerAccount
 func (mr *MockSubUseCaseMockRecorder) GetTrustedPartnerFromIssuerAccount(ctx, input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTrustedPartnerFromIssuerAccount", reflect.TypeOf((*MockSubUseCase)(nil).GetTrustedPartnerFromIssuerAccount), ctx, input)
 }
