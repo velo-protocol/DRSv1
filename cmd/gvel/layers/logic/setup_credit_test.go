@@ -100,6 +100,12 @@ func TestLogic_SetupCredit(t *testing.T) {
 		helper.mockVelo.EXPECT().
 			Client(helper.keyPair).
 			Return(helper.mockVeloClient)
+		helper.mockConfiguration.EXPECT().
+			GetHorizonUrl().
+			Return("https://fake-horizon.com")
+		helper.mockConfiguration.EXPECT().
+			GetNetworkPassphrase().
+			Return("fake-network")
 		helper.mockVeloClient.EXPECT().
 			SetupCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.SetupCredit{})).
 			Return(nil, errors.New("some error has occurred"))

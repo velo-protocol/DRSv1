@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/parser"
 	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 )
@@ -39,6 +40,7 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 		CollateralAmount:    input.CollateralAmount,
 	})
 	if err != nil {
+		err = parser.ParseHorizonError(err, lo.AppConfig.GetHorizonUrl(), lo.AppConfig.GetNetworkPassphrase())
 		return nil, errors.Wrap(err, "failed to mint credit")
 	}
 

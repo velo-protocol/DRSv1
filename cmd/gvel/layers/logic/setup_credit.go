@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
+	"gitlab.com/velo-labs/cen/cmd/gvel/utils/parser"
 	"gitlab.com/velo-labs/cen/libs/convert"
 	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
 )
@@ -40,6 +41,7 @@ func (lo *logic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCredi
 		AssetCode:      input.AssetCode,
 	})
 	if err != nil {
+		err = parser.ParseHorizonError(err, lo.AppConfig.GetHorizonUrl(), lo.AppConfig.GetNetworkPassphrase())
 		return nil, errors.Wrap(err, "failed to setup credit")
 	}
 
