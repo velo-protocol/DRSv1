@@ -102,6 +102,12 @@ func TestLogic_MintCredit(t *testing.T) {
 		helper.mockVelo.EXPECT().
 			Client(helper.keyPair).
 			Return(helper.mockVeloClient)
+		helper.mockConfiguration.EXPECT().
+			GetHorizonUrl().
+			Return("https://fake-horizon.com")
+		helper.mockConfiguration.EXPECT().
+			GetNetworkPassphrase().
+			Return("fake-network")
 		helper.mockVeloClient.EXPECT().
 			MintCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.MintCredit{})).
 			Return(nil, errors.New("some error has occurred"))
