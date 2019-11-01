@@ -12,6 +12,7 @@ func TestParseHorizonError(t *testing.T) {
 	t.Run("success, typical error", func(t *testing.T) {
 		err := errors.New("some error has occurred")
 		parsedError := ParseHorizonError(err, "", "")
+		assert.NotNil(t, parsedError)
 		assert.EqualError(t, err, parsedError.Error())
 	})
 	t.Run("success, horizon error without envelope", func(t *testing.T) {
@@ -19,6 +20,7 @@ func TestParseHorizonError(t *testing.T) {
 			Problem: problem.NotFound,
 		}
 		parsedError := ParseHorizonError(err, "", "")
+		assert.NotNil(t, parsedError)
 		assert.Contains(t, parsedError.Error(), problem.NotFound.Detail)
 	})
 	t.Run("success, horizon error with envelope but no horizon url and network provided", func(t *testing.T) {
