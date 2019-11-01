@@ -36,7 +36,6 @@ func makeXdrViewerUrl(envelope string, horizonUrl string, network string) string
 		Scheme:   "https",
 		Host:     "www.stellar.org",
 		Path:     "laboratory",
-		Fragment: "xdr-viewer",
-		RawQuery: query.Encode(),
+		Fragment: "xdr-viewer?" + query.Encode(),
 	}).String()
 }
