@@ -41,6 +41,7 @@ func (creditCommand *CommandHandler) Command() *cobra.Command {
 		creditCommand.GetExchangeRateCommand(),
 		creditCommand.GetSetupCommand(),
 		creditCommand.GetMintCommand(),
+		creditCommand.GetRedeemCommand(),
 	)
 
 	return command
@@ -71,6 +72,16 @@ func (creditCommand *CommandHandler) GetExchangeRateCommand() *cobra.Command {
 		Use:   "get-exchange",
 		Short: "Get exchange rate of a stable credit on Velo",
 		Run:   creditCommand.GetExchangeRate,
+	}
+
+	return command
+}
+
+func (creditCommand *CommandHandler) GetRedeemCommand() *cobra.Command {
+	command := &cobra.Command{
+		Use:   "redeem",
+		Short: "Redeemed of a stable credit on Velo",
+		Run:   creditCommand.Redeem,
 	}
 
 	return command

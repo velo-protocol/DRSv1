@@ -29,6 +29,7 @@ type helper struct {
 	cmd                *cobra.Command
 	setupCmd           *cobra.Command
 	mintCmd            *cobra.Command
+	redeemCmd          *cobra.Command
 	getExchangeRateCmd *cobra.Command
 }
 
@@ -72,6 +73,7 @@ func initTest(t *testing.T) *helper {
 		cmd:                cmd,
 		getExchangeRateCmd: cmd.Commands()[0],
 		mintCmd:            cmd.Commands()[1],
-		setupCmd:           cmd.Commands()[2],
+		redeemCmd:          cmd.Commands()[2],
+		setupCmd:           cmd.Commands()[3],
 	}
 }
