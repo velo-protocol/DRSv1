@@ -181,3 +181,18 @@ func (mr *MockLogicMockRecorder) GetCollateralHealthCheck() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockLogic)(nil).GetCollateralHealthCheck))
 }
+
+// RebalanceReserve mocks base method
+func (m *MockLogic) RebalanceReserve(input *entity.RebalanceInput) (*entity.RebalanceOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RebalanceReserve", input)
+	ret0, _ := ret[0].(*entity.RebalanceOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RebalanceReserve indicates an expected call of RebalanceReserve
+func (mr *MockLogicMockRecorder) RebalanceReserve(input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceReserve", reflect.TypeOf((*MockLogic)(nil).RebalanceReserve), input)
+}

@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/account"
+	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/collateral"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/credit"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/initialize"
 	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
@@ -12,13 +13,14 @@ import (
 )
 
 type GvelHandler struct {
-	Logic          logic.Logic
-	RootCommand    *cobra.Command
-	InitCommand    *cobra.Command
-	AccountCommand *cobra.Command
-	CreditCommand  *cobra.Command
-	Prompt         console.Prompt
-	AppConfig      config.Configuration
+	Logic             logic.Logic
+	RootCommand       *cobra.Command
+	InitCommand       *cobra.Command
+	AccountCommand    *cobra.Command
+	CreditCommand     *cobra.Command
+	CollateralCommand *cobra.Command
+	Prompt            console.Prompt
+	AppConfig         config.Configuration
 }
 
 func NewGvelHandler(logic logic.Logic, config config.Configuration) *GvelHandler {
@@ -61,10 +63,18 @@ func (gvelHandler *GvelHandler) Init() {
 			Command()
 	}
 
+	// init CollateralCommand
+	if gvelHandler.CollateralCommand == nil {
+		gvelHandler.CollateralCommand = collateral.
+			NewCommandHandler(gvelHandler.Logic, gvelHandler.Prompt, gvelHandler.AppConfig).
+			Command()
+	}
+
 	// Add commands to root
 	gvelHandler.RootCommand.AddCommand(
 		gvelHandler.InitCommand,
 		gvelHandler.AccountCommand,
 		gvelHandler.CreditCommand,
+		gvelHandler.CollateralCommand,
 	)
 }
