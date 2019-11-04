@@ -166,3 +166,18 @@ func (mr *MockLogicMockRecorder) GetExchangeRate(input interface{}) *gomock.Call
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExchangeRate", reflect.TypeOf((*MockLogic)(nil).GetExchangeRate), input)
 }
+
+// GetCollateralHealthCheck mocks base method
+func (m *MockLogic) GetCollateralHealthCheck() (*entity.GetCollateralHealthCheckOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCollateralHealthCheck")
+	ret0, _ := ret[0].(*entity.GetCollateralHealthCheckOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCollateralHealthCheck indicates an expected call of GetCollateralHealthCheck
+func (mr *MockLogicMockRecorder) GetCollateralHealthCheck() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCollateralHealthCheck", reflect.TypeOf((*MockLogic)(nil).GetCollateralHealthCheck))
+}
