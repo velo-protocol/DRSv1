@@ -12,5 +12,6 @@ type Logic interface {
 	SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error)
 	ImportAccount(input *entity.ImportAccountInput) (*entity.ImportAccountOutput, error)
 	MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOutput, error)
+	RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCreditOutput, error)
 	GetExchangeRate(input *entity.GetExchangeRateInput) (*entity.GetExchangeRateOutput, error)
 }

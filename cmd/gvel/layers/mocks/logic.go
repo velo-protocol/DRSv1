@@ -137,6 +137,21 @@ func (mr *MockLogicMockRecorder) MintCredit(input interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCredit", reflect.TypeOf((*MockLogic)(nil).MintCredit), input)
 }
 
+// RedeemCredit mocks base method
+func (m *MockLogic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCreditOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RedeemCredit", input)
+	ret0, _ := ret[0].(*entity.RedeemCreditOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RedeemCredit indicates an expected call of RedeemCredit
+func (mr *MockLogicMockRecorder) RedeemCredit(input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RedeemCredit", reflect.TypeOf((*MockLogic)(nil).RedeemCredit), input)
+}
+
 // GetExchangeRate mocks base method
 func (m *MockLogic) GetExchangeRate(input *entity.GetExchangeRateInput) (*entity.GetExchangeRateOutput, error) {
 	m.ctrl.T.Helper()
