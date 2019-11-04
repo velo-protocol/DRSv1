@@ -15,4 +15,5 @@ type Logic interface {
 	RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCreditOutput, error)
 	GetExchangeRate(input *entity.GetExchangeRateInput) (*entity.GetExchangeRateOutput, error)
 	GetCollateralHealthCheck() (*entity.GetCollateralHealthCheckOutput, error)
+	RebalanceReserve(input *entity.RebalanceInput) (*entity.RebalanceOutput, error)
 }

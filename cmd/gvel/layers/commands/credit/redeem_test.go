@@ -54,7 +54,7 @@ func TestCommandHandler_Redeem(t *testing.T) {
 		assert.Equal(t, fmt.Sprintf("🔗 Stellar Transaction Hash: %s", "264226cb06af3b86299031884175155e67a02e0a8ad0b3ab3a88b409a8c09d5c"), logEntries[1].Message)
 	})
 
-	t.Run("error, logic.MintCredit returns error", func(t *testing.T) {
+	t.Run("error, logic.RedeemCredit returns error", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
 
