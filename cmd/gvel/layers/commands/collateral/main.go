@@ -39,8 +39,19 @@ func (collateralCommand *CommandHandler) Command() *cobra.Command {
 	}
 
 	command.AddCommand(
+		collateralCommand.GetHealthCheckCommand(),
 		collateralCommand.GetRebalanceReserveCommand(),
 	)
+
+	return command
+}
+
+func (collateralCommand *CommandHandler) GetHealthCheckCommand() *cobra.Command {
+	command := &cobra.Command{
+		Use:   "health-check",
+		Short: "Get collateral health check of Velo",
+		Run:   collateralCommand.GetHealthCheck,
+	}
 	return command
 }
 

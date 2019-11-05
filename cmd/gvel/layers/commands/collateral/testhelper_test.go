@@ -11,7 +11,6 @@ import (
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/mocks"
 	"os"
-
 	"testing"
 )
 
@@ -26,8 +25,9 @@ type helper struct {
 	tableLogHook             *test.Hook
 	done                     func()
 
-	cmd          *cobra.Command
-	rebalanceCmd *cobra.Command
+	cmd            *cobra.Command
+	healthCheckCmd *cobra.Command
+	rebalanceCmd   *cobra.Command
 }
 
 func initTest(t *testing.T) *helper {
@@ -67,7 +67,8 @@ func initTest(t *testing.T) *helper {
 			monkey.UnpatchAll()
 		},
 
-		cmd:          cmd,
-		rebalanceCmd: cmd.Commands()[0],
+		cmd:            cmd,
+		healthCheckCmd: cmd.Commands()[0],
+		rebalanceCmd:   cmd.Commands()[1],
 	}
 }
