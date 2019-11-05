@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 #Builder stage
-FROM golang:1.13.4-alpine3.10 as development
+FROM golang:1.12.7-alpine3.10 as development
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on

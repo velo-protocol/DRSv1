@@ -1,6 +1,6 @@
 module gitlab.com/velo-labs/cen
 
-go 1.13
+go 1.12
 
 require (
 	bou.ke/monkey v1.0.1
