@@ -567,6 +567,106 @@ func TestUseCase_RebalanceReserve(t *testing.T) {
 
 	})
 
+	t.Run("Success, get empty records of asset", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		veloTx := getMockVeloTx()
+		_ = veloTx.Build()
+		_ = veloTx.Sign(kp1)
+
+		// get tx sender account
+		helper.mockStellarRepo.EXPECT().
+			GetAccount(publicKey1).
+			Return(&horizon.Account{
+				AccountID: publicKey1,
+				Sequence:  "1",
+			}, nil)
+
+		// get drs account
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+
+		// get median price thb
+		helper.mockStellarRepo.EXPECT().
+			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceThbVeloAddress).
+			Return(decimal.New(medianPriceThb.IntPart(), -7), nil)
+
+		// get median price usd
+		helper.mockStellarRepo.EXPECT().
+			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceUsdVeloAddress).
+			Return(decimal.New(medianPriceUsd.IntPart(), -7), nil)
+
+		// get median price sgd
+		helper.mockStellarRepo.EXPECT().
+			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceSgdVeloAddress).
+			Return(decimal.New(medianPriceSgd.IntPart(), -7), nil)
+
+		// get tp list data
+		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(drsAccountDataEnity.TrustedPartnerListAddress).
+			Return(map[string]string{trustedPartnerAddress1: trustedPartnerMetaAddress1}, nil)
+
+		// calculate collateral amount
+		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(trustedPartnerMetaAddress1).
+			Return(map[string]string{fmt.Sprintf("%s_%s", stableCreditAsset1, stableCreditIssuer1): "GCDOC2AYBMEESYXYD3NBPFHWAA44PHQKGTKHRDZXQLWJRWOIW5X2MTFQ"}, nil)
+
+		mockGetIssuerAccountOutput := &entities.GetIssuerAccountOutput{
+			Account:        nil,
+			PeggedValue:    decimal.NewFromFloat(1.5),
+			PeggedCurrency: "USD",
+			AssetCode:      stableCreditAsset1,
+		}
+
+		helper.mockSubUseCase.EXPECT().GetIssuerAccount(context.Background(), &entities.GetIssuerAccountInput{IssuerAddress: stableCreditIssuer1}).Return(
+			mockGetIssuerAccountOutput, nil)
+
+		helper.mockStellarRepo.EXPECT().GetAsset(entities.GetAssetInput{
+			AssetCode:   stableCreditAsset1,
+			AssetIssuer: stableCreditIssuer1,
+		}).Return(&horizon.AssetsPage{
+			Links: hal.Links{},
+			Embedded: struct {
+				Records []horizon.AssetStat
+			}{},
+		}, nil)
+
+		helper.mockStellarRepo.EXPECT().GetAccountBalances(env.DrsPublicKey).Return(
+			[]horizon.Balance{
+				{
+					Balance: drsHighCollateralAmount.String(),
+					Asset: base.Asset{
+						Code:   collateralAssetCode,
+						Issuer: collateralAssetIssuer,
+					},
+				},
+			}, nil)
+
+		output, err := helper.useCase.RebalanceReserve(context.Background(), veloTx)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, output)
+		assert.Equal(t, collateralAssetIssuer, output.Collaterals[0].AssetIssuer)
+		assert.Equal(t, collateralAssetCode, output.Collaterals[0].AssetCode)
+		assert.Equal(t, drsHighCollateralAmount.String(), output.Collaterals[0].PoolAmount.String())
+		assert.True(t, output.Collaterals[0].RequiredAmount.Equal(decimal.Zero))
+
+		stellarTx, txErr := txnbuild.TransactionFromXDR(*output.SignedStellarTxXdr)
+		assert.NoError(t, txErr)
+
+		txEnv := stellarTx.TxEnvelope()
+		assert.Equal(t, kp1.Address(), txEnv.Tx.SourceAccount.Address())
+		assert.Equal(t, xdr.OperationTypePayment, txEnv.Tx.Operations[0].Body.Type)
+		assert.Equal(t, env.DrsPublicKey, txEnv.Tx.Operations[0].SourceAccount.Address())
+		assert.Equal(t, drsAccountDataEnity.DrsReserve, txEnv.Tx.Operations[0].Body.PaymentOp.Destination.Address())
+		assert.Equal(t, collateralAssetIssuer, txEnv.Tx.Operations[0].Body.PaymentOp.Asset.AlphaNum4.Issuer.Address())
+		assert.Equal(t, collateralAssetCode, func() string {
+			bytes, _ := txEnv.Tx.Operations[0].Body.PaymentOp.Asset.AlphaNum4.AssetCode.MarshalBinary()
+			return string(bytes)
+		}())
+
+	})
+
 	t.Run("Error - VeloTx missing signer", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()

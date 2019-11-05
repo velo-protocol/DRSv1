@@ -108,8 +108,12 @@ func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.
 				AssetCode:   assetDetail[0],
 				AssetIssuer: assetDetail[1],
 			})
-			if err != nil || len(assetPage.Embedded.Records) < 1 {
+			if err != nil {
 				return nil, nerrors.ErrPrecondition{Message: errors.Wrapf(err, constants.ErrGetAsset, assetDetail[0]).Error()}
+			}
+
+			if len(assetPage.Embedded.Records) < 1 {
+				continue
 			}
 			stableAmount, err := decimal.NewFromString(assetPage.Embedded.Records[0].Amount)
 			if err != nil {

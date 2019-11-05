@@ -87,7 +87,7 @@ func (useCase *useCase) GetCollateralHealthCheck(ctx context.Context) (*entities
 			}
 
 			if len(assetPage.Embedded.Records) < 1 {
-				return nil, nerrors.ErrPrecondition{Message: errors.Errorf(constants.ErrGetAsset, assetDetail[0]).Error()}
+				continue
 			}
 
 			stableAmount, err := decimal.NewFromString(assetPage.Embedded.Records[0].Amount)
