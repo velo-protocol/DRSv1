@@ -7,11 +7,9 @@ import (
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/errors"
-	"log"
 )
 
 func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
-	log.Println("Welcome to minting")
 	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.MintCreditOp
 	if op == nil {
 		return nil, nerrors.ErrInvalidArgument{
@@ -21,7 +19,6 @@ func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *v
 
 	mintCreditOutput, err := handler.UseCase.MintCredit(ctx, veloTx)
 	if err != nil {
-		log.Println(err)
 		return nil, err.GRPCError()
 	}
 
