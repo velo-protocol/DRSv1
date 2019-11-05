@@ -752,7 +752,7 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.Contains(t, err.Error(), constants.ErrGetIssuerAccount)
 	})
 
-	t.Run("Error - can't get asset", func(t *testing.T) {
+	t.Run("Error - can't get asset empty records", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
 
@@ -805,6 +805,68 @@ func TestUseCase_GetCollateralHealthCheck(t *testing.T) {
 		assert.Nil(t, output)
 		assert.IsType(t, nerrors.ErrPrecondition{}, err)
 		assert.Contains(t, err.Error(), fmt.Sprintf(constants.ErrGetAsset, stableCreditAsset1))
+	})
+
+	t.Run("Error - get asset", func(t *testing.T) {
+		helper := initTest(t)
+		defer helper.mockController.Finish()
+
+		// get drs account
+		helper.mockStellarRepo.EXPECT().
+			GetDrsAccountData().
+			Return(&drsAccountDataEnity, nil)
+
+		// get median price thb
+		helper.mockStellarRepo.EXPECT().
+			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceThbVeloAddress).
+			Return(decimal.New(medianPriceThb.IntPart(), -7), nil)
+
+		// get median price usd
+		helper.mockStellarRepo.EXPECT().
+			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceUsdVeloAddress).
+			Return(decimal.New(medianPriceUsd.IntPart(), -7), nil)
+
+		// get median price sgd
+		helper.mockStellarRepo.EXPECT().
+			GetMedianPriceFromPriceAccount(drsAccountDataEnity.PriceSgdVeloAddress).
+			Return(decimal.New(medianPriceSgd.IntPart(), -7), nil)
+
+		// get tp list data
+		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(drsAccountDataEnity.TrustedPartnerListAddress).
+			Return(map[string]string{trustedPartnerAddress1: trustedPartnerMetaAddress1}, nil)
+
+		// calculate collateral amount
+		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(trustedPartnerMetaAddress1).
+			Return(map[string]string{fmt.Sprintf("%s_%s", stableCreditAsset1, stableCreditIssuer1): "GCDOC2AYBMEESYXYD3NBPFHWAA44PHQKGTKHRDZXQLWJRWOIW5X2MTFQ"}, nil)
+
+		mockGetIssuerAccountOutput := &entities.GetIssuerAccountOutput{
+			Account:        nil,
+			PeggedValue:    decimal.NewFromFloat(1.5),
+			PeggedCurrency: "USD",
+			AssetCode:      stableCreditAsset1,
+		}
+
+		helper.mockSubUseCase.EXPECT().GetIssuerAccount(context.Background(), &entities.GetIssuerAccountInput{IssuerAddress: stableCreditIssuer1}).Return(
+			mockGetIssuerAccountOutput, nil)
+
+		helper.mockStellarRepo.EXPECT().GetAsset(entities.GetAssetInput{
+			AssetCode:   stableCreditAsset1,
+			AssetIssuer: stableCreditIssuer1,
+		}).Return(&horizon.AssetsPage{
+			Links: hal.Links{},
+			Embedded: struct {
+				Records []horizon.AssetStat
+			}{
+				Records: []horizon.AssetStat{},
+			},
+		}, nil)
+
+		output, err := helper.useCase.GetCollateralHealthCheck(context.Background())
+
+		assert.Error(t, err)
+		assert.Nil(t, output)
+		assert.IsType(t, nerrors.ErrPrecondition{}, err)
+		assert.Equal(t, fmt.Sprintf(constants.ErrGetAsset, stableCreditAsset1), err.Error())
 	})
 
 	t.Run("Error - invalid stable amount format", func(t *testing.T) {
