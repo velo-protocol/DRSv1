@@ -4,7 +4,6 @@ import (
 	"github.com/spf13/cobra"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
 )
 
 func (creditCommand *CommandHandler) Redeem(cmd *cobra.Command, args []string) {
@@ -24,6 +23,6 @@ func (creditCommand *CommandHandler) Redeem(cmd *cobra.Command, args []string) {
 		console.ExitWithError(console.ExitError, err)
 	}
 
-	console.Logger.Infof("Redemption was successfully. You got %s %s.", output.Amount, vxdr.AssetVELO)
+	console.Logger.Infof("Redeemed successfully.")
 	console.Logger.Infof("🔗 Stellar Transaction Hash: %s", output.TxResult.Hash)
 }
