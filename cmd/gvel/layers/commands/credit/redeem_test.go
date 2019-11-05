@@ -49,8 +49,7 @@ func TestCommandHandler_Redeem(t *testing.T) {
 		helper.creditCommandHandler.Redeem(helper.mintCmd, nil)
 
 		logEntries := helper.logHook.Entries
-		msgExpected := fmt.Sprintf("Redemption was successfully. You got %s VELO.", amount)
-		assert.Equal(t, msgExpected, logEntries[0].Message)
+		assert.Equal(t, "Redeemed successfully.", logEntries[0].Message)
 		assert.Equal(t, fmt.Sprintf("🔗 Stellar Transaction Hash: %s", "264226cb06af3b86299031884175155e67a02e0a8ad0b3ab3a88b409a8c09d5c"), logEntries[1].Message)
 	})
 
