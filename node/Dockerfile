@@ -44,7 +44,7 @@ CMD cd node/app && fresh
 # ------------------------------------------------------------------------------
 # Build deployable image
 # ------------------------------------------------------------------------------
-FROM golang:1.12.7-alpine3.10 as build
+FROM golang:1.13.4-alpine3.10 as build
 
 WORKDIR /go/src/gitlab.com/velo-labs/cen
 
@@ -61,7 +61,7 @@ RUN cd node/app && go build -o /go/bin/node.bin
 # ------------------------------------------------------------------------------
 # Application image
 # ------------------------------------------------------------------------------
-FROM golang:1.12.7-alpine3.10
+FROM golang:1.13.4-alpine3.10
 
 RUN apk add --no-cache tini tzdata
 RUN addgroup -g 211000 -S appgroup && adduser -u 211000 -S appuser -G appgroup
