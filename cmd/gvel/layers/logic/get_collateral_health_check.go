@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	spec "gitlab.com/velo-labs/cen/grpc"
@@ -26,9 +27,10 @@ func (lo *logic) GetCollateralHealthCheck() (*entity.GetCollateralHealthCheckOut
 		return nil, errors.Wrap(err, "failed to get collateral health check")
 	}
 
+	asset := fmt.Sprintf("%s (%s...)", result.AssetCode, result.AssetIssuer[0:4])
+
 	return &entity.GetCollateralHealthCheckOutput{
-		AssetCode:      result.AssetCode,
-		AssetIssuer:    result.AssetIssuer,
+		Asset:          asset,
 		RequiredAmount: result.RequiredAmount,
 		PoolAmount:     result.PoolAmount,
 	}, nil

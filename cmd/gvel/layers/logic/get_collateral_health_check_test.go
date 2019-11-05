@@ -14,6 +14,7 @@ func TestLogic_GetCollateralHealthCheck(t *testing.T) {
 	var (
 		assetCode      = "kBEAM"
 		assetIssuer    = "GC3COBQESTRET2AXK5ADR63L7LOMEZWDPODW4F2Z7Y44TTEOTRBSKXQ3"
+		asset          = "kBEAM (GC3C...)"
 		poolAmount     = "1.0000000"
 		requiredAmount = "2.0000000"
 	)
@@ -45,8 +46,7 @@ func TestLogic_GetCollateralHealthCheck(t *testing.T) {
 
 		output, err := helper.logic.GetCollateralHealthCheck()
 		assert.NoError(t, err)
-		assert.Equal(t, assetCode, output.AssetCode)
-		assert.Equal(t, assetIssuer, output.AssetIssuer)
+		assert.Equal(t, asset, output.Asset)
 		assert.Equal(t, poolAmount, output.PoolAmount)
 		assert.Equal(t, requiredAmount, output.RequiredAmount)
 

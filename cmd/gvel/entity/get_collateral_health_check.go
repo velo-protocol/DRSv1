@@ -1,8 +1,7 @@
 package entity
 
 type GetCollateralHealthCheckOutput struct {
-	AssetCode      string
-	AssetIssuer    string
+	Asset          string
 	RequiredAmount string
 	PoolAmount     string
 }
