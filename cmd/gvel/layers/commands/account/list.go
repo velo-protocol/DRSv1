@@ -7,7 +7,9 @@ import (
 )
 
 func (accountCommand *CommandHandler) List(cmd *cobra.Command, args []string) {
+	console.StartLoading("Getting account details")
 	accounts, err := accountCommand.Logic.ListAccount()
+	console.StopLoading()
 	if err != nil {
 		console.ExitWithError(console.ExitError, err)
 	}

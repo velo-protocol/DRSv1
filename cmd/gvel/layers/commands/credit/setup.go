@@ -12,7 +12,7 @@ func (creditCommand *CommandHandler) Setup(cmd *cobra.Command, args []string) {
 		AssetCode:      creditCommand.Prompt.RequestString("Please input asset code", nil),
 		PeggedValue:    creditCommand.Prompt.RequestString("Please input pegged value", nil),
 		PeggedCurrency: creditCommand.Prompt.RequestString("Please input pegged currency", nil),
-		Passphrase:     creditCommand.Prompt.RequestHiddenString("Please input passphrase", nil),
+		Passphrase:     creditCommand.Prompt.RequestHiddenString("🔑 Please input passphrase", nil),
 	}
 
 	console.StartLoading("Setting up stable credit")

@@ -15,11 +15,14 @@ func (accountCommand *CommandHandler) ImportAccount(cmd *cobra.Command, args []s
 
 	seedKey := accountCommand.Prompt.RequestHiddenString("Please enter seed key of the address", validation.ValidateSeedKey)
 	passphrase := accountCommand.Prompt.RequestPassphrase()
+
+	console.StartLoading("Importing account")
 	output, err := accountCommand.Logic.ImportAccount(&entity.ImportAccountInput{
 		Passphrase:   passphrase,
 		SeedKey:      seedKey,
 		SetAsDefault: setAsDefault,
 	})
+	console.StopLoading()
 	if err != nil {
 		console.ExitWithError(console.ExitError, err)
 	}
