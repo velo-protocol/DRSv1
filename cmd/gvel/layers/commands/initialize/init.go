@@ -12,7 +12,9 @@ func (initCommand *CommandHandler) Init(cmd *cobra.Command, args []string) {
 		console.ExitWithError(console.ExitError, errors.Errorf("gvel has already been initialized, configuration can be found at %s", constants.DefaultConfigFilePath))
 	}
 
+	console.StartLoading("Initializing gvel")
 	err := initCommand.Logic.Init(constants.DefaultConfigFilePath)
+	console.StopLoading()
 	if err != nil {
 		console.ExitWithError(console.ExitError, err)
 	}

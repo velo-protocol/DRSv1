@@ -12,7 +12,7 @@ func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 		AssetToBeMinted:     creditCommand.Prompt.RequestString("Please input asset code of credit to be minted", nil),
 		CollateralAssetCode: creditCommand.Prompt.RequestString("Please input asset code of collateral", nil),
 		CollateralAmount:    creditCommand.Prompt.RequestString("Please input amount of collateral", nil),
-		Passphrase:          creditCommand.Prompt.RequestHiddenString("Please input passphrase", nil),
+		Passphrase:          creditCommand.Prompt.RequestHiddenString("🔑 Please input passphrase", nil),
 	}
 
 	console.StartLoading("Minting stable credit")

@@ -9,7 +9,7 @@ import (
 func (collateralCommand *CommandHandler) RebalanceReserve(cmd *cobra.Command, args []string) {
 
 	rebalanceInput := &entity.RebalanceInput{
-		Passphrase: collateralCommand.Prompt.RequestHiddenString("Please input passphrase", nil),
+		Passphrase: collateralCommand.Prompt.RequestHiddenString("🔑 Please input passphrase", nil),
 	}
 
 	console.StartLoading("Rebalancing the Collateral and Reserve pool")

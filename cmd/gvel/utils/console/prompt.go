@@ -8,12 +8,12 @@ import (
 )
 
 func RequestPassphrase() string {
-	passphrase, err := speakeasy.Ask("please enter passphrase: ")
+	passphrase, err := speakeasy.Ask("🔑 please enter passphrase: ")
 	if err != nil {
 		ExitWithError(ExitBadArgs, err)
 	}
 
-	confirm, err := speakeasy.Ask("please repeat a passphrase to confirm: ")
+	confirm, err := speakeasy.Ask("🔑 please repeat a passphrase to confirm: ")
 	if err != nil {
 		ExitWithError(ExitBadArgs, err)
 	}
@@ -32,10 +32,10 @@ func NewPrompt() Prompt {
 }
 
 func (prompt *prompt) RequestPassphrase() string {
-	passphrase := prompt.RequestHiddenString("Please enter passphrase", nil)
+	passphrase := prompt.RequestHiddenString("🔑 Please enter passphrase", nil)
 
 	_, err := (&promptui.Prompt{
-		Label: "Please repeat a passphrase to confirm ",
+		Label: "🔑 Please repeat a passphrase to confirm ",
 		Mask:  '*',
 		Validate: func(s string) error {
 			if s != passphrase {
