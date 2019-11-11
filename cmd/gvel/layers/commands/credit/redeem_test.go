@@ -33,7 +33,7 @@ func TestCommandHandler_Redeem(t *testing.T) {
 			RequestString("Please input the amount of stable credit", nil).
 			Return(amount)
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please input passphrase", nil).
+			RequestHiddenString("🔑 Please input passphrase", nil).
 			Return(passPhrase)
 		helper.mockLogic.EXPECT().
 			RedeemCredit(gomock.AssignableToTypeOf(&entity.RedeemCreditInput{})).
@@ -67,7 +67,7 @@ func TestCommandHandler_Redeem(t *testing.T) {
 			RequestString("Please input the amount of stable credit", nil).
 			Return(amount)
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please input passphrase", nil).
+			RequestHiddenString("🔑 Please input passphrase", nil).
 			Return(passPhrase)
 
 		helper.mockLogic.EXPECT().

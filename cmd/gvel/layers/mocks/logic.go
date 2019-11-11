@@ -92,21 +92,6 @@ func (mr *MockLogicMockRecorder) SetDefaultAccount(input interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultAccount", reflect.TypeOf((*MockLogic)(nil).SetDefaultAccount), input)
 }
 
-// SetupCredit mocks base method
-func (m *MockLogic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetupCredit", input)
-	ret0, _ := ret[0].(*entity.SetupCreditOutput)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// SetupCredit indicates an expected call of SetupCredit
-func (mr *MockLogicMockRecorder) SetupCredit(input interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockLogic)(nil).SetupCredit), input)
-}
-
 // ImportAccount mocks base method
 func (m *MockLogic) ImportAccount(input *entity.ImportAccountInput) (*entity.ImportAccountOutput, error) {
 	m.ctrl.T.Helper()
@@ -120,6 +105,36 @@ func (m *MockLogic) ImportAccount(input *entity.ImportAccountInput) (*entity.Imp
 func (mr *MockLogicMockRecorder) ImportAccount(input interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportAccount", reflect.TypeOf((*MockLogic)(nil).ImportAccount), input)
+}
+
+// ExportAccount mocks base method
+func (m *MockLogic) ExportAccount(input *entity.ExportAccountInput) (*entity.ExportAccountOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExportAccount", input)
+	ret0, _ := ret[0].(*entity.ExportAccountOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportAccount indicates an expected call of ExportAccount
+func (mr *MockLogicMockRecorder) ExportAccount(input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportAccount", reflect.TypeOf((*MockLogic)(nil).ExportAccount), input)
+}
+
+// SetupCredit mocks base method
+func (m *MockLogic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetupCredit", input)
+	ret0, _ := ret[0].(*entity.SetupCreditOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetupCredit indicates an expected call of SetupCredit
+func (mr *MockLogicMockRecorder) SetupCredit(input interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetupCredit", reflect.TypeOf((*MockLogic)(nil).SetupCredit), input)
 }
 
 // MintCredit mocks base method
