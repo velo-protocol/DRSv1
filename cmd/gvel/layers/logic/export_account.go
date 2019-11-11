@@ -15,7 +15,7 @@ func (lo *logic) ExportAccount(input *entity.ExportAccountInput) (*entity.Export
 		return nil, errors.Wrapf(err, "failed to get account from db")
 	}
 	if accountBytes == nil {
-		return nil, errors.Errorf("failed to get account from db")
+		return nil, errors.Errorf("account %s does not exist", input.PublicKey)
 	}
 
 	var account entity.StellarAccount
