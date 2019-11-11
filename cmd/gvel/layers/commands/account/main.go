@@ -87,6 +87,11 @@ func (accountCommand *CommandHandler) GetExportCommand() *cobra.Command {
 		Use:   "export",
 		Short: "Export your account",
 		Run:   accountCommand.ExportAccount,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			if accountCommand.AppConfig.GetDefaultAccount() == "" {
+				console.ExitWithError(console.ExitError, errors.New("default account not found in config file, please run `gvel account create` or `gvel account import`"))
+			}
+		},
 	}
 
 	return command

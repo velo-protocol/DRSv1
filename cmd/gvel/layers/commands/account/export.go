@@ -9,7 +9,7 @@ import (
 
 func (accountCommand *CommandHandler) ExportAccount(cmd *cobra.Command, args []string) {
 	publicKey := accountCommand.Prompt.RequestString("Please input the public key you want to export", validation.ValidateStellarAddress)
-	passphrase := accountCommand.Prompt.RequestPassphrase()
+	passphrase := accountCommand.Prompt.RequestHiddenString("🔑 Please input the passphrase of the account", nil)
 
 	console.StartLoading("Decrypting seed key")
 	output, err := accountCommand.Logic.ExportAccount(&entity.ExportAccountInput{

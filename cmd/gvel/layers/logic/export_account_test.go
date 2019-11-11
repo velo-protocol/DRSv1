@@ -71,7 +71,7 @@ func TestLogic_ExportAccount(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Nil(t, output)
-		assert.Equal(t, fmt.Sprintf("account %s does not exist", publicKey2), err.Error())
+		assert.Equal(t, "failed to get account from db", err.Error())
 	})
 
 	t.Run("error, failed to convert seed key to key pair", func(t *testing.T) {

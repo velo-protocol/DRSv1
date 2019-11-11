@@ -20,9 +20,8 @@ func TestCommandHandler_ExportAccount(t *testing.T) {
 		helper.mockPrompt.EXPECT().
 			RequestString("Please input the public key you want to export", gomock.AssignableToTypeOf(validation.ValidateStellarAddress)).
 			Return("GB...")
-
 		helper.mockPrompt.EXPECT().
-			RequestPassphrase().
+			RequestHiddenString("🔑 Please input the passphrase of the account", nil).
 			Return("strong_password!")
 
 		helper.mockLogic.EXPECT().
@@ -53,7 +52,7 @@ func TestCommandHandler_ExportAccount(t *testing.T) {
 			Return("GB...")
 
 		helper.mockPrompt.EXPECT().
-			RequestPassphrase().
+			RequestHiddenString("🔑 Please input the passphrase of the account", nil).
 			Return("strong_password!")
 
 		helper.mockLogic.EXPECT().
