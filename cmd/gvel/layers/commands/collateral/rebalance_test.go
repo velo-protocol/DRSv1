@@ -21,7 +21,7 @@ func TestCommandHandler_RebalanceReserve(t *testing.T) {
 		defer helper.done()
 
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please input passphrase", nil).
+			RequestHiddenString("🔑 Please input passphrase", nil).
 			Return(passPhrase)
 		helper.mockLogic.EXPECT().
 			RebalanceReserve(gomock.AssignableToTypeOf(&entity.RebalanceInput{})).
@@ -43,7 +43,7 @@ func TestCommandHandler_RebalanceReserve(t *testing.T) {
 		defer helper.done()
 
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please input passphrase", nil).
+			RequestHiddenString("🔑 Please input passphrase", nil).
 			Return(passPhrase)
 
 		helper.mockLogic.EXPECT().

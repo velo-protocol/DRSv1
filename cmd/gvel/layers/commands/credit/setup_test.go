@@ -25,7 +25,7 @@ func TestCommandHandler_Setup(t *testing.T) {
 			RequestString("Please input pegged currency", nil).
 			Return("THB")
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please input passphrase", nil).
+			RequestHiddenString("🔑 Please input passphrase", nil).
 			Return("password")
 		helper.mockLogic.EXPECT().
 			SetupCredit(gomock.AssignableToTypeOf(&entity.SetupCreditInput{})).
@@ -58,7 +58,7 @@ func TestCommandHandler_Setup(t *testing.T) {
 			RequestString("Please input pegged currency", nil).
 			Return("THB")
 		helper.mockPrompt.EXPECT().
-			RequestHiddenString("Please input passphrase", nil).
+			RequestHiddenString("🔑 Please input passphrase", nil).
 			Return("password")
 		helper.mockLogic.EXPECT().
 			SetupCredit(gomock.AssignableToTypeOf(&entity.SetupCreditInput{})).

@@ -38,6 +38,7 @@ func (accountCommand *CommandHandler) Command() *cobra.Command {
 		accountCommand.GetDefaultCommand(),
 		accountCommand.GetImportCommand(),
 		accountCommand.GetListCommand(),
+		accountCommand.GetExportCommand(),
 	)
 
 	return command
@@ -78,5 +79,15 @@ func (accountCommand *CommandHandler) GetImportCommand() *cobra.Command {
 	}
 
 	command.Flags().BoolP("default", "d", false, "set as default account")
+	return command
+}
+
+func (accountCommand *CommandHandler) GetExportCommand() *cobra.Command {
+	command := &cobra.Command{
+		Use:   "export",
+		Short: "Export your account",
+		Run:   accountCommand.ExportAccount,
+	}
+
 	return command
 }
