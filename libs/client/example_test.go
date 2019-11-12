@@ -16,7 +16,7 @@ func Example() {
 		_ = client.Close()
 	}()
 
-	txResult, err := client.Whitelist(context.Background(), vtxnbuild.Whitelist{
+	whitelistResult, err := client.Whitelist(context.Background(), vtxnbuild.Whitelist{
 		Address:  "GC5F4E7IKMDFNOL7Z5WDHC42LBLLQL2UFY6KQALO2RRHC5EMJJRECPI3",
 		Role:     "PRICE_FEEDER",
 		Currency: "USD",
@@ -24,9 +24,9 @@ func Example() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(whitelistResult.HorizonResult.TransactionSuccessToString())
 
-	txResult, err = client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
+	setupCreditResult, err := client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
 		PeggedValue:    "1.0",
 		PeggedCurrency: "USD",
 		AssetCode:      "vUSD",
@@ -34,9 +34,9 @@ func Example() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(setupCreditResult.HorizonResult.TransactionSuccessToString())
 
-	txResult, err = client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
+	priceUpdateResult, err := client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
 		Asset:                       "VELO",
 		Currency:                    "USD",
 		PriceInCurrencyPerAssetUnit: "0.5",
@@ -44,7 +44,7 @@ func Example() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(priceUpdateResult.HorizonResult.TransactionSuccessToString())
 
 	reply, err := client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{
 		AssetCode: "vUSD",

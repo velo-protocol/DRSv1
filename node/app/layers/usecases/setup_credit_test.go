@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/protocols/horizon"
+	"github.com/stellar/go/strkey"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
@@ -59,9 +60,14 @@ func TestUseCase_SetupCredit(t *testing.T) {
 		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
 			Return(map[string]string{"vSGD_GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72": base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"))}, nil)
 
-		signedStellarTxXdr, err := helper.useCase.SetupCredit(context.Background(), veloTx)
+		output, err := helper.useCase.SetupCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
-		assert.NotNil(t, signedStellarTxXdr)
+		assert.NotEmpty(t, output.SignedStellarTxXdr)
+		assert.True(t, strkey.IsValidEd25519PublicKey(output.AssetIssuer))
+		assert.True(t, strkey.IsValidEd25519PublicKey(output.AssetDistributor))
+		assert.Equal(t, "vTHB", output.AssetCode)
+		assert.Equal(t, "1.0000000", output.PeggedValue)
+		assert.Equal(t, "THB", output.PeggedCurrency)
 	})
 
 	t.Run("Error - velo op validation fail", func(t *testing.T) {

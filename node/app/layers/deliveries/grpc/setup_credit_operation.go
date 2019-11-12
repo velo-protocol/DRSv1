@@ -17,13 +17,20 @@ func (handler *handler) handleSetupCreditOperation(ctx context.Context, veloTx *
 		}.GRPCError()
 	}
 
-	signedStellarTxXdr, err := handler.UseCase.SetupCredit(ctx, veloTx)
+	setupCreditOutput, err := handler.UseCase.SetupCredit(ctx, veloTx)
 	if err != nil {
 		return nil, err.GRPCError()
 	}
 
 	return &spec.VeloTxReply{
-		SignedStellarTxXdr: *signedStellarTxXdr,
+		SignedStellarTxXdr: setupCreditOutput.SignedStellarTxXdr,
 		Message:            constants.ReplySetupCreditSuccess,
+		SetupCreditOpResponse: &spec.SetupCreditOpResponse{
+			AssetIssuer:      setupCreditOutput.AssetIssuer,
+			AssetDistributor: setupCreditOutput.AssetDistributor,
+			AssetCode:        setupCreditOutput.AssetCode,
+			PeggedValue:      setupCreditOutput.PeggedValue,
+			PeggedCurrency:   setupCreditOutput.PeggedCurrency,
+		},
 	}, nil
 }

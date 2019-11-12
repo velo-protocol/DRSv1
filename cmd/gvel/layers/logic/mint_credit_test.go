@@ -7,6 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	vclient "gitlab.com/velo-labs/cen/libs/client"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"testing"
 )
@@ -27,7 +28,9 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(helper.mockVeloClient)
 		helper.mockVeloClient.EXPECT().
 			MintCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.MintCredit{})).
-			Return(&horizon.TransactionSuccess{}, nil)
+			Return(vclient.MintCreditResult{
+				HorizonResult: &horizon.TransactionSuccess{},
+			}, nil)
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
 			AssetToBeMinted:     "kBeam",
@@ -110,7 +113,7 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return("fake-network")
 		helper.mockVeloClient.EXPECT().
 			MintCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.MintCredit{})).
-			Return(nil, errors.New("some error has occurred"))
+			Return(vclient.MintCreditResult{}, errors.New("some error has occurred"))
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
 			AssetToBeMinted:     "kBeam",

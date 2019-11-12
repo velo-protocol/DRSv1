@@ -33,6 +33,9 @@ func initTest(t *testing.T) *helper {
 
 	monkey.Patch(os.Exit, func(code int) { panic(code) })
 
+	// to omit what loader print
+	console.DefaultLoadWriter = console.Logger.Out
+
 	return &helper{
 		commandHandler: initialize.NewCommandHandler(mockLogic, mockPrompt, mockConfig),
 		mockLogic:      mockLogic,

@@ -7,6 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	vclient "gitlab.com/velo-labs/cen/libs/client"
 	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
 	"testing"
 )
@@ -27,7 +28,9 @@ func TestLogic_SetupCredit(t *testing.T) {
 			Return(helper.mockVeloClient)
 		helper.mockVeloClient.EXPECT().
 			SetupCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.SetupCredit{})).
-			Return(&horizon.TransactionSuccess{}, nil)
+			Return(vclient.SetupCreditResult{
+				HorizonResult: &horizon.TransactionSuccess{},
+			}, nil)
 
 		output, err := helper.logic.SetupCredit(&entity.SetupCreditInput{
 			Passphrase:     "password",
@@ -108,7 +111,7 @@ func TestLogic_SetupCredit(t *testing.T) {
 			Return("fake-network")
 		helper.mockVeloClient.EXPECT().
 			SetupCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.SetupCredit{})).
-			Return(nil, errors.New("some error has occurred"))
+			Return(vclient.SetupCreditResult{}, errors.New("some error has occurred"))
 
 		_, err := helper.logic.SetupCredit(&entity.SetupCreditInput{
 			Passphrase:     "password",

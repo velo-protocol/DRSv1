@@ -22,7 +22,7 @@ func callPriceUpdate() {
 		_ = client.Close()
 	}()
 
-	txResult, err := client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
+	result, err := client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
 		Asset:                       "VELO",
 		Currency:                    "THB",
 		PriceInCurrencyPerAssetUnit: "0.5",
@@ -30,5 +30,5 @@ func callPriceUpdate() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(result.HorizonResult.TransactionSuccessToString())
 }

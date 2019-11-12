@@ -55,6 +55,9 @@ func initTest(t *testing.T) *helper {
 	// overwrite os.Exit
 	monkey.Patch(os.Exit, func(code int) { panic(code) })
 
+	// to omit what loader print
+	console.DefaultLoadWriter = console.Logger.Out
+
 	return &helper{
 		accountCommandHandler: handler,
 		mockLogic:             mockLogic,

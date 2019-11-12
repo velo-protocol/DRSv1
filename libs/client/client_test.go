@@ -60,17 +60,18 @@ func TestClient_executeVeloTx(t *testing.T) {
 				Result: "AAAA...",
 			}, nil)
 
-		result, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+		horizonResult, veloNodeResult, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
 
 		assert.NoError(t, err)
-		assert.NotEmpty(t, result.Result)
+		assert.NotEmpty(t, horizonResult.Result)
+		assert.NotEmpty(t, veloNodeResult)
 	})
 	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
 		helper := initTest(t)
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{})
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{})
 
 		assert.Error(t, err)
 	})
@@ -80,7 +81,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
 			Return(nil, status.Error(codes.Unavailable, "some error has occurred"))
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
@@ -94,7 +95,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
@@ -110,12 +111,13 @@ func TestClient_executeVeloTx(t *testing.T) {
 				Message:            "Success",
 			}, nil)
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+		_, veloNodeResult, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
 
 		assert.Error(t, err)
+		assert.NotNil(t, veloNodeResult)
 	})
 	t.Run("error, horizon response with an error", func(t *testing.T) {
 		helper := initTest(t)
@@ -131,13 +133,14 @@ func TestClient_executeVeloTx(t *testing.T) {
 				Problem: problem.BadRequest,
 			})
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+		_, veloNodeResult, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
 
 		assert.Error(t, err)
 		assert.IsType(t, &horizonclient.Error{}, err)
+		assert.NotNil(t, veloNodeResult)
 	})
 	t.Run("error, cannot connect to horizon", func(t *testing.T) {
 		helper := initTest(t)
@@ -151,13 +154,14 @@ func TestClient_executeVeloTx(t *testing.T) {
 			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
 			Return(horizon.TransactionSuccess{}, errors.New("some error has occurred"))
 
-		_, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
+		_, veloNodeResult, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
 			Address: whitelistingPublicKey,
 			Role:    string(vxdr.RoleRegulator),
 		})
 
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "cannot connect to horizon")
+		assert.NotNil(t, veloNodeResult)
 	})
 }
 

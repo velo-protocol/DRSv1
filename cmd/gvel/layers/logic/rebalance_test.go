@@ -7,6 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	vclient "gitlab.com/velo-labs/cen/libs/client"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"testing"
 )
@@ -31,7 +32,9 @@ func TestLogic_RebalanceReserve(t *testing.T) {
 			Return(helper.mockVeloClient)
 		helper.mockVeloClient.EXPECT().
 			RebalanceReserve(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.RebalanceReserve{})).
-			Return(&horizon.TransactionSuccess{}, nil)
+			Return(vclient.RebalanceReserveResult{
+				HorizonResult: &horizon.TransactionSuccess{},
+			}, nil)
 
 		output, err := helper.logic.RebalanceReserve(&entity.RebalanceInput{
 			Passphrase: passPhrase,
@@ -102,7 +105,7 @@ func TestLogic_RebalanceReserve(t *testing.T) {
 			Return("fake-network")
 		helper.mockVeloClient.EXPECT().
 			RebalanceReserve(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.RebalanceReserve{})).
-			Return(nil, errors.New("some error has occurred"))
+			Return(vclient.RebalanceReserveResult{}, errors.New("some error has occurred"))
 
 		output, err := helper.logic.RebalanceReserve(&entity.RebalanceInput{
 			Passphrase: passPhrase,

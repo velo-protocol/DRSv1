@@ -48,6 +48,6 @@ func (lo *logic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCr
 		AssetCode:   input.AssetCode,
 		AssetIssuer: input.AssetIssuer,
 		Amount:      input.Amount,
-		TxResult:    result,
+		TxResult:    result.HorizonResult,
 	}, nil
 }

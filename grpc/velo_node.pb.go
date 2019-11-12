@@ -64,11 +64,17 @@ func (m *VeloTxRequest) GetSignedVeloTxXdr() string {
 }
 
 type VeloTxReply struct {
-	SignedStellarTxXdr   string   `protobuf:"bytes,1,opt,name=signedStellarTxXdr,proto3" json:"signedStellarTxXdr,omitempty"`
-	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	SignedStellarTxXdr         string                      `protobuf:"bytes,1,opt,name=signedStellarTxXdr,proto3" json:"signedStellarTxXdr,omitempty"`
+	Message                    string                      `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	WhitelistOpResponse        *WhitelistOpResponse        `protobuf:"bytes,3,opt,name=whitelistOpResponse,proto3" json:"whitelistOpResponse,omitempty"`
+	SetupCreditOpResponse      *SetupCreditOpResponse      `protobuf:"bytes,4,opt,name=setupCreditOpResponse,proto3" json:"setupCreditOpResponse,omitempty"`
+	PriceUpdateOpResponse      *PriceUpdateOpResponse      `protobuf:"bytes,5,opt,name=priceUpdateOpResponse,proto3" json:"priceUpdateOpResponse,omitempty"`
+	MintCreditOpResponse       *MintCreditOpResponse       `protobuf:"bytes,6,opt,name=mintCreditOpResponse,proto3" json:"mintCreditOpResponse,omitempty"`
+	RedeemCreditOpResponse     *RedeemCreditOpResponse     `protobuf:"bytes,7,opt,name=redeemCreditOpResponse,proto3" json:"redeemCreditOpResponse,omitempty"`
+	RebalanceReserveOpResponse *RebalanceReserveOpResponse `protobuf:"bytes,8,opt,name=rebalanceReserveOpResponse,proto3" json:"rebalanceReserveOpResponse,omitempty"`
+	XXX_NoUnkeyedLiteral       struct{}                    `json:"-"`
+	XXX_unrecognized           []byte                      `json:"-"`
+	XXX_sizecache              int32                       `json:"-"`
 }
 
 func (m *VeloTxReply) Reset()         { *m = VeloTxReply{} }
@@ -110,6 +116,306 @@ func (m *VeloTxReply) GetMessage() string {
 	return ""
 }
 
+func (m *VeloTxReply) GetWhitelistOpResponse() *WhitelistOpResponse {
+	if m != nil {
+		return m.WhitelistOpResponse
+	}
+	return nil
+}
+
+func (m *VeloTxReply) GetSetupCreditOpResponse() *SetupCreditOpResponse {
+	if m != nil {
+		return m.SetupCreditOpResponse
+	}
+	return nil
+}
+
+func (m *VeloTxReply) GetPriceUpdateOpResponse() *PriceUpdateOpResponse {
+	if m != nil {
+		return m.PriceUpdateOpResponse
+	}
+	return nil
+}
+
+func (m *VeloTxReply) GetMintCreditOpResponse() *MintCreditOpResponse {
+	if m != nil {
+		return m.MintCreditOpResponse
+	}
+	return nil
+}
+
+func (m *VeloTxReply) GetRedeemCreditOpResponse() *RedeemCreditOpResponse {
+	if m != nil {
+		return m.RedeemCreditOpResponse
+	}
+	return nil
+}
+
+func (m *VeloTxReply) GetRebalanceReserveOpResponse() *RebalanceReserveOpResponse {
+	if m != nil {
+		return m.RebalanceReserveOpResponse
+	}
+	return nil
+}
+
+type WhitelistOpResponse struct {
+	Address                   string   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Role                      string   `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
+	Currency                  string   `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
+	TrustedPartnerMetaAddress string   `protobuf:"bytes,4,opt,name=trustedPartnerMetaAddress,proto3" json:"trustedPartnerMetaAddress,omitempty"`
+	XXX_NoUnkeyedLiteral      struct{} `json:"-"`
+	XXX_unrecognized          []byte   `json:"-"`
+	XXX_sizecache             int32    `json:"-"`
+}
+
+func (m *WhitelistOpResponse) Reset()         { *m = WhitelistOpResponse{} }
+func (m *WhitelistOpResponse) String() string { return proto.CompactTextString(m) }
+func (*WhitelistOpResponse) ProtoMessage()    {}
+func (*WhitelistOpResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a824ed0044bf442b, []int{2}
+}
+
+func (m *WhitelistOpResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_WhitelistOpResponse.Unmarshal(m, b)
+}
+func (m *WhitelistOpResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_WhitelistOpResponse.Marshal(b, m, deterministic)
+}
+func (m *WhitelistOpResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_WhitelistOpResponse.Merge(m, src)
+}
+func (m *WhitelistOpResponse) XXX_Size() int {
+	return xxx_messageInfo_WhitelistOpResponse.Size(m)
+}
+func (m *WhitelistOpResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_WhitelistOpResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_WhitelistOpResponse proto.InternalMessageInfo
+
+func (m *WhitelistOpResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *WhitelistOpResponse) GetRole() string {
+	if m != nil {
+		return m.Role
+	}
+	return ""
+}
+
+func (m *WhitelistOpResponse) GetCurrency() string {
+	if m != nil {
+		return m.Currency
+	}
+	return ""
+}
+
+func (m *WhitelistOpResponse) GetTrustedPartnerMetaAddress() string {
+	if m != nil {
+		return m.TrustedPartnerMetaAddress
+	}
+	return ""
+}
+
+type SetupCreditOpResponse struct {
+	AssetIssuer          string   `protobuf:"bytes,1,opt,name=assetIssuer,proto3" json:"assetIssuer,omitempty"`
+	AssetDistributor     string   `protobuf:"bytes,2,opt,name=assetDistributor,proto3" json:"assetDistributor,omitempty"`
+	AssetCode            string   `protobuf:"bytes,3,opt,name=assetCode,proto3" json:"assetCode,omitempty"`
+	PeggedValue          string   `protobuf:"bytes,4,opt,name=peggedValue,proto3" json:"peggedValue,omitempty"`
+	PeggedCurrency       string   `protobuf:"bytes,5,opt,name=peggedCurrency,proto3" json:"peggedCurrency,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetupCreditOpResponse) Reset()         { *m = SetupCreditOpResponse{} }
+func (m *SetupCreditOpResponse) String() string { return proto.CompactTextString(m) }
+func (*SetupCreditOpResponse) ProtoMessage()    {}
+func (*SetupCreditOpResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a824ed0044bf442b, []int{3}
+}
+
+func (m *SetupCreditOpResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetupCreditOpResponse.Unmarshal(m, b)
+}
+func (m *SetupCreditOpResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetupCreditOpResponse.Marshal(b, m, deterministic)
+}
+func (m *SetupCreditOpResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetupCreditOpResponse.Merge(m, src)
+}
+func (m *SetupCreditOpResponse) XXX_Size() int {
+	return xxx_messageInfo_SetupCreditOpResponse.Size(m)
+}
+func (m *SetupCreditOpResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetupCreditOpResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetupCreditOpResponse proto.InternalMessageInfo
+
+func (m *SetupCreditOpResponse) GetAssetIssuer() string {
+	if m != nil {
+		return m.AssetIssuer
+	}
+	return ""
+}
+
+func (m *SetupCreditOpResponse) GetAssetDistributor() string {
+	if m != nil {
+		return m.AssetDistributor
+	}
+	return ""
+}
+
+func (m *SetupCreditOpResponse) GetAssetCode() string {
+	if m != nil {
+		return m.AssetCode
+	}
+	return ""
+}
+
+func (m *SetupCreditOpResponse) GetPeggedValue() string {
+	if m != nil {
+		return m.PeggedValue
+	}
+	return ""
+}
+
+func (m *SetupCreditOpResponse) GetPeggedCurrency() string {
+	if m != nil {
+		return m.PeggedCurrency
+	}
+	return ""
+}
+
+type PriceUpdateOpResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PriceUpdateOpResponse) Reset()         { *m = PriceUpdateOpResponse{} }
+func (m *PriceUpdateOpResponse) String() string { return proto.CompactTextString(m) }
+func (*PriceUpdateOpResponse) ProtoMessage()    {}
+func (*PriceUpdateOpResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a824ed0044bf442b, []int{4}
+}
+
+func (m *PriceUpdateOpResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PriceUpdateOpResponse.Unmarshal(m, b)
+}
+func (m *PriceUpdateOpResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PriceUpdateOpResponse.Marshal(b, m, deterministic)
+}
+func (m *PriceUpdateOpResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PriceUpdateOpResponse.Merge(m, src)
+}
+func (m *PriceUpdateOpResponse) XXX_Size() int {
+	return xxx_messageInfo_PriceUpdateOpResponse.Size(m)
+}
+func (m *PriceUpdateOpResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_PriceUpdateOpResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PriceUpdateOpResponse proto.InternalMessageInfo
+
+type MintCreditOpResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MintCreditOpResponse) Reset()         { *m = MintCreditOpResponse{} }
+func (m *MintCreditOpResponse) String() string { return proto.CompactTextString(m) }
+func (*MintCreditOpResponse) ProtoMessage()    {}
+func (*MintCreditOpResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a824ed0044bf442b, []int{5}
+}
+
+func (m *MintCreditOpResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MintCreditOpResponse.Unmarshal(m, b)
+}
+func (m *MintCreditOpResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MintCreditOpResponse.Marshal(b, m, deterministic)
+}
+func (m *MintCreditOpResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MintCreditOpResponse.Merge(m, src)
+}
+func (m *MintCreditOpResponse) XXX_Size() int {
+	return xxx_messageInfo_MintCreditOpResponse.Size(m)
+}
+func (m *MintCreditOpResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MintCreditOpResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MintCreditOpResponse proto.InternalMessageInfo
+
+type RedeemCreditOpResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RedeemCreditOpResponse) Reset()         { *m = RedeemCreditOpResponse{} }
+func (m *RedeemCreditOpResponse) String() string { return proto.CompactTextString(m) }
+func (*RedeemCreditOpResponse) ProtoMessage()    {}
+func (*RedeemCreditOpResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a824ed0044bf442b, []int{6}
+}
+
+func (m *RedeemCreditOpResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RedeemCreditOpResponse.Unmarshal(m, b)
+}
+func (m *RedeemCreditOpResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RedeemCreditOpResponse.Marshal(b, m, deterministic)
+}
+func (m *RedeemCreditOpResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RedeemCreditOpResponse.Merge(m, src)
+}
+func (m *RedeemCreditOpResponse) XXX_Size() int {
+	return xxx_messageInfo_RedeemCreditOpResponse.Size(m)
+}
+func (m *RedeemCreditOpResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RedeemCreditOpResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RedeemCreditOpResponse proto.InternalMessageInfo
+
+type RebalanceReserveOpResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RebalanceReserveOpResponse) Reset()         { *m = RebalanceReserveOpResponse{} }
+func (m *RebalanceReserveOpResponse) String() string { return proto.CompactTextString(m) }
+func (*RebalanceReserveOpResponse) ProtoMessage()    {}
+func (*RebalanceReserveOpResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a824ed0044bf442b, []int{7}
+}
+
+func (m *RebalanceReserveOpResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RebalanceReserveOpResponse.Unmarshal(m, b)
+}
+func (m *RebalanceReserveOpResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RebalanceReserveOpResponse.Marshal(b, m, deterministic)
+}
+func (m *RebalanceReserveOpResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RebalanceReserveOpResponse.Merge(m, src)
+}
+func (m *RebalanceReserveOpResponse) XXX_Size() int {
+	return xxx_messageInfo_RebalanceReserveOpResponse.Size(m)
+}
+func (m *RebalanceReserveOpResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RebalanceReserveOpResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RebalanceReserveOpResponse proto.InternalMessageInfo
+
 type GetExchangeRateRequest struct {
 	AssetCode            string   `protobuf:"bytes,1,opt,name=assetCode,proto3" json:"assetCode,omitempty"`
 	Issuer               string   `protobuf:"bytes,2,opt,name=issuer,proto3" json:"issuer,omitempty"`
@@ -122,7 +428,7 @@ func (m *GetExchangeRateRequest) Reset()         { *m = GetExchangeRateRequest{}
 func (m *GetExchangeRateRequest) String() string { return proto.CompactTextString(m) }
 func (*GetExchangeRateRequest) ProtoMessage()    {}
 func (*GetExchangeRateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a824ed0044bf442b, []int{2}
+	return fileDescriptor_a824ed0044bf442b, []int{8}
 }
 
 func (m *GetExchangeRateRequest) XXX_Unmarshal(b []byte) error {
@@ -171,7 +477,7 @@ func (m *GetExchangeRateReply) Reset()         { *m = GetExchangeRateReply{} }
 func (m *GetExchangeRateReply) String() string { return proto.CompactTextString(m) }
 func (*GetExchangeRateReply) ProtoMessage()    {}
 func (*GetExchangeRateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a824ed0044bf442b, []int{3}
+	return fileDescriptor_a824ed0044bf442b, []int{9}
 }
 
 func (m *GetExchangeRateReply) XXX_Unmarshal(b []byte) error {
@@ -230,7 +536,7 @@ func (m *GetCollateralHealthCheckRequest) Reset()         { *m = GetCollateralHe
 func (m *GetCollateralHealthCheckRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCollateralHealthCheckRequest) ProtoMessage()    {}
 func (*GetCollateralHealthCheckRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a824ed0044bf442b, []int{4}
+	return fileDescriptor_a824ed0044bf442b, []int{10}
 }
 
 func (m *GetCollateralHealthCheckRequest) XXX_Unmarshal(b []byte) error {
@@ -265,7 +571,7 @@ func (m *GetCollateralHealthCheckReply) Reset()         { *m = GetCollateralHeal
 func (m *GetCollateralHealthCheckReply) String() string { return proto.CompactTextString(m) }
 func (*GetCollateralHealthCheckReply) ProtoMessage()    {}
 func (*GetCollateralHealthCheckReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a824ed0044bf442b, []int{5}
+	return fileDescriptor_a824ed0044bf442b, []int{11}
 }
 
 func (m *GetCollateralHealthCheckReply) XXX_Unmarshal(b []byte) error {
@@ -317,6 +623,12 @@ func (m *GetCollateralHealthCheckReply) GetPoolAmount() string {
 func init() {
 	proto.RegisterType((*VeloTxRequest)(nil), "grpc.VeloTxRequest")
 	proto.RegisterType((*VeloTxReply)(nil), "grpc.VeloTxReply")
+	proto.RegisterType((*WhitelistOpResponse)(nil), "grpc.WhitelistOpResponse")
+	proto.RegisterType((*SetupCreditOpResponse)(nil), "grpc.SetupCreditOpResponse")
+	proto.RegisterType((*PriceUpdateOpResponse)(nil), "grpc.PriceUpdateOpResponse")
+	proto.RegisterType((*MintCreditOpResponse)(nil), "grpc.MintCreditOpResponse")
+	proto.RegisterType((*RedeemCreditOpResponse)(nil), "grpc.RedeemCreditOpResponse")
+	proto.RegisterType((*RebalanceReserveOpResponse)(nil), "grpc.RebalanceReserveOpResponse")
 	proto.RegisterType((*GetExchangeRateRequest)(nil), "grpc.GetExchangeRateRequest")
 	proto.RegisterType((*GetExchangeRateReply)(nil), "grpc.GetExchangeRateReply")
 	proto.RegisterType((*GetCollateralHealthCheckRequest)(nil), "grpc.GetCollateralHealthCheckRequest")
@@ -326,32 +638,50 @@ func init() {
 func init() { proto.RegisterFile("velo_node.proto", fileDescriptor_a824ed0044bf442b) }
 
 var fileDescriptor_a824ed0044bf442b = []byte{
-	// 393 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0x4d, 0x6f, 0xda, 0x40,
-	0x10, 0xad, 0x5b, 0x44, 0xcb, 0xd0, 0x16, 0x75, 0x8b, 0x90, 0x65, 0xd1, 0x96, 0xba, 0x6a, 0xc5,
-	0xc9, 0x07, 0x2a, 0x55, 0xcd, 0x31, 0x42, 0x11, 0xc9, 0x21, 0x08, 0x41, 0xbe, 0x6e, 0xd1, 0x62,
-	0x8f, 0x6c, 0x2b, 0x6b, 0xaf, 0xd9, 0x5d, 0x47, 0xf0, 0x8b, 0xf2, 0x17, 0xf2, 0xe7, 0x22, 0x45,
-	0xfe, 0x0a, 0x86, 0xe0, 0x20, 0xe5, 0x38, 0x6f, 0xde, 0xbc, 0x9d, 0xb7, 0xfb, 0x16, 0x5a, 0xb7,
-	0xc8, 0xf8, 0x75, 0xc8, 0x1d, 0xb4, 0x22, 0xc1, 0x15, 0x27, 0x35, 0x57, 0x44, 0xb6, 0x79, 0x00,
-	0x9f, 0x2e, 0x90, 0xf1, 0xb3, 0xe5, 0x14, 0x17, 0x31, 0x4a, 0x45, 0xfa, 0xd0, 0x92, 0xbe, 0x1b,
-	0xa2, 0x93, 0xc1, 0x57, 0x8e, 0xd0, 0xb5, 0x9e, 0xd6, 0x6f, 0x4c, 0xb7, 0x61, 0xf3, 0x12, 0x9a,
-	0xc5, 0x68, 0xc4, 0x56, 0xc4, 0x02, 0x92, 0x31, 0x66, 0x0a, 0x19, 0xa3, 0xa2, 0x3c, 0xbb, 0xa3,
-	0x43, 0x74, 0x78, 0x1f, 0xa0, 0x94, 0xd4, 0x45, 0xfd, 0x6d, 0x4a, 0x2a, 0x4a, 0x73, 0x0c, 0x9d,
-	0x11, 0xaa, 0xa3, 0xa5, 0xed, 0xd1, 0xd0, 0xc5, 0x29, 0x55, 0x58, 0x2c, 0xd7, 0x85, 0x06, 0x95,
-	0x12, 0xd5, 0x90, 0x3b, 0x98, 0x4b, 0xaf, 0x01, 0xd2, 0x81, 0xba, 0x2f, 0x65, 0x8c, 0x22, 0x17,
-	0xcc, 0x2b, 0xf3, 0x5e, 0x83, 0xf6, 0x33, 0xc1, 0x64, 0xe5, 0x57, 0xc9, 0x91, 0x01, 0xb4, 0x05,
-	0x3a, 0x88, 0x01, 0x9d, 0x33, 0x1c, 0x72, 0xc6, 0xa8, 0x42, 0x41, 0x99, 0xfe, 0x2e, 0x65, 0xed,
-	0xec, 0x91, 0x7f, 0xd0, 0x59, 0xe3, 0x13, 0xe1, 0xdb, 0x38, 0x41, 0x71, 0x1e, 0xfa, 0x4a, 0xaf,
-	0xa5, 0x53, 0x15, 0x5d, 0xf3, 0x27, 0xfc, 0x18, 0x25, 0xeb, 0x14, 0x42, 0xc7, 0x48, 0x99, 0xf2,
-	0x86, 0x1e, 0xda, 0x37, 0xf9, 0x9d, 0x98, 0x77, 0x1a, 0x7c, 0xab, 0xe6, 0xec, 0xb7, 0xd9, 0x83,
-	0x66, 0x5a, 0x9c, 0x94, 0xbd, 0x96, 0x21, 0xf2, 0x07, 0x3e, 0x0b, 0x5c, 0xc4, 0xbe, 0x40, 0xe7,
-	0x30, 0xe0, 0x71, 0xa8, 0x72, 0xab, 0x5b, 0x28, 0xf9, 0x0e, 0x10, 0x71, 0xce, 0x72, 0x4e, 0x66,
-	0xac, 0x84, 0x0c, 0x1e, 0x34, 0xf8, 0x90, 0x24, 0x66, 0x9c, 0x1c, 0xfb, 0x1f, 0x3e, 0xce, 0xe2,
-	0x79, 0xe0, 0xab, 0x2c, 0x43, 0xe4, 0xab, 0x95, 0xe4, 0xd1, 0xda, 0x08, 0xa3, 0xf1, 0x65, 0x13,
-	0x8c, 0xd8, 0xca, 0x7c, 0x43, 0x4e, 0xa1, 0xb5, 0xf5, 0x9a, 0xa4, 0x9b, 0xf1, 0x76, 0xa7, 0xc6,
-	0x30, 0x2a, 0xba, 0x99, 0x9c, 0x07, 0x7a, 0xd5, 0xf5, 0x91, 0xdf, 0x4f, 0x93, 0x2f, 0x3d, 0x81,
-	0xf1, 0x6b, 0x1f, 0x2d, 0x3d, 0x69, 0x5e, 0x4f, 0x3f, 0xde, 0xdf, 0xc7, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0x78, 0x7a, 0x1a, 0xff, 0x8b, 0x03, 0x00, 0x00,
+	// 682 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xdd, 0x6e, 0xd3, 0x30,
+	0x14, 0x26, 0xa3, 0xfb, 0x3b, 0x83, 0x0d, 0xbc, 0xae, 0x74, 0x61, 0x40, 0x09, 0x62, 0x9a, 0xb8,
+	0xe8, 0xc5, 0x90, 0x10, 0x48, 0xdc, 0x4c, 0x05, 0x0d, 0x84, 0x36, 0x86, 0xf7, 0x03, 0x77, 0xe0,
+	0x26, 0x47, 0x6d, 0x84, 0x1b, 0x67, 0xb6, 0x33, 0xb6, 0x87, 0xe1, 0x9a, 0x57, 0xe0, 0x25, 0xb8,
+	0xe1, 0x7d, 0x90, 0x50, 0xec, 0x64, 0x64, 0xad, 0xb3, 0x49, 0xdc, 0xf5, 0x7c, 0xfe, 0xce, 0x97,
+	0xf3, 0xf3, 0xd5, 0x86, 0xa5, 0x13, 0xe4, 0xe2, 0x73, 0x22, 0x22, 0xec, 0xa6, 0x52, 0x68, 0x41,
+	0x1a, 0x03, 0x99, 0x86, 0xc1, 0x0b, 0xb8, 0x79, 0x84, 0x5c, 0x1c, 0x9c, 0x52, 0x3c, 0xce, 0x50,
+	0x69, 0xb2, 0x01, 0x4b, 0x2a, 0x1e, 0x24, 0x18, 0x59, 0xf8, 0x53, 0x24, 0xdb, 0x5e, 0xc7, 0xdb,
+	0x98, 0xa7, 0xe3, 0x70, 0xf0, 0xbb, 0x01, 0x0b, 0x65, 0x6e, 0xca, 0xcf, 0x48, 0x17, 0x88, 0xa5,
+	0xec, 0x6b, 0xe4, 0x9c, 0xc9, 0x6a, 0xb2, 0xe3, 0x84, 0xb4, 0x61, 0x76, 0x84, 0x4a, 0xb1, 0x01,
+	0xb6, 0xa7, 0x0c, 0xa9, 0x0c, 0xc9, 0x3b, 0x58, 0xfe, 0x36, 0x8c, 0x35, 0xf2, 0x58, 0xe9, 0xf7,
+	0x29, 0x45, 0x95, 0x8a, 0x44, 0x61, 0xfb, 0x7a, 0xc7, 0xdb, 0x58, 0xd8, 0x5c, 0xed, 0xe6, 0x85,
+	0x77, 0x3f, 0x4e, 0x12, 0xa8, 0x2b, 0x8b, 0x7c, 0x80, 0x15, 0x85, 0x3a, 0x4b, 0x7b, 0x12, 0xa3,
+	0xb8, 0x2a, 0xd7, 0x30, 0x72, 0x77, 0xad, 0xdc, 0xbe, 0x8b, 0x42, 0xdd, 0x99, 0xb9, 0x64, 0x2a,
+	0xe3, 0x10, 0x0f, 0xd3, 0x88, 0x69, 0xac, 0x48, 0x4e, 0x57, 0x25, 0xf7, 0x5c, 0x14, 0xea, 0xce,
+	0x24, 0xbb, 0xd0, 0x1c, 0xc5, 0x89, 0x9e, 0x28, 0x72, 0xc6, 0x28, 0xfa, 0x56, 0x71, 0xc7, 0xc1,
+	0xa0, 0xce, 0x3c, 0x72, 0x00, 0x2d, 0x89, 0x11, 0xe2, 0x68, 0x42, 0x71, 0xd6, 0x28, 0xae, 0x59,
+	0x45, 0xea, 0xe4, 0xd0, 0x9a, 0x5c, 0xf2, 0x05, 0x7c, 0x89, 0x7d, 0xc6, 0x59, 0x12, 0x22, 0x45,
+	0x85, 0xf2, 0xa4, 0xda, 0xfd, 0x9c, 0x51, 0xee, 0x94, 0xca, 0x75, 0x3c, 0x7a, 0x89, 0x46, 0xf0,
+	0xdd, 0x83, 0x65, 0xc7, 0x6a, 0x73, 0xb3, 0xb0, 0x28, 0x92, 0xa8, 0x54, 0xe1, 0xa8, 0x32, 0x24,
+	0x04, 0x1a, 0x52, 0xf0, 0xd2, 0x43, 0xe6, 0x37, 0xf1, 0x61, 0x2e, 0xcc, 0xa4, 0xc4, 0x24, 0x3c,
+	0x33, 0xae, 0x99, 0xa7, 0xe7, 0x31, 0x79, 0x09, 0xab, 0x5a, 0x66, 0x4a, 0x63, 0xb4, 0xc7, 0xa4,
+	0x4e, 0x50, 0xee, 0xa0, 0x66, 0x5b, 0x85, 0x76, 0xc3, 0x90, 0xeb, 0x09, 0xc1, 0x2f, 0x0f, 0x56,
+	0x9c, 0x5e, 0x21, 0x1d, 0x58, 0x60, 0x4a, 0xa1, 0x7e, 0xab, 0x54, 0x86, 0xa5, 0xef, 0xab, 0x10,
+	0x79, 0x02, 0xb7, 0x4c, 0xf8, 0x2a, 0x56, 0x5a, 0xc6, 0xfd, 0x4c, 0x0b, 0x59, 0x54, 0x3d, 0x81,
+	0x93, 0x35, 0x98, 0x37, 0x58, 0x4f, 0x44, 0x58, 0xb4, 0xf0, 0x0f, 0xc8, 0xbf, 0x95, 0xe2, 0x60,
+	0x80, 0xd1, 0x11, 0xe3, 0x19, 0x16, 0x55, 0x57, 0x21, 0xb2, 0x0e, 0x8b, 0x36, 0xec, 0x95, 0x73,
+	0x98, 0x36, 0xa4, 0x31, 0x34, 0xb8, 0x03, 0x2b, 0x4e, 0x9f, 0x06, 0x2d, 0x68, 0xba, 0xec, 0x16,
+	0xb4, 0xa1, 0xe5, 0x36, 0x4d, 0xb0, 0x06, 0x7e, 0xfd, 0xd2, 0x83, 0x5d, 0x68, 0x6d, 0xa3, 0x7e,
+	0x7d, 0x1a, 0x0e, 0x59, 0x32, 0x40, 0xca, 0x34, 0x96, 0x37, 0xce, 0x85, 0x56, 0xbd, 0xf1, 0x56,
+	0x5b, 0x30, 0x13, 0xdb, 0x89, 0xda, 0x51, 0x15, 0x51, 0xf0, 0xd3, 0x83, 0xe6, 0x84, 0x60, 0x7e,
+	0x0d, 0xfd, 0x97, 0x1c, 0xd9, 0x84, 0xa6, 0xf5, 0x3c, 0xeb, 0x73, 0xec, 0x09, 0xce, 0x99, 0x46,
+	0xc9, 0x78, 0x31, 0x7a, 0xe7, 0x19, 0x79, 0x56, 0xfe, 0xc7, 0x72, 0xdc, 0x4c, 0x71, 0x0f, 0xe5,
+	0x61, 0x12, 0xeb, 0x62, 0x21, 0x35, 0xa7, 0xc1, 0x43, 0x78, 0xb0, 0x9d, 0x97, 0x53, 0x0a, 0xbd,
+	0x41, 0xc6, 0xf5, 0xb0, 0x37, 0xc4, 0xf0, 0x6b, 0x31, 0x93, 0xe0, 0x87, 0x07, 0xf7, 0xea, 0x39,
+	0x57, 0xb7, 0x39, 0x66, 0xc6, 0xa9, 0x49, 0x33, 0xae, 0xc3, 0xa2, 0xc4, 0xe3, 0x2c, 0x96, 0x18,
+	0x6d, 0x8d, 0x44, 0x96, 0xe8, 0xa2, 0xd5, 0x31, 0x94, 0xdc, 0x07, 0x48, 0x85, 0xe0, 0x05, 0xc7,
+	0x36, 0x56, 0x41, 0x36, 0xff, 0x78, 0x30, 0x97, 0xbf, 0x02, 0xbb, 0xf9, 0x67, 0x9f, 0xc3, 0x8d,
+	0xfd, 0xac, 0x3f, 0x8a, 0xb5, 0x7d, 0x17, 0xc8, 0xb2, 0xbd, 0x0b, 0x2e, 0xbc, 0x30, 0xfe, 0xed,
+	0x8b, 0x60, 0xca, 0xcf, 0x82, 0x6b, 0x64, 0x07, 0x96, 0xc6, 0xb6, 0x49, 0x8a, 0x2b, 0xca, 0xed,
+	0x1a, 0xdf, 0xaf, 0x39, 0xb5, 0x72, 0x43, 0x68, 0xd7, 0x8d, 0x8f, 0x3c, 0x3e, 0xcf, 0xbc, 0x6c,
+	0x05, 0xfe, 0xa3, 0xab, 0x68, 0xe6, 0x4b, 0xfd, 0x19, 0xf3, 0x9a, 0x3e, 0xfd, 0x1b, 0x00, 0x00,
+	0xff, 0xff, 0xa4, 0xd8, 0xb2, 0x8e, 0x60, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.

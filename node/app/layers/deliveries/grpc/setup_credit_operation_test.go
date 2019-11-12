@@ -2,7 +2,6 @@ package grpc_test
 
 import (
 	"context"
-	"github.com/AlekSi/pointer"
 	"github.com/golang/mock/gomock"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
@@ -10,6 +9,7 @@ import (
 	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
+	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
@@ -37,7 +37,9 @@ func TestHandler_SubmitVeloTx_SetupCredit(t *testing.T) {
 
 		helper.mockUseCase.EXPECT().
 			SetupCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
-			Return(pointer.ToString("AAAAA...="), nil)
+			Return(&entities.SetupCreditOutput{
+				SignedStellarTxXdr: "AAAAA...=",
+			}, nil)
 
 		reply, err := helper.handler.SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 			SignedVeloTxXdr: veloTxB64,
@@ -46,6 +48,7 @@ func TestHandler_SubmitVeloTx_SetupCredit(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
 		assert.Equal(t, constants.ReplySetupCreditSuccess, reply.Message)
+		assert.NotNil(t, reply.SetupCreditOpResponse)
 	})
 	t.Run("error, use case return error", func(t *testing.T) {
 		helper := initTest(t)
