@@ -49,6 +49,6 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 		CollateralAssetCode: input.CollateralAssetCode,
 		CollateralAmount:    input.CollateralAmount,
 		SourceAddress:       defaultAccount,
-		TxResult:            result,
+		TxResult:            result.HorizonResult,
 	}, nil
 }

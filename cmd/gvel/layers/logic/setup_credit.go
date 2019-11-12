@@ -50,6 +50,6 @@ func (lo *logic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCredi
 		PeggedCurrency: input.PeggedCurrency,
 		AssetCode:      input.AssetCode,
 		SourceAddress:  defaultAccount,
-		TxResult:       result,
+		TxResult:       result.HorizonResult,
 	}, nil
 }

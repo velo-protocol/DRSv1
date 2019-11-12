@@ -8,8 +8,8 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	keypair "github.com/stellar/go/keypair"
-	horizon "github.com/stellar/go/protocols/horizon"
 	grpc "gitlab.com/velo-labs/cen/grpc"
+	client "gitlab.com/velo-labs/cen/libs/client"
 	txnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
 	reflect "reflect"
 )
@@ -64,10 +64,10 @@ func (mr *MockVeloClientMockRecorder) SetKeyPair(keyPair interface{}) *gomock.Ca
 }
 
 // Whitelist mocks base method
-func (m *MockVeloClient) Whitelist(ctx context.Context, veloOp txnbuild.Whitelist) (*horizon.TransactionSuccess, error) {
+func (m *MockVeloClient) Whitelist(ctx context.Context, veloOp txnbuild.Whitelist) (client.WhitelistResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Whitelist", ctx, veloOp)
-	ret0, _ := ret[0].(*horizon.TransactionSuccess)
+	ret0, _ := ret[0].(client.WhitelistResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -79,10 +79,10 @@ func (mr *MockVeloClientMockRecorder) Whitelist(ctx, veloOp interface{}) *gomock
 }
 
 // SetupCredit mocks base method
-func (m *MockVeloClient) SetupCredit(ctx context.Context, veloOp txnbuild.SetupCredit) (*horizon.TransactionSuccess, error) {
+func (m *MockVeloClient) SetupCredit(ctx context.Context, veloOp txnbuild.SetupCredit) (client.SetupCreditResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetupCredit", ctx, veloOp)
-	ret0, _ := ret[0].(*horizon.TransactionSuccess)
+	ret0, _ := ret[0].(client.SetupCreditResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +94,10 @@ func (mr *MockVeloClientMockRecorder) SetupCredit(ctx, veloOp interface{}) *gomo
 }
 
 // PriceUpdate mocks base method
-func (m *MockVeloClient) PriceUpdate(ctx context.Context, veloOp txnbuild.PriceUpdate) (*horizon.TransactionSuccess, error) {
+func (m *MockVeloClient) PriceUpdate(ctx context.Context, veloOp txnbuild.PriceUpdate) (client.PriceUpdateResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PriceUpdate", ctx, veloOp)
-	ret0, _ := ret[0].(*horizon.TransactionSuccess)
+	ret0, _ := ret[0].(client.PriceUpdateResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -109,10 +109,10 @@ func (mr *MockVeloClientMockRecorder) PriceUpdate(ctx, veloOp interface{}) *gomo
 }
 
 // MintCredit mocks base method
-func (m *MockVeloClient) MintCredit(ctx context.Context, veloOp txnbuild.MintCredit) (*horizon.TransactionSuccess, error) {
+func (m *MockVeloClient) MintCredit(ctx context.Context, veloOp txnbuild.MintCredit) (client.MintCreditResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "MintCredit", ctx, veloOp)
-	ret0, _ := ret[0].(*horizon.TransactionSuccess)
+	ret0, _ := ret[0].(client.MintCreditResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -124,10 +124,10 @@ func (mr *MockVeloClientMockRecorder) MintCredit(ctx, veloOp interface{}) *gomoc
 }
 
 // RedeemCredit mocks base method
-func (m *MockVeloClient) RedeemCredit(ctx context.Context, veloOp txnbuild.RedeemCredit) (*horizon.TransactionSuccess, error) {
+func (m *MockVeloClient) RedeemCredit(ctx context.Context, veloOp txnbuild.RedeemCredit) (client.RedeemCreditResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RedeemCredit", ctx, veloOp)
-	ret0, _ := ret[0].(*horizon.TransactionSuccess)
+	ret0, _ := ret[0].(client.RedeemCreditResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -139,10 +139,10 @@ func (mr *MockVeloClientMockRecorder) RedeemCredit(ctx, veloOp interface{}) *gom
 }
 
 // RebalanceReserve mocks base method
-func (m *MockVeloClient) RebalanceReserve(ctx context.Context, veloOp txnbuild.RebalanceReserve) (*horizon.TransactionSuccess, error) {
+func (m *MockVeloClient) RebalanceReserve(ctx context.Context, veloOp txnbuild.RebalanceReserve) (client.RebalanceReserveResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RebalanceReserve", ctx, veloOp)
-	ret0, _ := ret[0].(*horizon.TransactionSuccess)
+	ret0, _ := ret[0].(client.RebalanceReserveResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

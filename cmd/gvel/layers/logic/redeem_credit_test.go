@@ -7,6 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	vclient "gitlab.com/velo-labs/cen/libs/client"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"testing"
 )
@@ -34,7 +35,9 @@ func TestLogic_RedeemCredit(t *testing.T) {
 			Return(helper.mockVeloClient)
 		helper.mockVeloClient.EXPECT().
 			RedeemCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.RedeemCredit{})).
-			Return(&horizon.TransactionSuccess{}, nil)
+			Return(vclient.RedeemCreditResult{
+				HorizonResult: &horizon.TransactionSuccess{},
+			}, nil)
 
 		output, err := helper.logic.RedeemCredit(&entity.RedeemCreditInput{
 			AssetCode:   assetCode,
@@ -117,7 +120,7 @@ func TestLogic_RedeemCredit(t *testing.T) {
 			Return("fake-network")
 		helper.mockVeloClient.EXPECT().
 			RedeemCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.RedeemCredit{})).
-			Return(nil, errors.New("some error has occurred"))
+			Return(vclient.RedeemCreditResult{}, errors.New("some error has occurred"))
 
 		output, err := helper.logic.RedeemCredit(&entity.RedeemCreditInput{
 			AssetCode:   assetCode,

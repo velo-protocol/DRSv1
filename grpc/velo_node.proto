@@ -18,6 +18,44 @@ message VeloTxRequest {
 message VeloTxReply {
     string signedStellarTxXdr = 1;
     string message = 2;
+
+    WhitelistOpResponse whitelistOpResponse = 3;
+    SetupCreditOpResponse setupCreditOpResponse = 4;
+    PriceUpdateOpResponse priceUpdateOpResponse = 5;
+    MintCreditOpResponse mintCreditOpResponse = 6;
+    RedeemCreditOpResponse redeemCreditOpResponse = 7;
+    RebalanceReserveOpResponse rebalanceReserveOpResponse = 8;
+}
+
+message WhitelistOpResponse {
+    string address = 1;
+    string role = 2;
+    string currency = 3;
+    string trustedPartnerMetaAddress = 4;
+}
+
+message SetupCreditOpResponse {
+    string assetIssuer = 1;
+    string assetDistributor = 2;
+    string assetCode = 3;
+    string peggedValue = 4;
+    string peggedCurrency = 5;
+}
+
+message PriceUpdateOpResponse {
+    // TODO: add parameters
+}
+
+message MintCreditOpResponse {
+    // TODO: add parameters
+}
+
+message RedeemCreditOpResponse {
+    // TODO: add parameters
+}
+
+message RebalanceReserveOpResponse {
+    // TODO: add parameters
 }
 
 message GetExchangeRateRequest {

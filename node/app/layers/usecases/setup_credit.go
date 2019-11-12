@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/stellar/go/amount"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
@@ -11,16 +12,18 @@ import (
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
+	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"gitlab.com/velo-labs/cen/node/app/utils"
 	"strings"
 )
 
-func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
+func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.SetupCreditOutput, nerrors.NodeError) {
 	if err := veloTx.VeloOp.Validate(); err != nil {
 		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
 	}
+	op := veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp
 
 	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
 	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
@@ -79,33 +82,40 @@ func (useCase *useCase) SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloT
 
 	for key, _ := range trustedPartnerMeta {
 		assetDetail := strings.Split(key, "_")
-		if assetDetail[0] == veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode {
-			return nil, nerrors.ErrInternal{Message: fmt.Sprintf(constants.ErrAssetCodeAlreadyBeenUsed, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp.AssetCode)}
+		if assetDetail[0] == op.AssetCode {
+			return nil, nerrors.ErrInternal{Message: fmt.Sprintf(constants.ErrAssetCodeAlreadyBeenUsed, op.AssetCode)}
 		}
 	}
 
-	signedTx, err := buildSetupTx(txSenderAccount, veloTx.TxEnvelope().VeloTx.VeloOp.Body.SetupCreditOp, &txnbuild.SimpleAccount{AccountID: trustedPartnerMetaAddress})
+	signedTx, issuerAddress, distributorAddress, err := buildSetupTx(txSenderAccount, op, &txnbuild.SimpleAccount{AccountID: trustedPartnerMetaAddress})
 	if err != nil {
 		return nil, nerrors.ErrInternal{Message: err.Error()}
 	}
 
-	return &signedTx, nil
+	return &entities.SetupCreditOutput{
+		SignedStellarTxXdr: signedTx,
+		AssetIssuer:        issuerAddress,
+		AssetDistributor:   distributorAddress,
+		AssetCode:          op.AssetCode,
+		PeggedValue:        amount.String(op.PeggedValue),
+		PeggedCurrency:     op.PeggedCurrency,
+	}, nil
 }
 
-func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp, trustedPartnerMetaAddress *txnbuild.SimpleAccount) (setupTxB64 string, err error) {
+func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.SetupCreditOp, trustedPartnerMetaAddress *txnbuild.SimpleAccount) (setupTxB64 string, issuerAddress string, distributorAddress string, err error) {
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
-		return "", errors.Wrap(err, constants.ErrDerivedKeyPairFromSeed)
+		return "", "", "", errors.Wrap(err, constants.ErrDerivedKeyPairFromSeed)
 	}
 
 	issuerKp, err := keypair.Random()
 	if err != nil {
-		return "", errors.Wrap(err, constants.ErrCreateIssuerKeyPair)
+		return "", "", "", errors.Wrap(err, constants.ErrCreateIssuerKeyPair)
 	}
 
 	distributorKp, err := keypair.Random()
 	if err != nil {
-		return "", errors.Wrap(err, constants.ErrCreateDistributorKeyPair)
+		return "", "", "", errors.Wrap(err, constants.ErrCreateDistributorKeyPair)
 	}
 
 	tx := txnbuild.Transaction{
@@ -232,8 +242,8 @@ func buildSetupTx(trustedPartnerAccount *horizon.Account, setupCreditOp *vxdr.Se
 
 	signedTxXdr, err := tx.BuildSignEncode(drsKp, distributorKp, issuerKp)
 	if err != nil {
-		return "", errors.Wrap(err, constants.ErrBuildAndSignTransaction)
+		return "", "", "", errors.Wrap(err, constants.ErrBuildAndSignTransaction)
 	}
 
-	return signedTxXdr, nil
+	return signedTxXdr, issuerKp.Address(), distributorKp.Address(), nil
 }

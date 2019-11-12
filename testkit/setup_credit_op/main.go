@@ -22,7 +22,7 @@ func callSetupCredit() {
 		_ = client.Close()
 	}()
 
-	txResult, err := client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
+	result, err := client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
 		PeggedValue:    "1.0",
 		PeggedCurrency: "USD",
 		AssetCode:      "vUSD",
@@ -30,5 +30,5 @@ func callSetupCredit() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(result.HorizonResult.TransactionSuccessToString())
 }

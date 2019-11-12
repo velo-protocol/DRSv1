@@ -22,7 +22,7 @@ func callMint() {
 		_ = client.Close()
 	}()
 
-	txResult, err := client.MintCredit(context.Background(), vtxnbuild.MintCredit{
+	result, err := client.MintCredit(context.Background(), vtxnbuild.MintCredit{
 		AssetCodeToBeIssued: "kDREAM",
 		CollateralAssetCode: "VELO",
 		CollateralAmount:    "10",
@@ -30,5 +30,5 @@ func callMint() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(result.HorizonResult.TransactionSuccessToString())
 }

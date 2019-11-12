@@ -20,9 +20,9 @@ func rebalanceReserve() {
 		_ = client.Close()
 	}()
 
-	txResult, err := client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
+	result, err := client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
 	if err != nil {
 		panic(err)
 	}
-	log.Println(txResult.TransactionSuccessToString())
+	log.Println(result.HorizonResult.TransactionSuccessToString())
 }

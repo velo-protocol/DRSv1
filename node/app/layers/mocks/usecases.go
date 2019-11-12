@@ -37,10 +37,10 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 }
 
 // SetupCredit mocks base method
-func (m *MockUseCase) SetupCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
+func (m *MockUseCase) SetupCredit(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.SetupCreditOutput, errors.NodeError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetupCredit", ctx, veloTx)
-	ret0, _ := ret[0].(*string)
+	ret0, _ := ret[0].(*entities.SetupCreditOutput)
 	ret1, _ := ret[1].(errors.NodeError)
 	return ret0, ret1
 }

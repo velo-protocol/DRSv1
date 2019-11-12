@@ -41,6 +41,6 @@ func (lo *logic) RebalanceReserve(input *entity.RebalanceInput) (*entity.Rebalan
 	}
 
 	return &entity.RebalanceOutput{
-		TxResult: result,
+		TxResult: result.HorizonResult,
 	}, nil
 }
