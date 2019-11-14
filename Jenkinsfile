@@ -17,36 +17,6 @@ pipeline {
         CONTAINER_IMAGE="registry.gitlab.com/velo-labs/${appName}"
     }
     stages {
-        stage ('Cleanup') {
-            steps {
-                dir('directoryToDelete') {
-                    deleteDir()
-                }
-            }
-        }
-
-        stage ('Pull App Config') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: '6a0ef684-a441-4262-937f-d9a7a0602b56', passwordVariable: 'gitlabPassword', usernameVariable: 'gitlabUsername')]) {
-                    sh '''
-                    echo "Pull App Config" 
-                    git clone -b master https://${gitlabUsername}:${gitlabPassword}@gitlab.com/velo-labs/velo-app-configs.git
-                '''
-                }
-            }
-        }
-
-        stage ('Pull App Deployment') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: '6a0ef684-a441-4262-937f-d9a7a0602b56', passwordVariable: 'gitlabPassword', usernameVariable: 'gitlabUsername')]) {
-                    sh '''
-                    echo "Pull App Deployment"
-                    git clone -b master https://${gitlabUsername}:${gitlabPassword}@gitlab.com/velo-labs/velo-app-deployment.git
-                '''
-                }
-            }
-        }
-
         stage('Build Image Test') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '6a0ef684-a441-4262-937f-d9a7a0602b56', passwordVariable: 'gitlabPassword', usernameVariable: 'gitlabUsername')]) {
@@ -125,112 +95,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Deployment') {
-            parallel {
-                stage ('Deploy to Develop Environment') {
-                    when {
-                        branch 'develop'
-                    }
-                    steps {
-                        withCredentials([sshUserPrivateKey(credentialsId: '7a468a86-b55c-4bc2-a0de-e3f9e77568be', usernameVariable: 'ec2user', keyFileVariable: 'ec2keyfile')]) {
-                        sh '''
-                            echo "Deployment"
-                            ec2_json=$(aws ec2 describe-instances --filters "Name=tag-key,Values=Service" "Name=tag-value,Values=velo-cen-node" "Name=instance-state-name,Values=running" | jq -r '.Reservations[]')
-                            ec2_tag_output(){
-                              ec2_output=$(aws ec2 describe-instances --instance-id $1 --query 'Reservations[*].Instances[*].[PrivateDnsName,Tags[?Key==`ConfigMap`]|[0].Value]' --output text )
-                            }
-                            instances=$(echo $ec2_json | jq -r '.Instances[].InstanceId');
-                            for row in ${instances}; do
-                              ec2_tag_output $row
-                              addr=$(echo $ec2_output | awk '{print $1}')
-                              configmap=$(echo $ec2_output | awk '{print $2}')
-                              echo "address:"$addr", configmap:"$configmap
-                              anslog=$(ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${addr}, -u ${ec2user} --private-key ${ec2keyfile} -e configdir=${WORKSPACE}/velo-app-configs/develop -e host=${addr} -e configmap=${configmap} -e docker_image=${dockerImage} ${WORKSPACE}/velo-app-deployment/deploy-app.yaml)
-                              echo $anslog
-                            done;
-                        '''
-                        }
-                    }
-                }
-                stage ('Deploy to Test Environment') {
-                    when {
-                        branch 'release/*'
-                    }
-                    steps {
-                        withCredentials([sshUserPrivateKey(credentialsId: '7a468a86-b55c-4bc2-a0de-e3f9e77568be', usernameVariable: 'ec2user', keyFileVariable: 'ec2keyfile')]) {
-                            sh '''
-                            echo "Deployment"
-                            ec2_json=$(aws ec2 describe-instances --filters "Name=tag-key,Values=Service" "Name=tag-value,Values=velo-cen-node" "Name=instance-state-name,Values=running" | jq -r '.Reservations[]')
-                            ec2_tag_output(){
-                              ec2_output=$(aws ec2 describe-instances --instance-id $1 --query 'Reservations[*].Instances[*].[PrivateDnsName,Tags[?Key==`ConfigMap`]|[0].Value]' --output text )
-                            }
-                            instances=$(echo $ec2_json | jq -r '.Instances[].InstanceId');
-                            for row in ${instances}; do
-                              ec2_tag_output $row
-                              addr=$(echo $ec2_output | awk '{print $1}')
-                              configmap=$(echo $ec2_output | awk '{print $2}')
-                              echo "address:"$addr", configmap:"$configmap
-                              anslog=$(ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${addr}, -u ${ec2user} --private-key ${ec2keyfile} -e configdir=${WORKSPACE}/velo-app-configs/test -e host=${addr} -e configmap=${configmap} -e docker_image=${dockerImage} ${WORKSPACE}/velo-app-deployment/deploy-app.yaml)
-                              echo $anslog
-                            done;
-                        '''
-                        }
-                    }
-                }
-                stage ('Deploy to Staging Environment') {
-                    when {
-                        branch 'master'
-                    }
-                    steps {
-                        withCredentials([sshUserPrivateKey(credentialsId: '7a468a86-b55c-4bc2-a0de-e3f9e77568be', usernameVariable: 'ec2user', keyFileVariable: 'ec2keyfile')]) {
-                            sh '''
-                            echo "Deployment"
-                            ec2_json=$(aws ec2 describe-instances --filters "Name=tag-key,Values=Service" "Name=tag-value,Values=velo-cen-node" "Name=instance-state-name,Values=running" | jq -r '.Reservations[]')
-                            ec2_tag_output(){
-                              ec2_output=$(aws ec2 describe-instances --instance-id $1 --query 'Reservations[*].Instances[*].[PrivateDnsName,Tags[?Key==`ConfigMap`]|[0].Value]' --output text )
-                            }
-                            instances=$(echo $ec2_json | jq -r '.Instances[].InstanceId');
-                            for row in ${instances}; do
-                              ec2_tag_output $row
-                              addr=$(echo $ec2_output | awk '{print $1}')
-                              configmap=$(echo $ec2_output | awk '{print $2}')
-                              echo "address:"$addr", configmap:"$configmap
-                              anslog=$(ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${addr}, -u ${ec2user} --private-key ${ec2keyfile} -e configdir=${WORKSPACE}/velo-app-configs/staging -e host=${addr} -e configmap=${configmap} -e docker_image=${dockerImage} ${WORKSPACE}/velo-app-deployment/deploy-app.yaml)
-                              echo $anslog
-                            done;
-                        '''
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Check Deployment Status') {
-            steps {
-                sh '''
-                    echo "Check Deployment Status"
-                    ec2_json=$(aws ec2 describe-instances --filters "Name=tag-key,Values=Service" "Name=tag-value,Values=velo-cen-node" "Name=instance-state-name,Values=running" | jq -r '.Reservations[]')
-                    ec2_tag_output(){
-                      ec2_output=$(aws ec2 describe-instances --instance-id $1 --query 'Reservations[*].Instances[*].[PrivateDnsName,Tags[?Key==`ConfigMap`]|[0].Value]' --output text )
-                    }
-                    instances=$(echo $ec2_json | jq -r '.Instances[].InstanceId');
-                    for row in ${instances}; do
-                      ec2_tag_output $row
-                      addr=$(echo $ec2_output | awk '{print $1}')
-                      grpc-health-probe -addr=${addr}:6666
-                    done;
-                '''
-            }
-        }
     }
     post {
-            always {
-                junit "reports/coverage-tasks.xml"
-                cobertura coberturaReportFile: "reports/coverage.xml"
-            }
-            cleanup {
-                deleteDir()
-            }
+        always {
+            junit "reports/coverage-tasks.xml"
+            cobertura coberturaReportFile: "reports/coverage.xml"
+        }
     }
 }
