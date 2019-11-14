@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )

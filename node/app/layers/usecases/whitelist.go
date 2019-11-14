@@ -6,15 +6,16 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/txnbuild"
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/entities"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 )
 
-func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError) {
+func (useCase *useCase) Whitelist(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.WhitelistOutput, nerrors.NodeError) {
 	if err := veloTx.VeloOp.Validate(); err != nil {
 		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
 	}
@@ -139,7 +140,11 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
 			}
 		}
-		return &signedTxXdr, nil
+		return &entities.WhitelistOutput{
+			SignedStellarTxXdr: signedTxXdr,
+			Address:            whitelistOp.Address.Address(),
+			Role:               string(vxdr.RoleRegulator),
+		}, nil
 
 	case vxdr.RoleTrustedPartner:
 		// duplication check
@@ -213,8 +218,12 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
 			}
 		}
-		return &signedTxXdr, nil
-
+		return &entities.WhitelistOutput{
+			SignedStellarTxXdr:        signedTxXdr,
+			Address:                   whitelistOp.Address.Address(),
+			Role:                      string(vxdr.RoleTrustedPartner),
+			TrustedPartnerMetaAddress: trustedPartnerMetaKp.Address(),
+		}, nil
 	case vxdr.RolePriceFeeder:
 		// duplication check
 		if _, ok := priceFeederListData[whitelistOp.Address.Address()]; ok {
@@ -279,8 +288,13 @@ func (useCase *useCase) CreateWhitelist(ctx context.Context, veloTx *vtxnbuild.V
 				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
 			}
 		}
-		return &signedTxXdr, nil
 
+		return &entities.WhitelistOutput{
+			SignedStellarTxXdr: signedTxXdr,
+			Address:            whitelistOp.Address.Address(),
+			Role:               string(vxdr.RolePriceFeeder),
+			Currency:           string(whitelistOp.Currency),
+		}, nil
 	default:
 		return nil, nerrors.ErrInternal{
 			Message: constants.ErrUnknownRoleSpecified,

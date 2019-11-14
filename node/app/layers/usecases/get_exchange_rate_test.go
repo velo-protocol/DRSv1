@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )

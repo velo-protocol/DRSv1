@@ -1,12 +1,9 @@
 package entities
 
-type Whitelist struct {
-	ID               string
-	StellarPublicKey string
-	RoleCode         string
-}
-
-type WhitelistFilter struct {
-	StellarPublicKey *string
-	RoleCode         *string
+type WhitelistOutput struct {
+	SignedStellarTxXdr        string
+	Address                   string
+	Role                      string
+	Currency                  string
+	TrustedPartnerMetaAddress string
 }

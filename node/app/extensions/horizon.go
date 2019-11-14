@@ -2,7 +2,7 @@ package extensions
 
 import (
 	"github.com/stellar/go/clients/horizonclient"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"net/http"
 )
 
