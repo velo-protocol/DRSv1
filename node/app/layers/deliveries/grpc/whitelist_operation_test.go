@@ -3,7 +3,6 @@ package grpc_test
 import (
 	"context"
 	"fmt"
-	"github.com/AlekSi/pointer"
 	"github.com/golang/mock/gomock"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
@@ -12,6 +11,7 @@ import (
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
+	"gitlab.com/velo-labs/cen/node/app/entities"
 	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
@@ -37,8 +37,12 @@ func TestHandler_SubmitVeloTx_Whitelist(t *testing.T) {
 		}).BuildSignEncode(regulatorKP)
 
 		helper.mockUseCase.EXPECT().
-			CreateWhitelist(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
-			Return(pointer.ToString("AAAAA...="), nil)
+			Whitelist(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+			Return(&entities.WhitelistOutput{
+				SignedStellarTxXdr: "AAAAA...=",
+				Address:            publicKey2,
+				Role:               string(vxdr.RoleTrustedPartner),
+			}, nil)
 
 		reply, err := helper.handler.SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
 			SignedVeloTxXdr: veloTxB64,
@@ -47,6 +51,8 @@ func TestHandler_SubmitVeloTx_Whitelist(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "AAAAA...=", reply.SignedStellarTxXdr)
 		assert.Equal(t, fmt.Sprintf(constants.ReplyWhitelistSuccess, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]), reply.Message)
+		assert.Equal(t, string(vxdr.RoleTrustedPartner), reply.WhitelistOpResponse.Role)
+		assert.Equal(t, publicKey2, reply.WhitelistOpResponse.Address)
 	})
 	t.Run("error, use case return error", func(t *testing.T) {
 		helper := initTest(t)
@@ -63,7 +69,7 @@ func TestHandler_SubmitVeloTx_Whitelist(t *testing.T) {
 		}).BuildSignEncode(regulatorKP)
 
 		helper.mockUseCase.EXPECT().
-			CreateWhitelist(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
+			Whitelist(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 			Return(nil, nerrors.ErrInternal{Message: "some error has occurred"})
 
 		_, err := helper.handler.SubmitVeloTx(context.Background(), &spec.VeloTxRequest{

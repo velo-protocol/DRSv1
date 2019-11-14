@@ -18,13 +18,19 @@ func (handler *handler) handleWhitelistOperation(ctx context.Context, veloTx *vt
 		}.GRPCError()
 	}
 
-	signedStellarTxXdr, err := handler.UseCase.CreateWhitelist(ctx, veloTx)
+	output, err := handler.UseCase.Whitelist(ctx, veloTx)
 	if err != nil {
 		return nil, err.GRPCError()
 	}
 
 	return &spec.VeloTxReply{
-		SignedStellarTxXdr: *signedStellarTxXdr,
-		Message:            fmt.Sprintf(constants.ReplyWhitelistSuccess, op.Address.Address(), vxdr.RoleMap[op.Role]),
+		SignedStellarTxXdr: output.SignedStellarTxXdr,
+		Message:            fmt.Sprintf(constants.ReplyWhitelistSuccess, output.Address, vxdr.RoleMap[vxdr.Role(output.Role)]),
+		WhitelistOpResponse: &spec.WhitelistOpResponse{
+			Address:                   output.Address,
+			Role:                      output.Role,
+			Currency:                  output.Currency,
+			TrustedPartnerMetaAddress: output.TrustedPartnerMetaAddress,
+		},
 	}, nil
 }

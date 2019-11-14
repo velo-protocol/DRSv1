@@ -8,9 +8,9 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
 

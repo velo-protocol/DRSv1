@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 )
 
 func (subUseCase *subUseCase) GetTrustedPartnerFromIssuerAccount(ctx context.Context, input *entities.GetTrustedPartnerFromIssuerAccountInput) (*entities.GetTrustedPartnerFromIssuerAccountOutput, error) {

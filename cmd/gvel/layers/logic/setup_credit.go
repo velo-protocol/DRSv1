@@ -8,7 +8,7 @@ import (
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
 	"gitlab.com/velo-labs/cen/cmd/gvel/utils/parser"
 	"gitlab.com/velo-labs/cen/libs/convert"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 )
 
 func (lo *logic) SetupCredit(input *entity.SetupCreditInput) (*entity.SetupCreditOutput, error) {
