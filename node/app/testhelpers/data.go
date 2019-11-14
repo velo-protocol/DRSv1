@@ -1,7 +1,7 @@
 package testhelpers
 
 import (
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/node/app/entities"
 )
 

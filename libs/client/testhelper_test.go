@@ -7,7 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	mock_grpc "gitlab.com/velo-labs/cen/grpc/mocks"
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/convert"
 	"google.golang.org/grpc"
 	"testing"
 )

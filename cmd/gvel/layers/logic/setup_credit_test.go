@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
 	vclient "gitlab.com/velo-labs/cen/libs/client"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"testing"
 )
 

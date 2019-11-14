@@ -5,7 +5,7 @@ import (
 	"github.com/stellar/go/clients/horizonclient"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
-	env "gitlab.com/velo-labs/cen/node/app/environments"
+	"gitlab.com/velo-labs/cen/node/app/environments"
 	"gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar/models"
 )
 

@@ -6,16 +6,17 @@ import (
 	"errors"
 	"fmt"
 	"github.com/stellar/go/protocols/horizon"
+	"github.com/stellar/go/strkey"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	vtxnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
-	vxdr "gitlab.com/velo-labs/cen/libs/xdr"
+	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"gitlab.com/velo-labs/cen/libs/xdr"
 	"gitlab.com/velo-labs/cen/node/app/constants"
-	nerrors "gitlab.com/velo-labs/cen/node/app/errors"
+	"gitlab.com/velo-labs/cen/node/app/errors"
 	"testing"
 )
 
-func TestUseCase_CreateWhitelist(t *testing.T) {
+func TestUseCase_Whitelist(t *testing.T) {
 	t.Run("Error - whitelist op validation fail", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
@@ -30,7 +31,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 			},
 		}
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
 	})
 	t.Run("Error - currency must not be blank for price feeder role", func(t *testing.T) {
@@ -49,7 +50,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrPriceFeederCurrencyMustNotBlank)
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
@@ -71,7 +72,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp1)
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrCurrencyMustBeBlank)
 		assert.IsType(t, nerrors.ErrInvalidArgument{}, err)
@@ -91,7 +92,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 		}
 		_ = veloTx.Build()
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrSignatureNotFound)
 		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
@@ -112,7 +113,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 		_ = veloTx.Build()
 		_ = veloTx.Sign(kp2)
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.EqualError(t, err, constants.ErrSignatureNotMatchSourceAccount)
 		assert.IsType(t, nerrors.ErrUnAuthenticated{}, err)
@@ -137,7 +138,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 			GetAccount(publicKey1).
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.IsType(t, nerrors.ErrNotFound{}, err)
 	})
@@ -164,7 +165,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 			GetDrsAccountData().
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.Contains(t, err.Error(), constants.ErrGetDrsAccountData)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
@@ -195,7 +196,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 			GetAccounts(drsAccountDataEnity.RegulatorListAddress, drsAccountDataEnity.TrustedPartnerListAddress, drsAccountDataEnity.PriceFeederListAddress).
 			Return(nil, errors.New("some error has occurred"))
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.Contains(t, err.Error(), constants.ErrGetRoleListAccount)
 		assert.IsType(t, nerrors.ErrInternal{}, err)
@@ -239,7 +240,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 				},
 			}, nil)
 
-		_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+		_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 		assert.EqualError(t, err, fmt.Sprintf(constants.ErrFormatSignerNotHavePermission, constants.VeloOpWhitelist))
 		assert.IsType(t, nerrors.ErrPermissionDenied{}, err)
@@ -287,10 +288,15 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 					},
 				}, nil)
 
-			signedTxXdr, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+			output, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 			assert.NoError(t, err)
-			assert.NotNil(t, signedTxXdr)
+
+			assert.NotEmpty(t, output.SignedStellarTxXdr)
+			assert.Equal(t, string(vxdr.RoleRegulator), output.Role)
+			assert.Equal(t, publicKey2, output.Address)
+			assert.Empty(t, output.Currency)
+			assert.Empty(t, output.TrustedPartnerMetaAddress)
 		})
 		t.Run("Error - public key 2 has already been whitelisted as a REGULATOR", func(t *testing.T) {
 			helper := initTest(t)
@@ -334,7 +340,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 					},
 				}, nil)
 
-			_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+			_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, publicKey2, vxdr.RoleMap[vxdr.RoleRegulator]))
 			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
@@ -382,10 +388,15 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 					},
 				}, nil)
 
-			signedTxXdr, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+			output, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 			assert.NoError(t, err)
-			assert.NotNil(t, signedTxXdr)
+
+			assert.NotEmpty(t, output.SignedStellarTxXdr)
+			assert.Equal(t, string(vxdr.RoleTrustedPartner), output.Role)
+			assert.Equal(t, publicKey2, output.Address)
+			assert.Empty(t, output.Currency)
+			assert.True(t, strkey.IsValidEd25519PublicKey(output.TrustedPartnerMetaAddress))
 		})
 		t.Run("Error - public key 2 has already been whitelisted as a TRUSTED_PARTNER", func(t *testing.T) {
 			helper := initTest(t)
@@ -430,7 +441,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 					},
 				}, nil)
 
-			_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+			_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, publicKey2, vxdr.RoleMap[vxdr.RoleTrustedPartner]))
 			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)
@@ -479,10 +490,15 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 					},
 				}, nil)
 
-			signedTxXdr, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+			output, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 			assert.NoError(t, err)
-			assert.NotNil(t, signedTxXdr)
+
+			assert.NotEmpty(t, output.SignedStellarTxXdr)
+			assert.Equal(t, string(vxdr.RolePriceFeeder), output.Role)
+			assert.Equal(t, publicKey2, output.Address)
+			assert.Equal(t, string(vxdr.CurrencyTHB), output.Currency)
+			assert.Empty(t, output.TrustedPartnerMetaAddress)
 		})
 		t.Run("Error - public key 2 has already been whitelisted as a PRICE_FEEDER", func(t *testing.T) {
 			helper := initTest(t)
@@ -528,7 +544,7 @@ func TestUseCase_CreateWhitelist(t *testing.T) {
 					},
 				}, nil)
 
-			_, err := helper.useCase.CreateWhitelist(context.Background(), veloTx)
+			_, err := helper.useCase.Whitelist(context.Background(), veloTx)
 
 			assert.EqualError(t, err, fmt.Sprintf(constants.ErrWhitelistAlreadyWhitelisted, publicKey2, vxdr.RoleMap[vxdr.RolePriceFeeder]))
 			assert.IsType(t, nerrors.ErrAlreadyExists{}, err)

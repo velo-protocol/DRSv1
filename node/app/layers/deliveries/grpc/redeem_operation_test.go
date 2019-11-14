@@ -6,7 +6,7 @@ import (
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	spec "gitlab.com/velo-labs/cen/grpc"
-	vconvert "gitlab.com/velo-labs/cen/libs/convert"
+	"gitlab.com/velo-labs/cen/libs/convert"
 	"gitlab.com/velo-labs/cen/libs/txnbuild"
 	"gitlab.com/velo-labs/cen/node/app/constants"
 	"gitlab.com/velo-labs/cen/node/app/entities"
