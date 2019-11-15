@@ -103,10 +103,7 @@ pipeline {
                         branch 'develop'
                     }
                     steps {
-                        build job: 'DRSv1-deploy', parameters: [
-                            string(name: 'dockerVersion', value: env.dockerTag)
-                            string(name: 'environment', value: 'develop')
-                        ]
+                        build job: 'DRSv1-deploy', parameters: [string(name: 'dockerVersion', value: env.dockerTag),string(name: 'environment', value: 'develop')]
                     }
                 }
                 stage ('Deploy to Staging Environment') {
@@ -114,10 +111,7 @@ pipeline {
                         branch 'master'
                     }
                     steps {
-                        build job: 'DRSv1-deploy', parameters: [
-                            string(name: 'dockerVersion', value: env.dockerTag)
-                            string(name: 'environment', value: 'staging')
-                        ]
+                        build job: 'DRSv1-deploy', parameters: [string(name: 'dockerVersion', value: env.dockerTag),string(name: 'environment', value: 'staging')]
                     }
                 }
             }
