@@ -95,7 +95,35 @@ pipeline {
                 }
             }
         }
+
+        stage('Trigger to Deployment job') {
+            parallel {
+                stage ('Deploy to Develop Environment') {
+                    when {
+                        branch 'develop'
+                    }
+                    steps {
+                        build job: 'DRSv1-deploy', parameters: [
+                            string(name: 'dockerVersion', value: env.dockerTag)
+                            string(name: 'environment', value: 'develop')
+                        ]
+                    }
+                }
+                stage ('Deploy to Staging Environment') {
+                    when {
+                        branch 'master'
+                    }
+                    steps {
+                        build job: 'DRSv1-deploy', parameters: [
+                            string(name: 'dockerVersion', value: env.dockerTag)
+                            string(name: 'environment', value: 'staging')
+                        ]
+                    }
+                }
+            }
+        }
     }
+
     post {
         always {
             junit "reports/coverage-tasks.xml"
