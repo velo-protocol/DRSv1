@@ -14,7 +14,7 @@ docker/local/down:
 	docker-compose -f resources/docker/docker-compose.yaml down
 
 test/run:
-	export GIN_MODE=release && go test ./app/... -v -coverprofile .coverage.txt
+	go test ./app/... -v -coverprofile .coverage.txt
 	go tool cover -func .coverage.txt
 
 test/run-debug:

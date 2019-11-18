@@ -10,3 +10,4 @@ cmd/gvel/gvel
 *.iml
 out
 gen
+.scannerwork

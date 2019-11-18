@@ -46,14 +46,11 @@ pipeline {
                 script {
                     echo "SonarQube Code Analysis"
                     withSonarQubeEnv('sonarqube') {
-                        sh  "sonar-scanner " +
-                                "-Dsonar.host.url=${sonarqubeUrl} " +
-                                "-Dsonar.projectKey=${appName} " +
-                                "-Dsonar.projectName=${appName} " +
-                                "-Dsonar.projectVersion=${dockerTag} " +
-                                "-Dsonar.sonar.tests=** " +
-                                "-Dsonar.exclusions=**/*_test.go,**/vendor/** " +
-                                "-Dsonar.go.coverage.reportPaths=reports/.coverage.txt "
+                        sh '''
+                            sed -i s/#SONARQUBE_URL#/${sonarqubeURL}/g Makefile
+                            sed -i s/#APP_VERSION#/${dockerTag}/g Makefile
+                            make ci_sonarqube
+                        '''
                     }
                 }
             }
