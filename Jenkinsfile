@@ -51,7 +51,7 @@ pipeline {
                                 "-Dsonar.projectKey=${appName} " +
                                 "-Dsonar.projectName=${appName} " +
                                 "-Dsonar.projectVersion=${dockerTag} " +
-                                "-Dsonar.sonar.tests=node/** " +
+                                "-Dsonar.sonar.tests=** " +
                                 "-Dsonar.exclusions=**/*_test.go,**/vendor/** " +
                                 "-Dsonar.go.coverage.reportPaths=reports/.coverage.txt "
                     }
