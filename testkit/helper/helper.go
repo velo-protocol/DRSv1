@@ -13,8 +13,8 @@ const (
 	PublicKeyRedeemer = "GBMD3RER2POVG774HW34A6FYKPTRPXSPHIKUEOSVQZO5RMLCF7FMVI45"
 	SecretKeyRedeemer = "SDMP3BACNGUQKTNW4NJL2Z4CYG4FFW46MGBU54JNMAHD7LRHKLZTDJBJ"
 
-	//VeloNodeUrl       = "dev-velo-cen-node-01.velo.org:8080"
-	VeloNodeUrl       = "localhost:8080"
+	VeloNodeUrl = "dev-velo-cen-node-01.velo.org:8080"
+	//VeloNodeUrl       = "localhost:8080"
 	VeloIssuerAddress = "GC3COBQESTRET2AXK5ADR63L7LOMEZWDPODW4F2Z7Y44TTEOTRBSKXQ3"
 	VeloAssetCode     = "VELO"
 )
