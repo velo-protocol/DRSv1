@@ -9,7 +9,7 @@ services:
     container_name: cen-node
     command:  sh -c 'cd node/app && fresh'
     volumes:
-      - ../../..:/go/src/gitlab.com/velo-labs/cen
+      - ../../..:/go/src/github.com/velo-protocol/DRSv1
       - $GOPATH/pkg/mod:/go/pkg/mod # to avoid re-"go mod download" on every build
     ports:
       - "8080:8080"

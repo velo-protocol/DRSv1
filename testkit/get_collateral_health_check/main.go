@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	cenGrpc "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/client"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/client"
 	"log"
 )
 

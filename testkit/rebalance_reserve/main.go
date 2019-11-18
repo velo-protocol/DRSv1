@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"gitlab.com/velo-labs/cen/libs/client"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"log"
 )
 

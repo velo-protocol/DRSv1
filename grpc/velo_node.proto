@@ -43,7 +43,9 @@ message SetupCreditOpResponse {
 }
 
 message PriceUpdateOpResponse {
-    // TODO: add parameters
+    string Asset = 1;
+    string Currency = 2;
+    string PriceInCurrencyPerAssetUnit = 3;
 }
 
 message MintCreditOpResponse {

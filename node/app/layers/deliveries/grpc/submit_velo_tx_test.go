@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	spec "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/convert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"testing"
 )
 

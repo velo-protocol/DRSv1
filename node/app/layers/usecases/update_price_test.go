@@ -8,13 +8,19 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 	"testing"
 )
 
 func TestUseCase_UpdatePrice(t *testing.T) {
+	var (
+		asset                       = "VELO"
+		currency                    = "THB"
+		priceInCurrencyPerAssetUnit = "1.5"
+	)
+
 	t.Run("Success", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.mockController.Finish()
@@ -24,9 +30,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1.5",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -41,13 +47,17 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		helper.mockStellarRepo.EXPECT().
 			GetAccountData(drsAccountDataEnity.PriceFeederListAddress).
 			Return(map[string]string{
-				publicKey1: base64.StdEncoding.EncodeToString([]byte("THB")),
+				publicKey1: base64.StdEncoding.EncodeToString([]byte(currency)),
 			}, nil)
 
-		signedTxXdr, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
+		output, err := helper.useCase.UpdatePrice(context.Background(), veloTx)
 
 		assert.NoError(t, err)
-		assert.NotNil(t, signedTxXdr)
+		assert.NotNil(t, output)
+		assert.NotNil(t, output.SignedStellarTxXdr)
+		assert.Equal(t, asset, output.Asset)
+		assert.Equal(t, currency, output.Currency)
+		assert.Equal(t, "1.5000000", output.PriceInCurrencyPerAssetUnit)
 	})
 	t.Run("Error - velo op validation fail", func(t *testing.T) {
 		helper := initTest(t)
@@ -59,8 +69,8 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
 				Asset:                       "",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1",
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 
@@ -78,9 +88,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -102,9 +112,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -125,9 +135,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1.5",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -151,9 +161,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1.5",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -180,9 +190,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1.5",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -211,9 +221,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1.5",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()
@@ -243,9 +253,9 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 				AccountID: publicKey1,
 			},
 			VeloOp: &vtxnbuild.PriceUpdate{
-				Asset:                       "VELO",
-				Currency:                    "THB",
-				PriceInCurrencyPerAssetUnit: "1.5",
+				Asset:                       asset,
+				Currency:                    currency,
+				PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 			},
 		}
 		_ = veloTx.Build()

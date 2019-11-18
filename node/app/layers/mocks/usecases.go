@@ -7,9 +7,9 @@ package mocks
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	txnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
-	entities "gitlab.com/velo-labs/cen/node/app/entities"
-	errors "gitlab.com/velo-labs/cen/node/app/errors"
+	txnbuild "github.com/velo-protocol/DRSv1/libs/txnbuild"
+	entities "github.com/velo-protocol/DRSv1/node/app/entities"
+	errors "github.com/velo-protocol/DRSv1/node/app/errors"
 	reflect "reflect"
 )
 
@@ -67,10 +67,10 @@ func (mr *MockUseCaseMockRecorder) Whitelist(ctx, veloTx interface{}) *gomock.Ca
 }
 
 // UpdatePrice mocks base method
-func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) (*string, errors.NodeError) {
+func (m *MockUseCase) UpdatePrice(ctx context.Context, veloTx *txnbuild.VeloTx) (*entities.UpdatePriceOutput, errors.NodeError) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePrice", ctx, veloTx)
-	ret0, _ := ret[0].(*string)
+	ret0, _ := ret[0].(*entities.UpdatePriceOutput)
 	ret1, _ := ret[1].(errors.NodeError)
 	return ret0, ret1
 }

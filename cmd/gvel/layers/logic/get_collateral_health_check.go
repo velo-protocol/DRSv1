@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	spec "gitlab.com/velo-labs/cen/grpc"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	spec "github.com/velo-protocol/DRSv1/grpc"
 )
 
 func (lo *logic) GetCollateralHealthCheck() (*entity.GetCollateralHealthCheckOutput, error) {

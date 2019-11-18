@@ -3,10 +3,10 @@ package grpc
 import (
 	"context"
 	"fmt"
-	spec "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 )
 
 func (handler *handler) handlePriceUpdateOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
@@ -17,13 +17,18 @@ func (handler *handler) handlePriceUpdateOperation(ctx context.Context, veloTx *
 		}.GRPCError()
 	}
 
-	signedStellarTxXdr, err := handler.UseCase.UpdatePrice(ctx, veloTx)
+	priceUpdateOutput, err := handler.UseCase.UpdatePrice(ctx, veloTx)
 	if err != nil {
 		return nil, err.GRPCError()
 	}
 
 	return &spec.VeloTxReply{
-		SignedStellarTxXdr: *signedStellarTxXdr,
+		SignedStellarTxXdr: priceUpdateOutput.SignedStellarTxXdr,
 		Message:            constants.ReplyPriceUpdateSuccess,
+		PriceUpdateOpResponse: &spec.PriceUpdateOpResponse{
+			Asset:                       priceUpdateOutput.Asset,
+			Currency:                    priceUpdateOutput.Currency,
+			PriceInCurrencyPerAssetUnit: priceUpdateOutput.PriceInCurrencyPerAssetUnit,
+		},
 	}, nil
 }

@@ -5,8 +5,8 @@ import (
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/convert"
-	_operations "gitlab.com/velo-labs/cen/tools/setup_drs_accounts/operations"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	_operations "github.com/velo-protocol/DRSv1/tools/setup_drs_accounts/operations"
 	"log"
 )
 

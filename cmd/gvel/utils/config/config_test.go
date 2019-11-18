@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/constants"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
 	"os"
 	"testing"
 )

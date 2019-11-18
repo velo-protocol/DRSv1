@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
 )
 
 func (lo *logic) SetDefaultAccount(input *entity.SetDefaultAccountInput) (*entity.SetDefaultAccountOutput, error) {

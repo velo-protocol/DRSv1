@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 	"os"
 )
 

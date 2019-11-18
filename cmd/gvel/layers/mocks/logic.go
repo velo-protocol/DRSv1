@@ -6,7 +6,7 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	entity "gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	entity "github.com/velo-protocol/DRSv1/cmd/gvel/entity"
 	reflect "reflect"
 )
 

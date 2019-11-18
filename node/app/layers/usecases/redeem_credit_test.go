@@ -11,10 +11,10 @@ import (
 	"github.com/stellar/go/txnbuild"
 	"github.com/stellar/go/xdr"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 	"testing"
 )
 

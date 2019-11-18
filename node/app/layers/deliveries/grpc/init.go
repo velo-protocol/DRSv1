@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	spec "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/node/app/layers/usecases"
 	"google.golang.org/grpc"
 )
 

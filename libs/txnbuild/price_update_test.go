@@ -3,7 +3,7 @@ package vtxnbuild
 import (
 	"github.com/stellar/go/xdr"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 	"testing"
 )
 

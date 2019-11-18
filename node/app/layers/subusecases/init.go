@@ -1,7 +1,7 @@
 package subusecases
 
 import (
-	"gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/node/app/layers/repositories/stellar"
 )
 
 type subUseCase struct {

@@ -7,7 +7,7 @@ package mock_grpc
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	grpc "gitlab.com/velo-labs/cen/grpc"
+	grpc "github.com/velo-protocol/DRSv1/grpc"
 	grpc0 "google.golang.org/grpc"
 	reflect "reflect"
 )

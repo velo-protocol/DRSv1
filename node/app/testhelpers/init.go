@@ -1,7 +1,7 @@
 package testhelpers
 
 import (
-	"gitlab.com/velo-labs/cen/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
 	"time"
 )
 

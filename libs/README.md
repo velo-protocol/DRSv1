@@ -9,8 +9,8 @@ package main
 
 import (
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/vxdr"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/vxdr"
 )
 
 const (

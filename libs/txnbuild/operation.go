@@ -1,7 +1,7 @@
 package vtxnbuild
 
 import (
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 )
 
 type VeloOp interface {

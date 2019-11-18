@@ -1,10 +1,10 @@
 package logic
 
 import (
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/stellar"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/velo"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/database"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/velo"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
 )
 
 type logic struct {

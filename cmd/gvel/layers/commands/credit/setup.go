@@ -2,8 +2,8 @@ package credit
 
 import (
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 func (creditCommand *CommandHandler) Setup(cmd *cobra.Command, args []string) {
