@@ -34,8 +34,8 @@ pipeline {
                 sh '''
                     echo "Run unit test -> ${CONTAINER_IMAGE}:${dockerTag}-test"
                     mkdir -p $(pwd)/reports
-                    docker run --rm -v $(pwd)/reports:/reports ${CONTAINER_IMAGE}:${dockerTag}-test sh -c "go test ./node/app/... -v -coverprofile .coverage.txt | go-junit-report > /reports/coverage-tasks.xml"
-                    docker run --rm -v $(pwd)/reports:/reports ${CONTAINER_IMAGE}:${dockerTag}-test sh -c "go test ./node/app/... -v -coverprofile .coverage.txt; gocov convert .coverage.txt | gocov-xml > /reports/coverage.xml && cp .coverage.txt /reports/"
+                    docker run --rm -v $(pwd)/reports:/reports ${CONTAINER_IMAGE}:${dockerTag}-test sh -c "go test ./... -v -coverprofile .coverage.txt | go-junit-report > /reports/coverage-tasks.xml"
+                    docker run --rm -v $(pwd)/reports:/reports ${CONTAINER_IMAGE}:${dockerTag}-test sh -c "go test ./... -v -coverprofile .coverage.txt; gocov convert .coverage.txt | gocov-xml > /reports/coverage.xml && cp .coverage.txt /reports/"
                     sudo chown -R jenkins:jenkins $(pwd)/reports
                 '''
             }
