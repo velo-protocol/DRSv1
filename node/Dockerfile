@@ -33,6 +33,9 @@ RUN wget https://raw.githubusercontent.com/eficode/wait-for/master/wait-for -O /
 COPY go.mod go.mod
 COPY go.sum go.sum
 
+# Download dependency
+RUN go mod download
+
 # Copy src
 COPY node/app node/app
 COPY libs libs
