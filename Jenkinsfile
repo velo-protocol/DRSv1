@@ -47,8 +47,8 @@ pipeline {
                     echo "SonarQube Code Analysis"
                     withSonarQubeEnv('sonarqube') {
                         sh '''
-                            sed -i s/#SONARQUBE_URL#/${sonarqubeURL}/g Makefile
-                            sed -i s/#APP_VERSION#/${dockerTag}/g Makefile
+                            sed -i s~#SONARQUBE_URL#~${sonarqubeURL}~g Makefile
+                            sed -i s~#APP_VERSION#~${dockerTag}~g Makefile
                             make ci_sonarqube
                         '''
                     }
