@@ -139,7 +139,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	collateralAsset := string(op.CollateralAssetCode)
 	collateralAssetIssuer := env.VeloIssuerPublicKey
 
-	mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue).Truncate(7)
+	assetAmountToBeIssued := collateralAmount.Mul(medianPrice).Div(peggedValue).Truncate(7)
 
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
@@ -164,7 +164,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 			},
 			&txnbuild.Payment{
 				Destination: distributionAccount,
-				Amount:      mintAmount.String(),
+				Amount:      assetAmountToBeIssued.String(),
 				Asset: txnbuild.CreditAsset{
 					Code:   op.AssetCodeToBeIssued,
 					Issuer: issuerAccount,
@@ -182,10 +182,10 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 		}
 	}
 	return &entities.MintCreditOutput{
-		SignedStellarTxXdr: signedTx,
-		MintAmount:         mintAmount,
-		MintCurrency:       op.AssetCodeToBeIssued,
-		CollateralAmount:   collateralAmount,
-		CollateralAsset:    collateralAsset,
+		SignedStellarTxXdr:    signedTx,
+		AssetAmountToBeIssued: assetAmountToBeIssued,
+		AssetCodeToBeIssued:   op.AssetCodeToBeIssued,
+		CollateralAmount:      collateralAmount,
+		CollateralAssetCode:   collateralAsset,
 	}, nil
 }

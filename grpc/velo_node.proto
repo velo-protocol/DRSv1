@@ -49,7 +49,10 @@ message PriceUpdateOpResponse {
 }
 
 message MintCreditOpResponse {
-    // TODO: add parameters
+    string assetAmountToBeIssued = 1;
+    string assetCodeToBeIssued = 2;
+    string collateralAmount = 3;
+    string collateralAssetCode = 4;
 }
 
 message RedeemCreditOpResponse {
