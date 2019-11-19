@@ -26,7 +26,7 @@ func (handler *handler) handlePriceUpdateOperation(ctx context.Context, veloTx *
 		SignedStellarTxXdr: priceUpdateOutput.SignedStellarTxXdr,
 		Message:            constants.ReplyPriceUpdateSuccess,
 		PriceUpdateOpResponse: &spec.PriceUpdateOpResponse{
-			Asset:                       priceUpdateOutput.Asset,
+			CollateralCode:              priceUpdateOutput.CollateralCode,
 			Currency:                    priceUpdateOutput.Currency,
 			PriceInCurrencyPerAssetUnit: priceUpdateOutput.PriceInCurrencyPerAssetUnit.StringFixed(7),
 		},

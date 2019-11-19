@@ -25,7 +25,7 @@ func TestHandler_SubmitVeloTx_PriceUpdate(t *testing.T) {
 
 	mockedOutput := &entities.UpdatePriceOutput{
 		SignedStellarTxXdr:          "AAAAA...=",
-		Asset:                       asset,
+		CollateralCode:              asset,
 		Currency:                    currency,
 		PriceInCurrencyPerAssetUnit: decimal.NewFromFloat(1.5000000),
 	}
@@ -57,7 +57,7 @@ func TestHandler_SubmitVeloTx_PriceUpdate(t *testing.T) {
 		assert.NotNil(t, output)
 		assert.Equal(t, "AAAAA...=", output.SignedStellarTxXdr)
 		assert.Equal(t, constants.ReplyPriceUpdateSuccess, output.Message)
-		assert.Equal(t, asset, output.PriceUpdateOpResponse.Asset)
+		assert.Equal(t, asset, output.PriceUpdateOpResponse.CollateralCode)
 		assert.Equal(t, currency, output.PriceUpdateOpResponse.Currency)
 		assert.Equal(t, priceInCurrencyPerAssetUnit, output.PriceUpdateOpResponse.PriceInCurrencyPerAssetUnit)
 	})
