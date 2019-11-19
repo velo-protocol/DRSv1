@@ -179,6 +179,7 @@ type RebalanceReserveResult struct {
 }
 
 func (client *Client) RebalanceReserve(ctx context.Context, veloOp vtxnbuild.RebalanceReserve) (RebalanceReserveResult, error) {
+
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
 	var veloNodeResult *cenGrpc.RebalanceReserveOpResponse
 	if veloReply != nil {
