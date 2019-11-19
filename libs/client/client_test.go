@@ -175,7 +175,7 @@ func TestClient_PriceUpdate(t *testing.T) {
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
 				PriceUpdateOpResponse: &cenGrpc.PriceUpdateOpResponse{
-					Asset:                       asset,
+					CollateralCode:              asset,
 					Currency:                    currency,
 					PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 				},
