@@ -7,7 +7,7 @@ package mocks
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	entities "gitlab.com/velo-labs/cen/node/app/entities"
+	entities "github.com/velo-protocol/DRSv1/node/app/entities"
 	reflect "reflect"
 )
 

@@ -4,8 +4,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 	"testing"
 )
 

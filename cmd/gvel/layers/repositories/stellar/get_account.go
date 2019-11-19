@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/parser"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/parser"
 )
 
 func (s *stellar) GetStellarAccount(stellarAddress string) (*horizon.Account, error) {

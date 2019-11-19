@@ -3,7 +3,7 @@ package vtxnbuild
 import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 )
 
 type PriceUpdate struct {

@@ -7,7 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/support/render/problem"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 	"testing"
 )
 

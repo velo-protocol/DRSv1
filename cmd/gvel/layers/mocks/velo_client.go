@@ -8,9 +8,9 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	keypair "github.com/stellar/go/keypair"
-	grpc "gitlab.com/velo-labs/cen/grpc"
-	client "gitlab.com/velo-labs/cen/libs/client"
-	txnbuild "gitlab.com/velo-labs/cen/libs/txnbuild"
+	grpc "github.com/velo-protocol/DRSv1/grpc"
+	client "github.com/velo-protocol/DRSv1/libs/client"
+	txnbuild "github.com/velo-protocol/DRSv1/libs/txnbuild"
 	reflect "reflect"
 )
 

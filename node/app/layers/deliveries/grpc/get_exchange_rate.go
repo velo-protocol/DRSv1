@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"context"
-	spec "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/node/app/entities"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
 )
 
 func (handler handler) GetExchangeRate(ctx context.Context, getExchangeRate *spec.GetExchangeRateRequest) (*spec.GetExchangeRateReply, error) {

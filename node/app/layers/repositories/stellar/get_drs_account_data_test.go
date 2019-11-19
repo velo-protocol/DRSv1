@@ -6,9 +6,9 @@ import (
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 	"testing"
 )
 

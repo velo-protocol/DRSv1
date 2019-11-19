@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/protocols/horizon"
-	"gitlab.com/velo-labs/cen/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
 )
 
 func (repo *repo) GetAccount(stellarAddress string) (*horizon.Account, error) {

@@ -6,8 +6,8 @@ import (
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
-	mock_grpc "gitlab.com/velo-labs/cen/grpc/mocks"
-	"gitlab.com/velo-labs/cen/libs/convert"
+	mock_grpc "github.com/velo-protocol/DRSv1/grpc/mocks"
+	"github.com/velo-protocol/DRSv1/libs/convert"
 	"google.golang.org/grpc"
 	"testing"
 )
@@ -22,6 +22,10 @@ const (
 )
 
 var (
+	asset                       = "VELO"
+	currency                    = "THB"
+	priceInCurrencyPerAssetUnit = "1.5000000"
+
 	clientKp, _       = vconvert.SecretKeyToKeyPair(clientSecretKey)
 	whitelistingKp, _ = vconvert.SecretKeyToKeyPair(whitelistingSecretKey)
 	drsKp, _          = vconvert.SecretKeyToKeyPair(drsSecretKey)

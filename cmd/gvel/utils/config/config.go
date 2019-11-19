@@ -3,8 +3,8 @@ package config
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
-	"gitlab.com/velo-labs/cen/cmd/gvel/constants"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 	"os"
 	"path"
 )

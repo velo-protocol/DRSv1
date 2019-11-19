@@ -2,8 +2,8 @@ package stellar_test
 
 import (
 	"github.com/stellar/go/clients/horizonclient"
-	"gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/node/app/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 )
 
 type helper struct {

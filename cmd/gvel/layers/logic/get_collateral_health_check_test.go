@@ -5,7 +5,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	spec "gitlab.com/velo-labs/cen/grpc"
+	spec "github.com/velo-protocol/DRSv1/grpc"
 	"testing"
 )
 

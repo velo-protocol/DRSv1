@@ -3,7 +3,7 @@ package models
 import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
 )
 
 type DrsAccountData map[string]string

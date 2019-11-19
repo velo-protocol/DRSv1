@@ -8,9 +8,9 @@ import (
 	"github.com/stellar/go/protocols/horizon/base"
 	"github.com/stellar/go/support/render/hal"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 	"testing"
 )
 

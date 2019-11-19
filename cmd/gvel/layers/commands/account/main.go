@@ -3,9 +3,9 @@ package account
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 type CommandHandler struct {

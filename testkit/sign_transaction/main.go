@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/convert"
 	"log"
 )
 

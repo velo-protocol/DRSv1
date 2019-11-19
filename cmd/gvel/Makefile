@@ -35,12 +35,12 @@ mockgen/velo:
 		-destination=./layers/mocks/velo.go \
 		-mock_names Repository=MockVeloRepo \
 		-package mocks \
-		-imports vclient=gitlab.com/velo-labs/cen/libs/client
+		-imports vclient=github.com/velo-protocol/DRSv1/libs/client
 	mockgen \
 		-source=../../libs/client/interface.go \
 		-destination=./layers/mocks/velo_client.go \
 		-mock_names ClientInterface=MockVeloClient \
-		-imports vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild \
+		-imports vtxnbuild=github.com/velo-protocol/DRSv1/libs/txnbuild \
 		-package mocks
 
 mockgen/console:

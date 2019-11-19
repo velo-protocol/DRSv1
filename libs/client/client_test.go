@@ -9,9 +9,9 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/support/render/problem"
 	"github.com/stretchr/testify/assert"
-	cenGrpc "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,6 +31,7 @@ func TestNewPublicClient(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
 func TestNewTestNetClient(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		client, err := NewTestNetClient(&grpc.ClientConn{}, clientSecretKey)
@@ -162,6 +163,46 @@ func TestClient_executeVeloTx(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "cannot connect to horizon")
 		assert.NotNil(t, veloNodeResult)
+	})
+}
+
+func TestClient_PriceUpdate(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				PriceUpdateOpResponse: &cenGrpc.PriceUpdateOpResponse{
+					Asset:                       asset,
+					Currency:                    currency,
+					PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
+			Asset:                       asset,
+			Currency:                    currency,
+			PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.Equal(t, asset, output.VeloNodeResult.Asset)
+		assert.Equal(t, currency, output.VeloNodeResult.Currency)
+		assert.Equal(t, priceInCurrencyPerAssetUnit, output.VeloNodeResult.PriceInCurrencyPerAssetUnit)
+	})
+	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+		helper := initTest(t)
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.PriceUpdate{})
+
+		assert.Error(t, err)
 	})
 }
 
