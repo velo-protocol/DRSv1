@@ -206,6 +206,48 @@ func TestClient_PriceUpdate(t *testing.T) {
 	})
 }
 
+func TestClient_MintCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				MintCreditOpResponse: &cenGrpc.MintCreditOpResponse{
+					MintCurrency:     mintCurrency,
+					MintAmount:       mintAmount,
+					CollateralAsset:  asset,
+					CollateralAmount: collateralAmount,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.MintCredit(context.Background(), vtxnbuild.MintCredit{
+			AssetCodeToBeIssued: mintCurrency,
+			CollateralAssetCode: asset,
+			CollateralAmount:    collateralAmount,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.Equal(t, asset, output.VeloNodeResult.CollateralAsset)
+		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
+		assert.Equal(t, mintAmount, output.VeloNodeResult.MintAmount)
+		assert.Equal(t, mintCurrency, output.VeloNodeResult.MintCurrency)
+	})
+	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+		helper := initTest(t)
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.MintCredit{})
+
+		assert.Error(t, err)
+	})
+}
+
 func TestGrpc_GetExchangeRate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		assetCode := "vTHB"

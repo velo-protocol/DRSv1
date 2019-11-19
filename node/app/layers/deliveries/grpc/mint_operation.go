@@ -22,14 +22,23 @@ func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *v
 		return nil, err.GRPCError()
 	}
 
+	mintAmount := mintCreditOutput.MintAmount.Truncate(7).StringFixed(7)
+	collateralAmount := mintCreditOutput.CollateralAmount.Truncate(7).StringFixed(7)
+
 	return &spec.VeloTxReply{
 		SignedStellarTxXdr: mintCreditOutput.SignedStellarTxXdr,
 		Message: fmt.Sprintf(
 			constants.ReplyMintCreditSuccess,
-			mintCreditOutput.MintAmount.Truncate(7).StringFixed(7),
+			mintAmount,
 			mintCreditOutput.MintCurrency,
-			mintCreditOutput.CollateralAmount.Truncate(7).StringFixed(7),
+			collateralAmount,
 			mintCreditOutput.CollateralAsset,
 		),
+		MintCreditOpResponse: &spec.MintCreditOpResponse{
+			MintAmount:       mintAmount,
+			MintCurrency:     mintCreditOutput.MintCurrency,
+			CollateralAmount: collateralAmount,
+			CollateralAsset:  mintCreditOutput.CollateralAsset,
+		},
 	}, nil
 }
