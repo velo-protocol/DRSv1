@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	spec "github.com/velo-protocol/DRSv1/grpc"
 	"github.com/velo-protocol/DRSv1/libs/client"
 	"log"
 )
@@ -17,7 +17,7 @@ func main() {
 		_ = client.Close()
 	}()
 
-	exchangeRate, err := client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{
+	exchangeRate, err := client.GetExchangeRate(context.Background(), &spec.GetExchangeRateRequest{
 		AssetCode: "kDREAM",
 		Issuer:    "GAXKPU22AE22NO7FXSW7GTNJJ6FGN5NQLXWTJGNBF4VOKLXVJ3RROXTI",
 	})

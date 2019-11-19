@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/stellar/go/amount"
+	"github.com/shopspring/decimal"
 	"github.com/stellar/go/txnbuild"
 	"github.com/velo-protocol/DRSv1/libs/convert"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
@@ -102,10 +102,12 @@ func (useCase *useCase) UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloT
 		}
 	}
 
+	priceInCurrencyPerAssetUnit := decimal.New(int64(priceUpdateOp.PriceInCurrencyPerAssetUnit), -7)
+
 	return &entities.UpdatePriceOutput{
 		SignedStellarTxXdr:          signedTxXdr,
 		Asset:                       priceUpdateOp.Asset,
 		Currency:                    string(priceUpdateOp.Currency),
-		PriceInCurrencyPerAssetUnit: amount.String(priceUpdateOp.PriceInCurrencyPerAssetUnit),
+		PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 	}, nil
 }

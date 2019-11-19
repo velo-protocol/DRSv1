@@ -9,7 +9,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/support/render/problem"
 	"github.com/stretchr/testify/assert"
-	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	spec "github.com/velo-protocol/DRSv1/grpc"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"github.com/velo-protocol/DRSv1/libs/xdr"
 	"google.golang.org/grpc"
@@ -50,8 +50,8 @@ func TestClient_executeVeloTx(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
-			Return(&cenGrpc.VeloTxReply{
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
+			Return(&spec.VeloTxReply{
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
 			}, nil)
@@ -79,7 +79,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 	t.Run("error, cannot connect to VeloCen via gRPC", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
 			Return(nil, status.Error(codes.Unavailable, "some error has occurred"))
 
 		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
@@ -93,7 +93,7 @@ func TestClient_executeVeloTx(t *testing.T) {
 	t.Run("error, velo node client returns an error", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
 			Return(nil, errors.New("some error has occurred"))
 
 		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.Whitelist{
@@ -106,8 +106,8 @@ func TestClient_executeVeloTx(t *testing.T) {
 	t.Run("error, fail to parse signed velo tx xdr", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
-			Return(&cenGrpc.VeloTxReply{
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
+			Return(&spec.VeloTxReply{
 				SignedStellarTxXdr: "AAAA...BAD_XDR",
 				Message:            "Success",
 			}, nil)
@@ -123,8 +123,8 @@ func TestClient_executeVeloTx(t *testing.T) {
 	t.Run("error, horizon response with an error", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
-			Return(&cenGrpc.VeloTxReply{
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
+			Return(&spec.VeloTxReply{
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
 			}, nil)
@@ -146,8 +146,8 @@ func TestClient_executeVeloTx(t *testing.T) {
 	t.Run("error, cannot connect to horizon", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
-			Return(&cenGrpc.VeloTxReply{
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
+			Return(&spec.VeloTxReply{
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
 			}, nil)
@@ -170,11 +170,11 @@ func TestClient_PriceUpdate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		helper := initTest(t)
 		helper.mockVeloNodeClient.EXPECT().
-			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
-			Return(&cenGrpc.VeloTxReply{
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&spec.VeloTxRequest{})).
+			Return(&spec.VeloTxReply{
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
-				PriceUpdateOpResponse: &cenGrpc.PriceUpdateOpResponse{
+				PriceUpdateOpResponse: &spec.PriceUpdateOpResponse{
 					Asset:                       asset,
 					Currency:                    currency,
 					PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
@@ -215,18 +215,18 @@ func TestGrpc_GetExchangeRate(t *testing.T) {
 		helper := initTest(t)
 
 		helper.mockVeloNodeClient.EXPECT().
-			GetExchangeRate(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetExchangeRateRequest{
+			GetExchangeRate(context.Background(), gomock.AssignableToTypeOf(&spec.GetExchangeRateRequest{
 				AssetCode: assetCode,
 				Issuer:    assetIssuer,
 			})).
-			Return(&cenGrpc.GetExchangeRateReply{
+			Return(&spec.GetExchangeRateReply{
 				AssetCode:              assetCode,
 				Issuer:                 assetIssuer,
 				RedeemableCollateral:   RedeemableCollateral,
 				RedeemablePricePerUnit: RedeemablePricePerUnit,
 			}, nil)
 
-		getExchangeRate, err := helper.client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{
+		getExchangeRate, err := helper.client.GetExchangeRate(context.Background(), &spec.GetExchangeRateRequest{
 			AssetCode: assetCode,
 			Issuer:    assetIssuer,
 		})
@@ -242,10 +242,10 @@ func TestGrpc_GetExchangeRate(t *testing.T) {
 		helper := initTest(t)
 
 		helper.mockVeloNodeClient.EXPECT().
-			GetExchangeRate(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetExchangeRateRequest{})).
+			GetExchangeRate(context.Background(), gomock.AssignableToTypeOf(&spec.GetExchangeRateRequest{})).
 			Return(nil, errors.New("some error has occurs"))
 
-		getExchangeRate, err := helper.client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{})
+		getExchangeRate, err := helper.client.GetExchangeRate(context.Background(), &spec.GetExchangeRateRequest{})
 
 		assert.Error(t, err)
 		assert.Nil(t, getExchangeRate)
@@ -262,15 +262,15 @@ func TestGrpc_GetCollateralHealthCheck(t *testing.T) {
 		helper := initTest(t)
 
 		helper.mockVeloNodeClient.EXPECT().
-			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetCollateralHealthCheckRequest{})).
-			Return(&cenGrpc.GetCollateralHealthCheckReply{
+			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&spec.GetCollateralHealthCheckRequest{})).
+			Return(&spec.GetCollateralHealthCheckReply{
 				AssetCode:      assetCode,
 				AssetIssuer:    assetIssuer,
 				RequiredAmount: requiredAmount,
 				PoolAmount:     poolAmount,
 			}, nil)
 
-		getCollateralHealthCheck, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
+		getCollateralHealthCheck, err := helper.client.GetCollateralHealthCheck(context.Background(), &spec.GetCollateralHealthCheckRequest{})
 
 		assert.NoError(t, err)
 		assert.NotNil(t, getCollateralHealthCheck)
@@ -283,10 +283,10 @@ func TestGrpc_GetCollateralHealthCheck(t *testing.T) {
 		helper := initTest(t)
 
 		helper.mockVeloNodeClient.EXPECT().
-			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.GetCollateralHealthCheckRequest{})).
+			GetCollateralHealthCheck(context.Background(), gomock.AssignableToTypeOf(&spec.GetCollateralHealthCheckRequest{})).
 			Return(nil, errors.New("some error has occurs"))
 
-		getExchangeRate, err := helper.client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
+		getExchangeRate, err := helper.client.GetCollateralHealthCheck(context.Background(), &spec.GetCollateralHealthCheckRequest{})
 
 		assert.Error(t, err)
 		assert.Nil(t, getExchangeRate)

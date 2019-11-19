@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
@@ -57,7 +58,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		assert.NotNil(t, output.SignedStellarTxXdr)
 		assert.Equal(t, asset, output.Asset)
 		assert.Equal(t, currency, output.Currency)
-		assert.Equal(t, "1.5000000", output.PriceInCurrencyPerAssetUnit)
+		assert.True(t, output.PriceInCurrencyPerAssetUnit.Equal(decimal.NewFromFloat(1.5)))
 	})
 	t.Run("Error - velo op validation fail", func(t *testing.T) {
 		helper := initTest(t)

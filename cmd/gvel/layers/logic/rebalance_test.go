@@ -7,7 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
-	vclient "github.com/velo-protocol/DRSv1/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/client"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"testing"
 )

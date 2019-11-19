@@ -28,7 +28,7 @@ func (handler *handler) handlePriceUpdateOperation(ctx context.Context, veloTx *
 		PriceUpdateOpResponse: &spec.PriceUpdateOpResponse{
 			Asset:                       priceUpdateOutput.Asset,
 			Currency:                    priceUpdateOutput.Currency,
-			PriceInCurrencyPerAssetUnit: priceUpdateOutput.PriceInCurrencyPerAssetUnit,
+			PriceInCurrencyPerAssetUnit: priceUpdateOutput.PriceInCurrencyPerAssetUnit.StringFixed(7),
 		},
 	}, nil
 }

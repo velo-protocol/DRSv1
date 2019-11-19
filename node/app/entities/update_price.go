@@ -1,8 +1,10 @@
 package entities
 
+import "github.com/shopspring/decimal"
+
 type UpdatePriceOutput struct {
 	SignedStellarTxXdr          string
 	Asset                       string
 	Currency                    string
-	PriceInCurrencyPerAssetUnit string
+	PriceInCurrencyPerAssetUnit decimal.Decimal
 }

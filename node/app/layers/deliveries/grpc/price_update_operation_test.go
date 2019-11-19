@@ -3,6 +3,7 @@ package grpc_test
 import (
 	"context"
 	"github.com/golang/mock/gomock"
+	"github.com/shopspring/decimal"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
 	spec "github.com/velo-protocol/DRSv1/grpc"
@@ -26,7 +27,7 @@ func TestHandler_SubmitVeloTx_PriceUpdate(t *testing.T) {
 		SignedStellarTxXdr:          "AAAAA...=",
 		Asset:                       asset,
 		Currency:                    currency,
-		PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
+		PriceInCurrencyPerAssetUnit: decimal.NewFromFloat(1.5000000),
 	}
 
 	t.Run("success", func(t *testing.T) {
