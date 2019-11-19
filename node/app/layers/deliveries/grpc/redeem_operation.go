@@ -25,5 +25,13 @@ func (handler *handler) handleRedeemCreditOperation(ctx context.Context, veloTx 
 	return &spec.VeloTxReply{
 		SignedStellarTxXdr: redeemCreditOutput.SignedStellarTxXdr,
 		Message:            constants.ReplyRedeemCreditSuccess,
+		RedeemCreditOpResponse: &spec.RedeemCreditOpResponse{
+			AssetCodeToBeRedeemed:   redeemCreditOutput.AssetCodeToBeRedeemed,
+			AssetIssuerToBeRedeemed: redeemCreditOutput.AssetIssuerToBeRedeemed,
+			AssetAmountToBeRedeemed: redeemCreditOutput.AssetAmountToBeRedeemed.StringFixed(7),
+			CollateralCode:          redeemCreditOutput.CollateralCode,
+			CollateralIssuer:        redeemCreditOutput.CollateralIssuer,
+			CollateralAmount:        redeemCreditOutput.CollateralAmount.StringFixed(7),
+		},
 	}, nil
 }

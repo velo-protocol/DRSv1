@@ -22,6 +22,14 @@ const (
 )
 
 var (
+	assetCodeToBeRedeemed   = "vTHB"
+	assetIssuerToBeRedeemed = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"
+	assetAmountToBeRedeemed = "1"
+
+	collateralCode   = "VELO"
+	collateralIssuer = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"
+	collateralAmount = "1.0000000"
+
 	asset                       = "VELO"
 	currency                    = "THB"
 	priceInCurrencyPerAssetUnit = "1.5000000"

@@ -56,7 +56,7 @@ func TestUseCase_UpdatePrice(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, output)
 		assert.NotNil(t, output.SignedStellarTxXdr)
-		assert.Equal(t, asset, output.Asset)
+		assert.Equal(t, asset, output.CollateralCode)
 		assert.Equal(t, currency, output.Currency)
 		assert.True(t, output.PriceInCurrencyPerAssetUnit.Equal(decimal.NewFromFloat(1.5)))
 	})

@@ -43,9 +43,9 @@ message SetupCreditOpResponse {
 }
 
 message PriceUpdateOpResponse {
-    string Asset = 1;
-    string Currency = 2;
-    string PriceInCurrencyPerAssetUnit = 3;
+    string collateralCode = 1;
+    string currency = 2;
+    string priceInCurrencyPerAssetUnit = 3;
 }
 
 message MintCreditOpResponse {
@@ -56,7 +56,12 @@ message MintCreditOpResponse {
 }
 
 message RedeemCreditOpResponse {
-    // TODO: add parameters
+    string assetCodeToBeRedeemed = 1;
+    string assetIssuerToBeRedeemed = 2;
+    string assetAmountToBeRedeemed = 3;
+    string collateralCode = 4;
+    string collateralIssuer = 5;
+    string collateralAmount = 6;
 }
 
 message RebalanceReserveOpResponse {
