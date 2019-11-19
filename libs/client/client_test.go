@@ -215,10 +215,10 @@ func TestClient_MintCredit(t *testing.T) {
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
 				MintCreditOpResponse: &cenGrpc.MintCreditOpResponse{
-					MintCurrency:     mintCurrency,
-					MintAmount:       mintAmount,
-					CollateralAsset:  asset,
-					CollateralAmount: collateralAmount,
+					AssetCodeToBeIssued:   assetCodeToBeIssued,
+					AssetAmountToBeIssued: assetAmountToBeIssued,
+					CollateralAmount:      collateralAmount,
+					CollateralAssetCode:   asset,
 				},
 			}, nil)
 		helper.mockHorizonClient.
@@ -228,17 +228,17 @@ func TestClient_MintCredit(t *testing.T) {
 			}, nil)
 
 		output, err := helper.client.MintCredit(context.Background(), vtxnbuild.MintCredit{
-			AssetCodeToBeIssued: mintCurrency,
+			AssetCodeToBeIssued: assetCodeToBeIssued,
 			CollateralAssetCode: asset,
 			CollateralAmount:    collateralAmount,
 		})
 
 		assert.NoError(t, err)
 		assert.NotEmpty(t, output)
-		assert.Equal(t, asset, output.VeloNodeResult.CollateralAsset)
+		assert.Equal(t, asset, output.VeloNodeResult.CollateralAssetCode)
 		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
-		assert.Equal(t, mintAmount, output.VeloNodeResult.MintAmount)
-		assert.Equal(t, mintCurrency, output.VeloNodeResult.MintCurrency)
+		assert.Equal(t, assetAmountToBeIssued, output.VeloNodeResult.AssetAmountToBeIssued)
+		assert.Equal(t, assetCodeToBeIssued, output.VeloNodeResult.AssetCodeToBeIssued)
 	})
 	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
 		helper := initTest(t)

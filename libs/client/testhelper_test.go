@@ -25,8 +25,8 @@ var (
 	asset                       = "VELO"
 	currency                    = "THB"
 	priceInCurrencyPerAssetUnit = "1.5000000"
-	mintAmount                  = "32.5000000"
-	mintCurrency                = "vTHB"
+	assetAmountToBeIssued       = "32.5000000"
+	assetCodeToBeIssued         = "vTHB"
 	collateralAmount            = "20.2500000"
 
 	clientKp, _       = vconvert.SecretKeyToKeyPair(clientSecretKey)
