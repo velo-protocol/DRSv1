@@ -82,16 +82,16 @@ func TestUseCase_MintCredit(t *testing.T) {
 		helper.mockStellarRepo.EXPECT().GetMedianPriceFromPriceAccount(drsAccountDataEnity.VeloPriceAddress(vxdr.Currency(peggedCurrency))).
 			Return(medianPrice, nil)
 
-		mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue)
+		assetAmountToBeIssued := collateralAmount.Mul(medianPrice).Div(peggedValue)
 
 		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
 		assert.NotNil(t, mintOutput)
 		assert.NotEmpty(t, mintOutput.SignedStellarTxXdr)
 		assert.Equal(t, collateralAmount.String(), mintOutput.CollateralAmount.String())
-		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
-		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
-		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
+		assert.Equal(t, collateralAsset, mintOutput.CollateralAssetCode)
+		assert.Equal(t, assetAmountToBeIssued.String(), mintOutput.AssetAmountToBeIssued.String())
+		assert.Equal(t, assetToBeIssued, mintOutput.AssetCodeToBeIssued)
 
 	})
 
@@ -144,16 +144,16 @@ func TestUseCase_MintCredit(t *testing.T) {
 		helper.mockStellarRepo.EXPECT().GetMedianPriceFromPriceAccount(drsAccountDataEnity.VeloPriceAddress(vxdr.Currency(peggedCurrency))).
 			Return(medianPrice, nil)
 
-		mintAmount := largeCollateral.Mul(medianPrice).Div(peggedValue)
+		assetAmountToBeIssued := largeCollateral.Mul(medianPrice).Div(peggedValue)
 
 		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
 		assert.NotNil(t, mintOutput)
 		assert.NotEmpty(t, mintOutput.SignedStellarTxXdr)
 		assert.Equal(t, largeCollateral.String(), mintOutput.CollateralAmount.String())
-		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
-		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
-		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
+		assert.Equal(t, collateralAsset, mintOutput.CollateralAssetCode)
+		assert.Equal(t, assetAmountToBeIssued.String(), mintOutput.AssetAmountToBeIssued.String())
+		assert.Equal(t, assetToBeIssued, mintOutput.AssetCodeToBeIssued)
 
 	})
 

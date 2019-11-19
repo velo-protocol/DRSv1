@@ -31,4 +31,7 @@ func callPriceUpdate() {
 		panic(err)
 	}
 	log.Println(result.HorizonResult.TransactionSuccessToString())
+	log.Println("Collateral Code: ", result.VeloNodeResult.CollateralCode)
+	log.Println("Currency: ", result.VeloNodeResult.Currency)
+	log.Println("Price In Currency Per Asset Unit: ", result.VeloNodeResult.PriceInCurrencyPerAssetUnit)
 }

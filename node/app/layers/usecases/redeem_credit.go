@@ -182,6 +182,12 @@ func (useCase *useCase) RedeemCredit(ctx context.Context, veloTx *vtxnbuild.Velo
 		}
 	}
 	return &entities.RedeemCreditOutput{
-		SignedStellarTxXdr: signedTx,
+		SignedStellarTxXdr:      signedTx,
+		AssetCodeToBeRedeemed:   op.AssetCode,
+		AssetIssuerToBeRedeemed: op.Issuer.Address(),
+		AssetAmountToBeRedeemed: decimal.New(int64(op.Amount), -7),
+		CollateralCode:          string(vxdr.AssetVELO),
+		CollateralIssuer:        env.VeloIssuerPublicKey,
+		CollateralAmount:        veloAmount.Truncate(7),
 	}, nil
 }

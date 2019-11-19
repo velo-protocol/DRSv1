@@ -106,7 +106,7 @@ func (useCase *useCase) UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloT
 
 	return &entities.UpdatePriceOutput{
 		SignedStellarTxXdr:          signedTxXdr,
-		Asset:                       priceUpdateOp.Asset,
+		CollateralCode:              priceUpdateOp.Asset,
 		Currency:                    string(priceUpdateOp.Currency),
 		PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 	}, nil

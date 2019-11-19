@@ -194,13 +194,103 @@ func TestClient_PriceUpdate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.NotEmpty(t, output)
-		assert.Equal(t, asset, output.VeloNodeResult.Asset)
+		assert.Equal(t, asset, output.VeloNodeResult.CollateralCode)
 		assert.Equal(t, currency, output.VeloNodeResult.Currency)
 		assert.Equal(t, priceInCurrencyPerAssetUnit, output.VeloNodeResult.PriceInCurrencyPerAssetUnit)
 	})
 	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
 		helper := initTest(t)
 		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.PriceUpdate{})
+
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_RedeemCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				RedeemCreditOpResponse: &cenGrpc.RedeemCreditOpResponse{
+					AssetCodeToBeRedeemed:   assetCodeToBeRedeemed,
+					AssetIssuerToBeRedeemed: assetIssuerToBeRedeemed,
+					AssetAmountToBeRedeemed: assetAmountToBeRedeemed,
+					CollateralCode:          collateralCode,
+					CollateralIssuer:        collateralIssuer,
+					CollateralAmount:        collateralAmount,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.RedeemCredit(context.Background(), vtxnbuild.RedeemCredit{
+			AssetCode: assetCodeToBeRedeemed,
+			Issuer:    assetIssuerToBeRedeemed,
+			Amount:    assetAmountToBeRedeemed,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+
+		assert.Equal(t, assetCodeToBeRedeemed, output.VeloNodeResult.AssetCodeToBeRedeemed)
+		assert.Equal(t, assetIssuerToBeRedeemed, output.VeloNodeResult.AssetIssuerToBeRedeemed)
+		assert.Equal(t, assetAmountToBeRedeemed, output.VeloNodeResult.AssetAmountToBeRedeemed)
+
+		assert.Equal(t, collateralCode, output.VeloNodeResult.CollateralCode)
+		assert.Equal(t, collateralIssuer, output.VeloNodeResult.CollateralIssuer)
+		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
+	})
+	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+		helper := initTest(t)
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.RedeemCredit{})
+
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_MintCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				MintCreditOpResponse: &cenGrpc.MintCreditOpResponse{
+					AssetCodeToBeIssued:   assetCodeToBeIssued,
+					AssetAmountToBeIssued: assetAmountToBeIssued,
+					CollateralAmount:      collateralAmount,
+					CollateralAssetCode:   asset,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.MintCredit(context.Background(), vtxnbuild.MintCredit{
+			AssetCodeToBeIssued: assetCodeToBeIssued,
+			CollateralAssetCode: asset,
+			CollateralAmount:    collateralAmount,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.Equal(t, asset, output.VeloNodeResult.CollateralAssetCode)
+		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
+		assert.Equal(t, assetAmountToBeIssued, output.VeloNodeResult.AssetAmountToBeIssued)
+		assert.Equal(t, assetCodeToBeIssued, output.VeloNodeResult.AssetCodeToBeIssued)
+	})
+	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+		helper := initTest(t)
+		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.MintCredit{})
 
 		assert.Error(t, err)
 	})
