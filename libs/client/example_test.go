@@ -3,7 +3,7 @@ package vclient
 import (
 	"context"
 	"github.com/stellar/go/clients/horizonclient"
-	spec "github.com/velo-protocol/DRSv1/grpc"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"log"
 )
@@ -27,7 +27,7 @@ func Example() {
 	}
 	log.Println(priceUpdateResult.HorizonResult.TransactionSuccessToString())
 
-	reply, err := client.GetExchangeRate(context.Background(), &spec.GetExchangeRateRequest{
+	reply, err := client.GetExchangeRate(context.Background(), &cenGrpc.GetExchangeRateRequest{
 		AssetCode: "vUSD",
 		Issuer:    "GC5F4E7IKMDFNOL7Z5WDHC42LBLLQL2UFY6KQALO2RRHC5EMJJRECPI3",
 	})
@@ -39,7 +39,7 @@ func Example() {
 	log.Println("Redeemable Collateral: ", reply.RedeemableCollateral)
 	log.Println("Redeemable Price Per Unit: ", reply.RedeemablePricePerUnit)
 
-	replyCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &spec.GetCollateralHealthCheckRequest{})
+	replyCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
 	if err != nil {
 		panic(err)
 	}

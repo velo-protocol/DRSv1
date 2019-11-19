@@ -8,7 +8,7 @@ import (
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
-	spec "github.com/velo-protocol/DRSv1/grpc"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
 	"github.com/velo-protocol/DRSv1/libs/convert"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"google.golang.org/grpc"
@@ -21,7 +21,7 @@ type Client struct {
 	networkPassphrase string
 	keyPair           *keypair.Full
 
-	veloNodeClient spec.VeloNodeClient
+	veloNodeClient cenGrpc.VeloNodeClient
 	grpcConnection *grpc.ClientConn
 }
 
@@ -49,7 +49,7 @@ func NewPublicClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string) 
 		return nil, err
 	}
 
-	return newClient(horizonclient.DefaultPublicNetClient, network.PublicNetworkPassphrase, spec.NewVeloNodeClient(grpcConn), grpcConn, keyPair), nil
+	return newClient(horizonclient.DefaultPublicNetClient, network.PublicNetworkPassphrase, cenGrpc.NewVeloNodeClient(grpcConn), grpcConn, keyPair), nil
 }
 
 func NewTestNetClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string) (*Client, error) {
@@ -58,14 +58,14 @@ func NewTestNetClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string)
 		return nil, err
 	}
 
-	return newClient(horizonclient.DefaultTestNetClient, network.TestNetworkPassphrase, spec.NewVeloNodeClient(grpcConn), grpcConn, keyPair), nil
+	return newClient(horizonclient.DefaultTestNetClient, network.TestNetworkPassphrase, cenGrpc.NewVeloNodeClient(grpcConn), grpcConn, keyPair), nil
 }
 
 func NewClient(horizonClient horizonclient.ClientInterface, networkPassphrase string, grpcConn *grpc.ClientConn, keyPair *keypair.Full) *Client {
-	return newClient(horizonClient, networkPassphrase, spec.NewVeloNodeClient(grpcConn), grpcConn, keyPair)
+	return newClient(horizonClient, networkPassphrase, cenGrpc.NewVeloNodeClient(grpcConn), grpcConn, keyPair)
 }
 
-func newClient(horizonClient horizonclient.ClientInterface, networkPassphrase string, veloNodeClient spec.VeloNodeClient, grpcConn *grpc.ClientConn, keyPair *keypair.Full) *Client {
+func newClient(horizonClient horizonclient.ClientInterface, networkPassphrase string, veloNodeClient cenGrpc.VeloNodeClient, grpcConn *grpc.ClientConn, keyPair *keypair.Full) *Client {
 	return &Client{
 		horizonClient:     horizonClient,
 		networkPassphrase: networkPassphrase,
@@ -85,12 +85,12 @@ func (client *Client) SetKeyPair(keyPair *keypair.Full) {
 
 type WhitelistResult struct {
 	HorizonResult  *horizon.TransactionSuccess
-	VeloNodeResult *spec.WhitelistOpResponse
+	VeloNodeResult *cenGrpc.WhitelistOpResponse
 }
 
 func (client *Client) Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (WhitelistResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
-	var veloNodeResult *spec.WhitelistOpResponse
+	var veloNodeResult *cenGrpc.WhitelistOpResponse
 	if veloReply != nil {
 		veloNodeResult = veloReply.WhitelistOpResponse
 	}
@@ -103,12 +103,12 @@ func (client *Client) Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist)
 
 type SetupCreditResult struct {
 	HorizonResult  *horizon.TransactionSuccess
-	VeloNodeResult *spec.SetupCreditOpResponse
+	VeloNodeResult *cenGrpc.SetupCreditOpResponse
 }
 
 func (client *Client) SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCredit) (SetupCreditResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
-	var veloNodeResult *spec.SetupCreditOpResponse
+	var veloNodeResult *cenGrpc.SetupCreditOpResponse
 	if veloReply != nil {
 		veloNodeResult = veloReply.SetupCreditOpResponse
 	}
@@ -121,12 +121,12 @@ func (client *Client) SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCre
 
 type PriceUpdateResult struct {
 	HorizonResult  *horizon.TransactionSuccess
-	VeloNodeResult *spec.PriceUpdateOpResponse
+	VeloNodeResult *cenGrpc.PriceUpdateOpResponse
 }
 
 func (client *Client) PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpdate) (PriceUpdateResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
-	var veloNodeResult *spec.PriceUpdateOpResponse
+	var veloNodeResult *cenGrpc.PriceUpdateOpResponse
 	if veloReply != nil {
 		veloNodeResult = veloReply.PriceUpdateOpResponse
 	}
@@ -139,12 +139,12 @@ func (client *Client) PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpd
 
 type MintCreditResult struct {
 	HorizonResult  *horizon.TransactionSuccess
-	VeloNodeResult *spec.MintCreditOpResponse
+	VeloNodeResult *cenGrpc.MintCreditOpResponse
 }
 
 func (client *Client) MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredit) (MintCreditResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
-	var veloNodeResult *spec.MintCreditOpResponse
+	var veloNodeResult *cenGrpc.MintCreditOpResponse
 	if veloReply != nil {
 		veloNodeResult = veloReply.MintCreditOpResponse
 	}
@@ -157,12 +157,12 @@ func (client *Client) MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredi
 
 type RedeemCreditResult struct {
 	HorizonResult  *horizon.TransactionSuccess
-	VeloNodeResult *spec.RedeemCreditOpResponse
+	VeloNodeResult *cenGrpc.RedeemCreditOpResponse
 }
 
 func (client *Client) RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (RedeemCreditResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
-	var veloNodeResult *spec.RedeemCreditOpResponse
+	var veloNodeResult *cenGrpc.RedeemCreditOpResponse
 	if veloReply != nil {
 		veloNodeResult = veloReply.RedeemCreditOpResponse
 	}
@@ -175,12 +175,12 @@ func (client *Client) RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemC
 
 type RebalanceReserveResult struct {
 	HorizonResult  *horizon.TransactionSuccess
-	VeloNodeResult *spec.RebalanceReserveOpResponse
+	VeloNodeResult *cenGrpc.RebalanceReserveOpResponse
 }
 
 func (client *Client) RebalanceReserve(ctx context.Context, veloOp vtxnbuild.RebalanceReserve) (RebalanceReserveResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
-	var veloNodeResult *spec.RebalanceReserveOpResponse
+	var veloNodeResult *cenGrpc.RebalanceReserveOpResponse
 	if veloReply != nil {
 		veloNodeResult = veloReply.RebalanceReserveOpResponse
 	}
@@ -191,7 +191,7 @@ func (client *Client) RebalanceReserve(ctx context.Context, veloOp vtxnbuild.Reb
 	}, err
 }
 
-func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp) (*horizon.TransactionSuccess, *spec.VeloTxReply, error) {
+func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp) (*horizon.TransactionSuccess, *cenGrpc.VeloTxReply, error) {
 	veloTx := vtxnbuild.VeloTx{
 		SourceAccount: &txnbuild.SimpleAccount{
 			AccountID: client.keyPair.Address(),
@@ -204,7 +204,7 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 		return nil, nil, err
 	}
 
-	reply, err := client.veloNodeClient.SubmitVeloTx(ctx, &spec.VeloTxRequest{
+	reply, err := client.veloNodeClient.SubmitVeloTx(ctx, &cenGrpc.VeloTxRequest{
 		SignedVeloTxXdr: signedVeloTxB64,
 	})
 	if err != nil {
@@ -246,10 +246,10 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 	return &result, reply, nil
 }
 
-func (client *Client) GetExchangeRate(ctx context.Context, request *spec.GetExchangeRateRequest) (*spec.GetExchangeRateReply, error) {
+func (client *Client) GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateReply, error) {
 	return client.veloNodeClient.GetExchangeRate(ctx, request)
 }
 
-func (client *Client) GetCollateralHealthCheck(ctx context.Context, request *spec.GetCollateralHealthCheckRequest) (*spec.GetCollateralHealthCheckReply, error) {
+func (client *Client) GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.GetCollateralHealthCheckRequest) (*cenGrpc.GetCollateralHealthCheckReply, error) {
 	return client.veloNodeClient.GetCollateralHealthCheck(ctx, request)
 }
