@@ -175,7 +175,7 @@ func TestClient_PriceUpdate(t *testing.T) {
 				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
 				Message:            "Success",
 				PriceUpdateOpResponse: &cenGrpc.PriceUpdateOpResponse{
-					Asset:                       asset,
+					CollateralCode:              asset,
 					Currency:                    currency,
 					PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
 				},
@@ -293,6 +293,29 @@ func TestClient_MintCredit(t *testing.T) {
 		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.MintCredit{})
 
 		assert.Error(t, err)
+	})
+}
+
+func TestClient_RebalanceReserve(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr:         getSimpleBumpTxXdr(drsKp),
+				Message:                    "Success",
+				RebalanceReserveOpResponse: &cenGrpc.RebalanceReserveOpResponse{},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
 	})
 }
 

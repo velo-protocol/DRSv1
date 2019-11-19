@@ -35,7 +35,6 @@ var (
 	priceInCurrencyPerAssetUnit = "1.5000000"
 	assetAmountToBeIssued       = "32.5000000"
 	assetCodeToBeIssued         = "vTHB"
-	collateralAmount            = "20.2500000"
 
 	clientKp, _       = vconvert.SecretKeyToKeyPair(clientSecretKey)
 	whitelistingKp, _ = vconvert.SecretKeyToKeyPair(whitelistingSecretKey)

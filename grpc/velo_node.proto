@@ -64,9 +64,7 @@ message RedeemCreditOpResponse {
     string collateralAmount = 6;
 }
 
-message RebalanceReserveOpResponse {
-    // TODO: add parameters
-}
+message RebalanceReserveOpResponse {}
 
 message GetExchangeRateRequest {
     string assetCode = 1;
