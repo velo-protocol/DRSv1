@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/velo-protocol/DRSv1/libs/client"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
-	"github.com/velo-protocol/DRSv1/testkit/helper"
 	"log"
 )
 
@@ -14,7 +13,7 @@ func main() {
 
 func callPriceUpdate() {
 
-	client, err := vclient.NewDefaultTestNetClient("localhost:8080", helper.SecretKeyPriceFeeder)
+	client, err := vclient.NewDefaultTestNetClient("dev-velo-cen-node-01.velo.org:8080", "SABZJDPDV3BLYBJD4KZF3ZT4MARRHXFX4VNBMVKZ4NSSXVTXZ3E7H454")
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +23,7 @@ func callPriceUpdate() {
 
 	result, err := client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
 		Asset:                       "VELO",
-		Currency:                    "THB",
+		Currency:                    "USD",
 		PriceInCurrencyPerAssetUnit: "0.5",
 	})
 	if err != nil {

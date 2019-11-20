@@ -35,7 +35,7 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 	}
 
 	result, err := lo.Velo.Client(keyPair).MintCredit(context.Background(), vtxnbuild.MintCredit{
-		AssetCodeToBeIssued: input.AssetToBeMinted,
+		AssetCodeToBeIssued: input.AssetCodeToBeMinted,
 		CollateralAssetCode: input.CollateralAssetCode,
 		CollateralAmount:    input.CollateralAmount,
 	})
@@ -45,7 +45,7 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 	}
 
 	return &entity.MintCreditOutput{
-		AssetToBeMinted:     input.AssetToBeMinted,
+		AssetCodeToBeMinted: input.AssetCodeToBeMinted,
 		CollateralAssetCode: input.CollateralAssetCode,
 		CollateralAmount:    input.CollateralAmount,
 		SourceAddress:       defaultAccount,

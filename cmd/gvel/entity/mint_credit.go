@@ -5,14 +5,14 @@ import (
 )
 
 type MintCreditInput struct {
-	AssetToBeMinted     string
+	AssetCodeToBeMinted string
 	CollateralAssetCode string
 	CollateralAmount    string
 	Passphrase          string
 }
 
 type MintCreditOutput struct {
-	AssetToBeMinted     string
+	AssetCodeToBeMinted string
 	CollateralAssetCode string
 	CollateralAmount    string
 	SourceAddress       string
