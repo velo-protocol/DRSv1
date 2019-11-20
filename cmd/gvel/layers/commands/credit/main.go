@@ -1,8 +1,10 @@
 package credit
 
 import (
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
@@ -24,9 +26,9 @@ func NewCommandHandler(logic logic.Logic, prompt console.Prompt, config config.C
 
 func (creditCommand *CommandHandler) Command() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "credit <arg>",
+		Use:   fmt.Sprintf("%s %s", constants.CmdCredit, "<arg>"),
 		Short: "Use credit command for managing the stable credit on Velo",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRun: func(_ *cobra.Command, _ []string) {
 			if !creditCommand.AppConfig.Exists() {
 				console.ExitWithError(console.ExitError, errors.New("config file not found, please run `gvel init`"))
 			}
@@ -49,7 +51,7 @@ func (creditCommand *CommandHandler) Command() *cobra.Command {
 
 func (creditCommand *CommandHandler) GetSetupCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "setup",
+		Use:   constants.CmdCreditSetup,
 		Short: "Setup a stable credit on Velo",
 		Run:   creditCommand.Setup,
 	}
@@ -59,7 +61,7 @@ func (creditCommand *CommandHandler) GetSetupCommand() *cobra.Command {
 
 func (creditCommand *CommandHandler) GetMintCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "mint",
+		Use:   constants.CmdCreditMint,
 		Short: "Mint a stable credit on Velo",
 		Run:   creditCommand.Mint,
 	}
@@ -69,7 +71,7 @@ func (creditCommand *CommandHandler) GetMintCommand() *cobra.Command {
 
 func (creditCommand *CommandHandler) GetExchangeRateCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "get-exchange",
+		Use:   constants.CmdCreditGetExchange,
 		Short: "Get exchange rate of a stable credit on Velo",
 		Run:   creditCommand.GetExchangeRate,
 	}
@@ -79,7 +81,7 @@ func (creditCommand *CommandHandler) GetExchangeRateCommand() *cobra.Command {
 
 func (creditCommand *CommandHandler) GetRedeemCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "redeem",
+		Use:   constants.CmdCreditRedeem,
 		Short: "Redeemed of a stable credit on Velo",
 		Run:   creditCommand.Redeem,
 	}

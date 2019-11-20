@@ -36,14 +36,7 @@ func main() {
 
 	group, ctx := errgroup.WithContext(ctx)
 
-	grpcServer := grpc.NewServer(
-	// TODO: Add auth, log, correlation, etc. middleware?
-	//grpc.UnaryInterceptor(
-	//	grpc_middleware.ChainUnaryServer(
-	//		// TODO: Each middleware goes here
-	//	),
-	//),
-	)
+	grpcServer := grpc.NewServer()
 
 	healthServer := health.NewServer()
 	initHealthServer(group, healthServer)

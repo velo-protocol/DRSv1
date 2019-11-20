@@ -1,8 +1,10 @@
 package collateral
 
 import (
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
@@ -25,9 +27,9 @@ func NewCommandHandler(logic logic.Logic, prompt console.Prompt, config config.C
 func (collateralCommand *CommandHandler) Command() *cobra.Command {
 
 	command := &cobra.Command{
-		Use:   "collateral <arg>",
+		Use:   fmt.Sprintf("%s %s", constants.CmdCollateral, "<arg>"),
 		Short: "Use collateral command for managing the collateral asset on Velo",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRun: func(_ *cobra.Command, _ []string) {
 			if !collateralCommand.AppConfig.Exists() {
 				console.ExitWithError(console.ExitError, errors.New("config file not found, please run `gvel init`"))
 			}
@@ -48,7 +50,7 @@ func (collateralCommand *CommandHandler) Command() *cobra.Command {
 
 func (collateralCommand *CommandHandler) GetHealthCheckCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "health-check",
+		Use:   constants.CmdCollateralHealthCheck,
 		Short: "Get collateral health check of Velo",
 		Run:   collateralCommand.GetHealthCheck,
 	}
@@ -57,7 +59,7 @@ func (collateralCommand *CommandHandler) GetHealthCheckCommand() *cobra.Command 
 
 func (collateralCommand *CommandHandler) GetRebalanceReserveCommand() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "rebalance",
+		Use:   constants.CmdCollateralRebalance,
 		Short: "Rebalance the Collateral and Reserve pool of Velo",
 		Run:   collateralCommand.RebalanceReserve,
 	}

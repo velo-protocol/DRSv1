@@ -187,7 +187,6 @@ func TestVeloTx_BuildSignEncode(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotEmpty(t, veloTxB64)
 	})
-	// TODO: Add error test case
 }
 
 func TestTransactionFromXDR(t *testing.T) {

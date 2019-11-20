@@ -79,7 +79,6 @@ func main() {
 	tx := txnbuild.Transaction{
 		SourceAccount: &sourceAccount,
 		Operations: []txnbuild.Operation{
-			// TODO: add trust line of virtual credit to redeemer
 			&txnbuild.ChangeTrust{
 				SourceAccount: &horizon.Account{
 					AccountID: redeemer.Address(),
@@ -98,7 +97,6 @@ func main() {
 				},
 				Line: vSGD,
 			},
-			// TODO: add trust line of VELO to redeemer
 			&txnbuild.ChangeTrust{
 				SourceAccount: &horizon.Account{
 					AccountID: redeemer.Address(),
@@ -108,7 +106,6 @@ func main() {
 					Issuer: helper.VeloIssuerAddress,
 				},
 			},
-			// TODO: add trust line of VELO to TP
 			&txnbuild.ChangeTrust{
 				SourceAccount: &horizon.Account{
 					AccountID: tp.Address(),
