@@ -9,7 +9,7 @@ import (
 func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 
 	mintCreditInput := &entity.MintCreditInput{
-		AssetToBeMinted:     creditCommand.Prompt.RequestString("Please input asset code of credit to be minted", nil),
+		AssetCodeToBeMinted: creditCommand.Prompt.RequestString("Please input asset code of credit to be minted", nil),
 		CollateralAssetCode: creditCommand.Prompt.RequestString("Please input asset code of collateral", nil),
 		CollateralAmount:    creditCommand.Prompt.RequestString("Please input amount of collateral", nil),
 		Passphrase:          creditCommand.Prompt.RequestHiddenString("🔑 Please input passphrase", nil),
@@ -23,6 +23,11 @@ func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 		console.ExitWithError(console.ExitError, err)
 	}
 
-	console.Logger.Infof("%s minted successfully.", output.AssetToBeMinted)
+	console.Logger.Infof(
+		"%s %s minted successfully. The stable credit is in %s",
+		output.CollateralAmount,
+		output.AssetCodeToBeMinted,
+		output.SourceAddress,
+	)
 	console.Logger.Infof("🔗 Stellar Transaction Hash: %s", output.TxResult.Hash)
 }

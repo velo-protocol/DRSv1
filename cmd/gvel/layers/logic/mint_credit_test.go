@@ -13,6 +13,13 @@ import (
 )
 
 func TestLogic_MintCredit(t *testing.T) {
+	var (
+		assetCodeToBeMint   = "kBEAM"
+		collateralAssetCode = "VELO"
+		collateralAmount    = "100"
+		passphrase          = "password"
+	)
+
 	t.Run("happy", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
@@ -33,16 +40,16 @@ func TestLogic_MintCredit(t *testing.T) {
 			}, nil)
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
-			Passphrase:          "password",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
+			Passphrase:          passphrase,
 		})
 
 		assert.NoError(t, err)
-		assert.Equal(t, "THB", output.CollateralAssetCode)
-		assert.Equal(t, "100", output.CollateralAmount)
-		assert.Equal(t, "kBeam", output.AssetToBeMinted)
+		assert.Equal(t, collateralAssetCode, output.CollateralAssetCode)
+		assert.Equal(t, collateralAmount, output.CollateralAmount)
+		assert.Equal(t, assetCodeToBeMint, output.AssetCodeToBeMinted)
 		assert.Equal(t, stellarAccountEntity().Address, output.SourceAddress)
 	})
 
@@ -58,9 +65,9 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(nil, errors.New("some error has occurred"))
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
 			Passphrase:          "strong_password!",
 		})
 
@@ -81,9 +88,9 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(stellarAccountsBytes(), nil)
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
 			Passphrase:          "bad passphrase",
 		})
 
@@ -116,10 +123,10 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(vclient.MintCreditResult{}, errors.New("some error has occurred"))
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
-			Passphrase:          "password",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
+			Passphrase:          passphrase,
 		})
 
 		assert.Error(t, err)

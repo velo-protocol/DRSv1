@@ -3,15 +3,18 @@ package entity
 import "github.com/stellar/go/protocols/horizon"
 
 type RedeemCreditInput struct {
-	AssetCode   string
-	AssetIssuer string
-	Amount      string
-	Passphrase  string
+	AssetCodeToBeRedeemed   string
+	AssetIssuerToBeRedeemed string
+	AmountToBeRedeemed      string
+	Passphrase              string
 }
 
 type RedeemCreditOutput struct {
-	AssetCode   string
-	AssetIssuer string
-	Amount      string
-	TxResult    *horizon.TransactionSuccess
+	AssetCodeToBeRedeemed   string
+	AssetIssuerToBeRedeemed string
+	AmountToBeRedeemed      string
+	CollateralCode          string
+	CollateralIssuer        string
+	CollateralAmount        string
+	TxResult                *horizon.TransactionSuccess
 }

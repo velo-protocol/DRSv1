@@ -35,9 +35,9 @@ func (lo *logic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCr
 	}
 
 	result, err := lo.Velo.Client(keyPair).RedeemCredit(context.Background(), vtxnbuild.RedeemCredit{
-		AssetCode: input.AssetCode,
-		Issuer:    input.AssetIssuer,
-		Amount:    input.Amount,
+		AssetCode: input.AssetCodeToBeRedeemed,
+		Issuer:    input.AssetIssuerToBeRedeemed,
+		Amount:    input.AmountToBeRedeemed,
 	})
 	if err != nil {
 		err = parser.ParseHorizonError(err, lo.AppConfig.GetHorizonUrl(), lo.AppConfig.GetNetworkPassphrase())
@@ -45,9 +45,12 @@ func (lo *logic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCr
 	}
 
 	return &entity.RedeemCreditOutput{
-		AssetCode:   input.AssetCode,
-		AssetIssuer: input.AssetIssuer,
-		Amount:      input.Amount,
-		TxResult:    result.HorizonResult,
+		AssetCodeToBeRedeemed:   input.AssetCodeToBeRedeemed,
+		AssetIssuerToBeRedeemed: input.AssetIssuerToBeRedeemed,
+		AmountToBeRedeemed:      input.AmountToBeRedeemed,
+		CollateralCode:          result.VeloNodeResult.CollateralCode,
+		CollateralIssuer:        result.VeloNodeResult.CollateralIssuer,
+		CollateralAmount:        result.VeloNodeResult.CollateralAmount,
+		TxResult:                result.HorizonResult,
 	}, nil
 }
