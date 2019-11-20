@@ -12,7 +12,7 @@ func main() {
 }
 
 func rebalanceReserve() {
-	client, err := vclient.NewDefaultTestNetClient("dev-velo-cen-node-01.velo.org:8080", "SBIK3BFXGBY25LUGYX42EYDZHHNRXDZJX3PTNB6VWVRDGNBIROSBZMFM")
+	client, err := vclient.NewDefaultTestNetClient("localhost:8080", "<YOUR KEY PAIR>")
 	if err != nil {
 		panic(err)
 	}
