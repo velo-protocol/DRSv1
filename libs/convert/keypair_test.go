@@ -23,7 +23,7 @@ func TestSecretKeyToKeyPair(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "GA2NBNMRJAYAGMD37P3I2TMIKMR7ASRIU7EGDPWPURNVKHBIJOSNB6VE", kp.Address())
 	})
-	t.Run("success", func(t *testing.T) {
+	t.Run("error, bad secret key", func(t *testing.T) {
 		_, err := SecretKeyToKeyPair("SCYHQSJG5JH5SXKQEWTRY3FUFYHQAVH7B6ZQEVLW22A5YYMYPBXLQBTA")
 		assert.Error(t, err)
 	})
