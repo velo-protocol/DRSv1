@@ -2,13 +2,13 @@ package commands
 
 import (
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/account"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/collateral"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/credit"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/initialize"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/account"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/collateral"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/credit"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/initialize"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 	"log"
 )
 

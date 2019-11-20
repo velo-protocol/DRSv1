@@ -2,7 +2,7 @@ package stellar_test
 
 import (
 	"github.com/stellar/go/clients/horizonclient"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/stellar"
 )
 
 var (

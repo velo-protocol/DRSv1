@@ -3,8 +3,8 @@ package vclient
 import (
 	"context"
 	"github.com/stellar/go/clients/horizonclient"
-	cenGrpc "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"log"
 )
 

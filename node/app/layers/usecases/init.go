@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
-	"gitlab.com/velo-labs/cen/node/app/layers/subusecases"
+	"github.com/velo-protocol/DRSv1/node/app/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/node/app/layers/subusecases"
 )
 
 type useCase struct {

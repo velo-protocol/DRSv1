@@ -2,7 +2,7 @@ package subusecases
 
 import (
 	"context"
-	"gitlab.com/velo-labs/cen/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
 )
 
 type SubUseCase interface {

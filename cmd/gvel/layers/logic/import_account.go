@@ -3,9 +3,9 @@ package logic
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
-	"gitlab.com/velo-labs/cen/libs/convert"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/crypto"
+	"github.com/velo-protocol/DRSv1/libs/convert"
 	"strings"
 )
 

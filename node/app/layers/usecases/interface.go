@@ -2,15 +2,15 @@ package usecases
 
 import (
 	"context"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 )
 
 type UseCase interface {
 	SetupCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.SetupCreditOutput, nerrors.NodeError)
 	Whitelist(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.WhitelistOutput, nerrors.NodeError)
-	UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*string, nerrors.NodeError)
+	UpdatePrice(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.UpdatePriceOutput, nerrors.NodeError)
 	MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.MintCreditOutput, nerrors.NodeError)
 	RedeemCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.RedeemCreditOutput, nerrors.NodeError)
 	GetExchangeRate(ctx context.Context, input *entities.GetExchangeRateInput) (*entities.GetExchangeRateOutPut, nerrors.NodeError)

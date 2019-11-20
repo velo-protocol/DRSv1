@@ -2,7 +2,7 @@ package velo
 
 import (
 	"github.com/stellar/go/keypair"
-	"gitlab.com/velo-labs/cen/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/client"
 )
 
 type Repository interface {

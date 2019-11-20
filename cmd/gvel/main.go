@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/stellar/go/clients/horizonclient"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/database"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/stellar"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/velo"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/database"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/velo"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 func main() {

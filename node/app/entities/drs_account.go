@@ -2,8 +2,8 @@ package entities
 
 import (
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/node/app/utils"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/node/app/utils"
 )
 
 type DrsAccountData struct {

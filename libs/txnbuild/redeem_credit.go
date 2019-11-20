@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 	_amount "github.com/stellar/go/amount"
 	"github.com/stellar/go/protocols/horizon"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 	"regexp"
 )
 

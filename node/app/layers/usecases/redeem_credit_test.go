@@ -11,10 +11,10 @@ import (
 	"github.com/stellar/go/txnbuild"
 	"github.com/stellar/go/xdr"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 	"testing"
 )
 
@@ -27,6 +27,10 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 
 		vThbIssuerAddress = "GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72"
 		vThbAsset         = "vTHB"
+
+		collateralCode   = "VELO"
+		collateralIssuer = "GCV3Q6QZZUG7RWPIQ5CZ5MOW3KBBCQYT64EIQX6GVKDQL27WOYNDQD3G"
+		collateralAmount = "652.1739130"
 
 		trustedPartnerAddress     = publicKey2
 		trustedPartnerMetaAddress = publicKey3
@@ -122,12 +126,19 @@ func TestUseCase_RedeemCredit(t *testing.T) {
 		assert.Equal(t, xdr.OperationTypePayment, txEnv.Tx.Operations[1].Body.Type)
 		assert.Equal(t, env.DrsPublicKey, txEnv.Tx.Operations[1].SourceAccount.Address())
 		assert.Equal(t, env.VeloIssuerPublicKey, txEnv.Tx.Operations[1].Body.PaymentOp.Asset.AlphaNum4.Issuer.Address())
-		assert.Equal(t, "VELO", func() string {
+		assert.Equal(t, collateralCode, func() string {
 			bytes, _ := txEnv.Tx.Operations[1].Body.PaymentOp.Asset.AlphaNum4.AssetCode.MarshalBinary()
 			return string(bytes)
 		}())
 		assert.Equal(t, publicKey1, txEnv.Tx.Operations[1].Body.PaymentOp.Destination.Address())
-		assert.Equal(t, "652.1739130", amount.String(txEnv.Tx.Operations[1].Body.PaymentOp.Amount))
+		assert.Equal(t, collateralAmount, amount.String(txEnv.Tx.Operations[1].Body.PaymentOp.Amount))
+
+		assert.Equal(t, vThbAsset, output.AssetCodeToBeRedeemed)
+		assert.Equal(t, vThbIssuerAddress, output.AssetIssuerToBeRedeemed)
+
+		assert.Equal(t, collateralCode, output.CollateralCode)
+		assert.Equal(t, collateralIssuer, output.CollateralIssuer)
+		assert.Equal(t, collateralAmount, output.CollateralAmount.Truncate(7).StringFixed(7))
 	})
 
 	t.Run("Error - velo op validation fail", func(t *testing.T) {

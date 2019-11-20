@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
 )
 
 type Logic interface {

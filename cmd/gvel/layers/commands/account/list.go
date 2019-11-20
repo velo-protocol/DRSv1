@@ -3,7 +3,7 @@ package account
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 func (accountCommand *CommandHandler) List(cmd *cobra.Command, args []string) {

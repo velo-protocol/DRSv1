@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/utils"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/utils"
 	"strconv"
 )
 

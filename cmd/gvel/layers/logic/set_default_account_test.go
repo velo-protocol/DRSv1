@@ -3,7 +3,7 @@ package logic_test
 import (
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
 	"testing"
 )
 

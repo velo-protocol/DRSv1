@@ -6,9 +6,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	vclient "gitlab.com/velo-labs/cen/libs/client"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"testing"
 )
 
