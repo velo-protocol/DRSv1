@@ -66,10 +66,8 @@ func (whitelist *Whitelist) Validate() error {
 		return errors.New("role specified does not exist")
 	}
 
-	if whitelist.Currency != "" {
-		if !vxdr.Currency(whitelist.Currency).IsValid() {
-			return errors.Errorf("currency %s does not exist", whitelist.Currency)
-		}
+	if whitelist.Currency != "" && !vxdr.Currency(whitelist.Currency).IsValid() {
+		return errors.Errorf("currency %s does not exist", whitelist.Currency)
 	}
 
 	return nil

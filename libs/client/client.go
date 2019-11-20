@@ -210,10 +210,8 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 	})
 	if err != nil {
 		veloNodeErr, ok := status.FromError(err)
-		if ok {
-			if veloNodeErr.Code() == codes.Unavailable {
-				return nil, nil, errors.Wrap(err, "cannot connect to Velo Node")
-			}
+		if ok && veloNodeErr.Code() == codes.Unavailable {
+			return nil, nil, errors.Wrap(err, "cannot connect to Velo Node")
 		}
 
 		return nil, nil, err

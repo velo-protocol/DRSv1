@@ -48,14 +48,14 @@ func (configuration *configuration) InitConfigFile(configFilePath string) error 
 	}
 
 	// Set default config
-	configuration.viper.SetDefault("initialized", true) // a flag to check for config file existence
-	configuration.viper.SetDefault("accountDbPath", path.Join(configFilePath, "/db/account"))
-	configuration.viper.SetDefault("defaultAccount", "")
+	configuration.viper.SetDefault(constants.ConfInitialized, true) // a flag to check for config file existence
+	configuration.viper.SetDefault(constants.ConfAccountDbPath, path.Join(configFilePath, "/db/account"))
+	configuration.viper.SetDefault(constants.ConfDefaultAccount, "")
 
-	configuration.viper.SetDefault("horizonUrl", constants.DefaultHorizonUrl)
-	configuration.viper.SetDefault("veloNodeUrl", constants.DefaultVeloNodeUrl)
-	configuration.viper.SetDefault("networkPassphrase", constants.DefaultNetworkPassphrase)
-	configuration.viper.SetDefault("isTestNet", true)
+	configuration.viper.SetDefault(constants.ConfHorizonUrl, constants.DefaultHorizonUrl)
+	configuration.viper.SetDefault(constants.ConfVeloNodeUrl, constants.DefaultVeloNodeUrl)
+	configuration.viper.SetDefault(constants.ConfNetworkPassphrase, constants.DefaultNetworkPassphrase)
+	configuration.viper.SetDefault(constants.ConfIsTestNet, true)
 
 	err = configuration.viper.WriteConfig()
 	if err != nil {
@@ -66,34 +66,34 @@ func (configuration *configuration) InitConfigFile(configFilePath string) error 
 }
 
 func (configuration *configuration) Exists() bool {
-	return configuration.viper.GetBool("initialized")
+	return configuration.viper.GetBool(constants.ConfInitialized)
 }
 
 func (configuration *configuration) GetDefaultAccount() string {
-	return configuration.viper.GetString("defaultAccount")
+	return configuration.viper.GetString(constants.ConfDefaultAccount)
 }
 
 func (configuration *configuration) SetDefaultAccount(account string) error {
-	configuration.viper.Set("defaultAccount", account)
+	configuration.viper.Set(constants.ConfDefaultAccount, account)
 	return configuration.viper.WriteConfig()
 }
 
 func (configuration *configuration) GetAccountDbPath() string {
-	return configuration.viper.GetString("accountDbPath")
+	return configuration.viper.GetString(constants.ConfAccountDbPath)
 }
 
 func (configuration *configuration) GetHorizonUrl() string {
-	return configuration.viper.GetString("horizonUrl")
+	return configuration.viper.GetString(constants.ConfHorizonUrl)
 }
 
 func (configuration *configuration) GetVeloNodeUrl() string {
-	return configuration.viper.GetString("veloNodeUrl")
+	return configuration.viper.GetString(constants.ConfVeloNodeUrl)
 }
 
 func (configuration *configuration) GetNetworkPassphrase() string {
-	return configuration.viper.GetString("networkPassphrase")
+	return configuration.viper.GetString(constants.ConfNetworkPassphrase)
 }
 
 func (configuration *configuration) GetIsTestNet() bool {
-	return configuration.viper.GetBool("isTestNet")
+	return configuration.viper.GetBool(constants.ConfIsTestNet)
 }

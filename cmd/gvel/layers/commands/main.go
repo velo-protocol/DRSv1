@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/account"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/collateral"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/credit"
@@ -9,7 +10,6 @@ import (
 	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
-	"log"
 )
 
 type GvelHandler struct {
@@ -34,10 +34,7 @@ func NewGvelHandler(logic logic.Logic, config config.Configuration) *GvelHandler
 
 func NewGvelRootCommand() *cobra.Command {
 	return &cobra.Command{
-		Use: "gvel",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			log.Println("IMPORTANT NOTICE: Heavily WIP, expect anything.")
-		},
+		Use: constants.CmdRootGvel,
 	}
 }
 
