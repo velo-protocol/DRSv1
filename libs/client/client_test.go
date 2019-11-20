@@ -166,6 +166,83 @@ func TestClient_executeVeloTx(t *testing.T) {
 	})
 }
 
+func TestClient_Whitelist(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				WhitelistOpResponse: &cenGrpc.WhitelistOpResponse{
+					Address: whitelistingPublicKey,
+					Role:    string(vxdr.RoleRegulator),
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.Whitelist(context.Background(), vtxnbuild.Whitelist{
+			Address: whitelistingPublicKey,
+			Role:    string(vxdr.RoleRegulator),
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.NotEmpty(t, output.VeloNodeResult)
+		assert.NotEmpty(t, output.HorizonResult)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.Whitelist(context.Background(), vtxnbuild.Whitelist{})
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_SetupCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				SetupCreditOpResponse: &cenGrpc.SetupCreditOpResponse{
+					AssetIssuer:      assetIssuerToBeSetup,
+					AssetCode:        assetCodeToBeSetup,
+					AssetDistributor: assetDistributorToBeSetup,
+					PeggedValue:      peggedValue,
+					PeggedCurrency:   peggedCurrency,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
+			PeggedValue:    peggedValue,
+			PeggedCurrency: peggedCurrency,
+			AssetCode:      assetCodeToBeSetup,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.NotEmpty(t, output.VeloNodeResult)
+		assert.NotEmpty(t, output.HorizonResult)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{})
+
+		assert.Error(t, err)
+	})
+}
+
 func TestClient_PriceUpdate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		helper := initTest(t)
@@ -198,10 +275,9 @@ func TestClient_PriceUpdate(t *testing.T) {
 		assert.Equal(t, currency, output.VeloNodeResult.Currency)
 		assert.Equal(t, priceInCurrencyPerAssetUnit, output.VeloNodeResult.PriceInCurrencyPerAssetUnit)
 	})
-	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
 		helper := initTest(t)
-		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.PriceUpdate{})
-
+		_, err := helper.client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{})
 		assert.Error(t, err)
 	})
 }
@@ -246,10 +322,9 @@ func TestClient_RedeemCredit(t *testing.T) {
 		assert.Equal(t, collateralIssuer, output.VeloNodeResult.CollateralIssuer)
 		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
 	})
-	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
 		helper := initTest(t)
-		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.RedeemCredit{})
-
+		_, err := helper.client.RedeemCredit(context.Background(), vtxnbuild.RedeemCredit{})
 		assert.Error(t, err)
 	})
 }
@@ -288,10 +363,9 @@ func TestClient_MintCredit(t *testing.T) {
 		assert.Equal(t, assetAmountToBeIssued, output.VeloNodeResult.AssetAmountToBeIssued)
 		assert.Equal(t, assetCodeToBeIssued, output.VeloNodeResult.AssetCodeToBeIssued)
 	})
-	t.Run("error, fail to build, sign or encode velo tx", func(t *testing.T) {
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
 		helper := initTest(t)
-		_, _, err := helper.client.executeVeloTx(context.Background(), &vtxnbuild.MintCredit{})
-
+		_, err := helper.client.MintCredit(context.Background(), vtxnbuild.MintCredit{})
 		assert.Error(t, err)
 	})
 }
@@ -313,9 +387,16 @@ func TestClient_RebalanceReserve(t *testing.T) {
 			}, nil)
 
 		output, err := helper.client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
-
 		assert.NoError(t, err)
 		assert.NotEmpty(t, output)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(nil, errors.New("some error has occurred"))
+		_, err := helper.client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
+		assert.Error(t, err)
 	})
 }
 

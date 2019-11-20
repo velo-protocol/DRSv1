@@ -22,6 +22,12 @@ const (
 )
 
 var (
+	assetCodeToBeSetup        = "vTHB"
+	assetIssuerToBeSetup      = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"
+	assetDistributorToBeSetup = "GB5PBPRB4OKI43U2CSXBFJIYROLB53FZ3RDMLCLUJBKLL3RGUAEO2KQE"
+	peggedValue               = "1"
+	peggedCurrency            = "THB"
+
 	assetCodeToBeRedeemed   = "vTHB"
 	assetIssuerToBeRedeemed = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"
 	assetAmountToBeRedeemed = "1"
