@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Client struct contains data for creating a velo client.
 type Client struct {
 	horizonClient     horizonclient.ClientInterface
 	networkPassphrase string
@@ -25,6 +26,7 @@ type Client struct {
 	grpcConnection *grpc.ClientConn
 }
 
+// New default public client is a default client to connect to velo public network.
 func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
@@ -34,6 +36,7 @@ func NewDefaultPublicClient(veloNodeUrl string, stellarAccountSecretKey string) 
 	return NewPublicClient(grpcConn, stellarAccountSecretKey)
 }
 
+// New default test net client is a default client to connect to velo test network.
 func NewDefaultTestNetClient(veloNodeUrl string, stellarAccountSecretKey string) (*Client, error) {
 	grpcConn, err := grpc.Dial(veloNodeUrl, grpc.WithInsecure())
 	if err != nil {
@@ -43,6 +46,7 @@ func NewDefaultTestNetClient(veloNodeUrl string, stellarAccountSecretKey string)
 	return NewTestNetClient(grpcConn, stellarAccountSecretKey)
 }
 
+// New public client is a custom client to connect to velo public network.
 func NewPublicClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string) (*Client, error) {
 	keyPair, err := vconvert.SecretKeyToKeyPair(stellarAccountSecretKey)
 	if err != nil {
@@ -52,6 +56,7 @@ func NewPublicClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string) 
 	return newClient(horizonclient.DefaultPublicNetClient, network.PublicNetworkPassphrase, cenGrpc.NewVeloNodeClient(grpcConn), grpcConn, keyPair), nil
 }
 
+// New test net client is a custom client to connect to velo test network.
 func NewTestNetClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string) (*Client, error) {
 	keyPair, err := vconvert.SecretKeyToKeyPair(stellarAccountSecretKey)
 	if err != nil {
@@ -61,6 +66,7 @@ func NewTestNetClient(grpcConn *grpc.ClientConn, stellarAccountSecretKey string)
 	return newClient(horizonclient.DefaultTestNetClient, network.TestNetworkPassphrase, cenGrpc.NewVeloNodeClient(grpcConn), grpcConn, keyPair), nil
 }
 
+// New client is a custom client to connect to velo custom network.
 func NewClient(horizonClient horizonclient.ClientInterface, networkPassphrase string, grpcConn *grpc.ClientConn, keyPair *keypair.Full) *Client {
 	return newClient(horizonClient, networkPassphrase, cenGrpc.NewVeloNodeClient(grpcConn), grpcConn, keyPair)
 }
@@ -75,19 +81,23 @@ func newClient(horizonClient horizonclient.ClientInterface, networkPassphrase st
 	}
 }
 
+// Close grpc connection
 func (client *Client) Close() (err error) {
 	return client.grpcConnection.Close()
 }
 
+// Set a key pair, which will be used to sign Stellar transaction
 func (client *Client) SetKeyPair(keyPair *keypair.Full) {
 	client.keyPair = keyPair
 }
 
+// Whitelist result struct contains success result from client.
 type WhitelistResult struct {
 	HorizonResult  *horizon.TransactionSuccess
 	VeloNodeResult *cenGrpc.WhitelistOpResponse
 }
 
+// Whitelist calling velo node to perform whitelist operation
 func (client *Client) Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist) (WhitelistResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
 	var veloNodeResult *cenGrpc.WhitelistOpResponse
@@ -101,11 +111,13 @@ func (client *Client) Whitelist(ctx context.Context, veloOp vtxnbuild.Whitelist)
 	}, err
 }
 
+// Setup credit result struct contains success result from client.
 type SetupCreditResult struct {
 	HorizonResult  *horizon.TransactionSuccess
 	VeloNodeResult *cenGrpc.SetupCreditOpResponse
 }
 
+// Setup credit calling velo node to perform setup credit operation
 func (client *Client) SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCredit) (SetupCreditResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
 	var veloNodeResult *cenGrpc.SetupCreditOpResponse
@@ -119,11 +131,13 @@ func (client *Client) SetupCredit(ctx context.Context, veloOp vtxnbuild.SetupCre
 	}, err
 }
 
+// Price update result struct contains success result from client.
 type PriceUpdateResult struct {
 	HorizonResult  *horizon.TransactionSuccess
 	VeloNodeResult *cenGrpc.PriceUpdateOpResponse
 }
 
+// Price update calling velo node to perform price update operation
 func (client *Client) PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpdate) (PriceUpdateResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
 	var veloNodeResult *cenGrpc.PriceUpdateOpResponse
@@ -137,11 +151,13 @@ func (client *Client) PriceUpdate(ctx context.Context, veloOp vtxnbuild.PriceUpd
 	}, err
 }
 
+// Mint credit result struct contains success result from client.
 type MintCreditResult struct {
 	HorizonResult  *horizon.TransactionSuccess
 	VeloNodeResult *cenGrpc.MintCreditOpResponse
 }
 
+// Mint credit calling velo node to perform mint credit operation.
 func (client *Client) MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredit) (MintCreditResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
 	var veloNodeResult *cenGrpc.MintCreditOpResponse
@@ -155,11 +171,13 @@ func (client *Client) MintCredit(ctx context.Context, veloOp vtxnbuild.MintCredi
 	}, err
 }
 
+// Redeem credit result struct contains success result from client.
 type RedeemCreditResult struct {
 	HorizonResult  *horizon.TransactionSuccess
 	VeloNodeResult *cenGrpc.RedeemCreditOpResponse
 }
 
+// Redeem credit calling velo node to perform redeem credit operation.
 func (client *Client) RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (RedeemCreditResult, error) {
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
 	var veloNodeResult *cenGrpc.RedeemCreditOpResponse
@@ -173,11 +191,13 @@ func (client *Client) RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemC
 	}, err
 }
 
+// Rebalance reserve result struct contains success result from client.
 type RebalanceReserveResult struct {
 	HorizonResult  *horizon.TransactionSuccess
 	VeloNodeResult *cenGrpc.RebalanceReserveOpResponse
 }
 
+// Rebalance reserve calling velo node to perform rebalance reserve operation.
 func (client *Client) RebalanceReserve(ctx context.Context, veloOp vtxnbuild.RebalanceReserve) (RebalanceReserveResult, error) {
 
 	horizonSuccess, veloReply, err := client.executeVeloTx(ctx, &veloOp)
@@ -245,10 +265,12 @@ func (client *Client) executeVeloTx(ctx context.Context, veloOp vtxnbuild.VeloOp
 	return &result, reply, nil
 }
 
+// Get exchange rate calling velo node to perform get exchange rate returns exchange rate information.
 func (client *Client) GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateReply, error) {
 	return client.veloNodeClient.GetExchangeRate(ctx, request)
 }
 
+// Get collateral health check calling velo node to perform get collateral health check returns collateral information of velo node.
 func (client *Client) GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.GetCollateralHealthCheckRequest) (*cenGrpc.GetCollateralHealthCheckReply, error) {
 	return client.veloNodeClient.GetCollateralHealthCheck(ctx, request)
 }
