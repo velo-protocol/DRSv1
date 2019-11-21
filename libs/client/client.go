@@ -18,18 +18,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// Client struct contains data that use to connect to Velo Node and Stellar.
+// Client struct contains data for connecting to the Velo Node and Stellar.
 type Client struct {
-	// a Horizon client instance which is used to connect to Horizon server
+	// A Horizon client instance which is used to connect to Horizon server.
 	horizonClient horizonclient.ClientInterface
-	// the pass phrase used for every Stellar transaction
+	// The passphrase used for every Stellar transaction.
 	networkPassphrase string
-	// a key pair that will be used to sign every transaction when submitting to Horizon server
+	// A key pair that will be used to sign every transaction when submitting to Horizon server.
 	keyPair *keypair.Full
-
-	// a Velo Node client instance
+	// A Velo Node client instance.
 	veloNodeClient cenGrpc.VeloNodeClient
-	// a GRPC connection that is used by Velo Node client
+	// A GRPC connection that is used by Velo Node client.
 	grpcConnection *grpc.ClientConn
 }
 
