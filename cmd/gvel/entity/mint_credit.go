@@ -12,9 +12,11 @@ type MintCreditInput struct {
 }
 
 type MintCreditOutput struct {
-	AssetCodeToBeMinted string
-	CollateralAssetCode string
-	CollateralAmount    string
-	SourceAddress       string
-	TxResult            *horizon.TransactionSuccess
+	AssetCodeToBeMinted        string
+	CollateralAssetCode        string
+	CollateralAmount           string
+	AssetIssuerToBeIssued      string
+	AssetDistributorToBeIssued string
+	SourceAddress              string
+	TxResult                   *horizon.TransactionSuccess
 }

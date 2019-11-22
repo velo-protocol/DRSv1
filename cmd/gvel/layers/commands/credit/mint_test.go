@@ -17,6 +17,9 @@ func TestCommandHandler_Mint(t *testing.T) {
 		collateralAssetCode = "VELO"
 		collateralAmount    = "100"
 		passphrase          = "password"
+
+		assetIssuerToBeIssued      = "GBI..."
+		assetDistributorToBeIssued = "GAD..."
 	)
 
 	t.Run("success", func(t *testing.T) {
@@ -38,10 +41,12 @@ func TestCommandHandler_Mint(t *testing.T) {
 		helper.mockLogic.EXPECT().
 			MintCredit(gomock.AssignableToTypeOf(&entity.MintCreditInput{})).
 			Return(&entity.MintCreditOutput{
-				AssetCodeToBeMinted: assetCodeToBeMint,
-				CollateralAssetCode: collateralAssetCode,
-				CollateralAmount:    collateralAmount,
-				SourceAddress:       "GA...",
+				AssetCodeToBeMinted:        assetCodeToBeMint,
+				CollateralAssetCode:        collateralAssetCode,
+				CollateralAmount:           collateralAmount,
+				AssetIssuerToBeIssued:      assetIssuerToBeIssued,
+				AssetDistributorToBeIssued: assetDistributorToBeIssued,
+				SourceAddress:              "GA...",
 				TxResult: &horizon.TransactionSuccess{
 					Hash: "264226cb06af3b86299031884175155e67a02e0a8ad0b3ab3a88b409a8c09d5c",
 				},
@@ -50,7 +55,7 @@ func TestCommandHandler_Mint(t *testing.T) {
 		helper.creditCommandHandler.Mint(helper.mintCmd, nil)
 
 		logEntries := helper.logHook.Entries
-		assert.Equal(t, "100 kBEAM minted successfully. The stable credit is in GA...", logEntries[0].Message)
+		assert.Equal(t, "100 kBEAM minted successfully. The stable credit is in GAD...", logEntries[0].Message)
 		assert.Equal(t, fmt.Sprintf("🔗 Stellar Transaction Hash: %s", "264226cb06af3b86299031884175155e67a02e0a8ad0b3ab3a88b409a8c09d5c"), logEntries[1].Message)
 	})
 
