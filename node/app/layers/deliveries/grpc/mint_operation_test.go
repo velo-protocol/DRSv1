@@ -19,11 +19,13 @@ import (
 func TestHandler_SubmitVeloTx_Mint(t *testing.T) {
 
 	var (
-		trustedPartnerKP, _   = vconvert.SecretKeyToKeyPair(secretKey1)
-		assetAmountToBeIssued = decimal.New(52702950798, -8)  // 527.02950798
-		collateralAmount      = decimal.New(100045690008, -8) // 1000.45690008
-		assetCodeToBeIssued   = "vTHB"
-		collateralAssetCode   = "VELO"
+		trustedPartnerKP, _        = vconvert.SecretKeyToKeyPair(secretKey1)
+		assetAmountToBeIssued      = decimal.New(52702950798, -8)  // 527.02950798
+		collateralAmount           = decimal.New(100045690008, -8) // 1000.45690008
+		assetCodeToBeIssued        = "vTHB"
+		assetIssuerToBeIssued      = "GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72"
+		assetDistributorToBeIssued = "GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"
+		collateralAssetCode        = "VELO"
 	)
 
 	t.Run("success", func(t *testing.T) {
@@ -44,11 +46,13 @@ func TestHandler_SubmitVeloTx_Mint(t *testing.T) {
 		helper.mockUseCase.EXPECT().
 			MintCredit(context.Background(), gomock.AssignableToTypeOf(&vtxnbuild.VeloTx{})).
 			Return(&entities.MintCreditOutput{
-				SignedStellarTxXdr:    "AAAAA...=",
-				AssetAmountToBeIssued: assetAmountToBeIssued,
-				AssetCodeToBeIssued:   assetCodeToBeIssued,
-				CollateralAmount:      collateralAmount,
-				CollateralAssetCode:   collateralAssetCode,
+				SignedStellarTxXdr:         "AAAAA...=",
+				AssetAmountToBeIssued:      assetAmountToBeIssued,
+				AssetCodeToBeIssued:        assetCodeToBeIssued,
+				AssetIssuerToBeMinted:      assetIssuerToBeIssued,
+				AssetDistributorToBeMinted: assetDistributorToBeIssued,
+				CollateralAmount:           collateralAmount,
+				CollateralAssetCode:        collateralAssetCode,
 			}, nil)
 
 		reply, err := helper.handler.SubmitVeloTx(context.Background(), &spec.VeloTxRequest{
@@ -63,6 +67,8 @@ func TestHandler_SubmitVeloTx_Mint(t *testing.T) {
 		)
 		assert.Equal(t, assetCodeToBeIssued, reply.MintCreditOpResponse.AssetCodeToBeIssued)
 		assert.Equal(t, collateralAssetCode, reply.MintCreditOpResponse.CollateralAssetCode)
+		assert.Equal(t, assetIssuerToBeIssued, reply.MintCreditOpResponse.AssetIssuerToBeIssued)
+		assert.Equal(t, assetDistributorToBeIssued, reply.MintCreditOpResponse.AssetDistributorToBeIssued)
 		assert.NotEmpty(t, reply.MintCreditOpResponse.AssetAmountToBeIssued)
 		assert.NotEmpty(t, reply.MintCreditOpResponse.CollateralAmount)
 	})
