@@ -35,10 +35,12 @@ func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *v
 			mintCreditOutput.CollateralAssetCode,
 		),
 		MintCreditOpResponse: &spec.MintCreditOpResponse{
-			AssetAmountToBeIssued: assetAmountToBeIssued,
-			AssetCodeToBeIssued:   mintCreditOutput.AssetCodeToBeIssued,
-			CollateralAmount:      collateralAmount,
-			CollateralAssetCode:   mintCreditOutput.CollateralAssetCode,
+			AssetAmountToBeIssued:      assetAmountToBeIssued,
+			AssetCodeToBeIssued:        mintCreditOutput.AssetCodeToBeIssued,
+			AssetIssuerToBeIssued:      mintCreditOutput.AssetIssuerToBeMinted,
+			AssetDistributorToBeIssued: mintCreditOutput.AssetDistributorToBeMinted,
+			CollateralAmount:           collateralAmount,
+			CollateralAssetCode:        mintCreditOutput.CollateralAssetCode,
 		},
 	}, nil
 }

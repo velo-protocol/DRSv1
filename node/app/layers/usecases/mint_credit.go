@@ -182,10 +182,12 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 		}
 	}
 	return &entities.MintCreditOutput{
-		SignedStellarTxXdr:    signedTx,
-		AssetAmountToBeIssued: assetAmountToBeIssued,
-		AssetCodeToBeIssued:   op.AssetCodeToBeIssued,
-		CollateralAmount:      collateralAmount,
-		CollateralAssetCode:   collateralAsset,
+		SignedStellarTxXdr:         signedTx,
+		AssetAmountToBeIssued:      assetAmountToBeIssued,
+		AssetCodeToBeIssued:        op.AssetCodeToBeIssued,
+		AssetIssuerToBeMinted:      issuerAccount,
+		AssetDistributorToBeMinted: distributionAccount,
+		CollateralAmount:           collateralAmount,
+		CollateralAssetCode:        collateralAsset,
 	}, nil
 }

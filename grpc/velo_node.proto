@@ -51,8 +51,10 @@ message PriceUpdateOpResponse {
 message MintCreditOpResponse {
     string assetAmountToBeIssued = 1;
     string assetCodeToBeIssued = 2;
-    string collateralAmount = 3;
-    string collateralAssetCode = 4;
+    string assetIssuerToBeIssued = 3;
+    string assetDistributorToBeIssued = 4;
+    string collateralAmount = 5;
+    string collateralAssetCode = 6;
 }
 
 message RedeemCreditOpResponse {
