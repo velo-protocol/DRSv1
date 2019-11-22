@@ -16,7 +16,7 @@ const (
 	OperationTypeRebalanceReserve OperationType = 5
 )
 
-// OperationBody is an struct that contains the data of each op type.
+// OperationBody is an struct that contains the data of each operation type.
 type OperationBody struct {
 	Type               OperationType
 	WhitelistOp        *WhitelistOp
