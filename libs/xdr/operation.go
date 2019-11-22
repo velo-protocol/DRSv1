@@ -1,13 +1,17 @@
+// Package vxdr contains the code for parsing the xdr structures to/from xdr string.
 package vxdr
 
 import (
 	"fmt"
 )
 
+// VeloOp struct contains an operation body which contain an info on how the operation
+// should be executed.
 type VeloOp struct {
 	Body OperationBody
 }
 
+// NewOperationBody creates a new OperationBody from a defined OperationType and its content.
 func NewOperationBody(opType OperationType, value interface{}) (OperationBody, error) {
 	var opBody OperationBody
 	opBody.Type = opType
