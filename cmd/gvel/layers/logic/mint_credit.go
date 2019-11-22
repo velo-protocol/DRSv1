@@ -45,10 +45,12 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 	}
 
 	return &entity.MintCreditOutput{
-		AssetCodeToBeMinted: input.AssetCodeToBeMinted,
-		CollateralAssetCode: input.CollateralAssetCode,
-		CollateralAmount:    input.CollateralAmount,
-		SourceAddress:       defaultAccount,
-		TxResult:            result.HorizonResult,
+		AssetCodeToBeMinted:        input.AssetCodeToBeMinted,
+		CollateralAssetCode:        input.CollateralAssetCode,
+		CollateralAmount:           input.CollateralAmount,
+		AssetIssuerToBeIssued:      result.VeloNodeResult.AssetIssuerToBeIssued,
+		AssetDistributorToBeIssued: result.VeloNodeResult.AssetDistributorToBeIssued,
+		SourceAddress:              defaultAccount,
+		TxResult:                   result.HorizonResult,
 	}, nil
 }

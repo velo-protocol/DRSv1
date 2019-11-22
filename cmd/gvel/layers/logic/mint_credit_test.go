@@ -7,6 +7,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
 	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
 	"github.com/velo-protocol/DRSv1/libs/client"
 	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"testing"
@@ -18,6 +19,11 @@ func TestLogic_MintCredit(t *testing.T) {
 		collateralAssetCode = "VELO"
 		collateralAmount    = "100"
 		passphrase          = "password"
+
+		assetAmountToBeIssued      = "100"
+		assetCodeToBeIssued        = "kBEAM"
+		assetIssuerToBeIssued      = "GBI..."
+		assetDistributorToBeIssued = "GAD..."
 	)
 
 	t.Run("happy", func(t *testing.T) {
@@ -37,6 +43,14 @@ func TestLogic_MintCredit(t *testing.T) {
 			MintCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.MintCredit{})).
 			Return(vclient.MintCreditResult{
 				HorizonResult: &horizon.TransactionSuccess{},
+				VeloNodeResult: &cenGrpc.MintCreditOpResponse{
+					AssetAmountToBeIssued:      assetAmountToBeIssued,
+					AssetCodeToBeIssued:        assetCodeToBeIssued,
+					AssetIssuerToBeIssued:      assetIssuerToBeIssued,
+					AssetDistributorToBeIssued: assetDistributorToBeIssued,
+					CollateralAmount:           collateralAmount,
+					CollateralAssetCode:        collateralAssetCode,
+				},
 			}, nil)
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
@@ -50,6 +64,9 @@ func TestLogic_MintCredit(t *testing.T) {
 		assert.Equal(t, collateralAssetCode, output.CollateralAssetCode)
 		assert.Equal(t, collateralAmount, output.CollateralAmount)
 		assert.Equal(t, assetCodeToBeMint, output.AssetCodeToBeMinted)
+		assert.Equal(t, assetCodeToBeIssued, output.AssetCodeToBeMinted)
+		assert.Equal(t, assetIssuerToBeIssued, output.AssetIssuerToBeIssued)
+		assert.Equal(t, assetDistributorToBeIssued, output.AssetDistributorToBeIssued)
 		assert.Equal(t, stellarAccountEntity().Address, output.SourceAddress)
 	})
 
