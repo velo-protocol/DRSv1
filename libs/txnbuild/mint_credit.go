@@ -7,12 +7,14 @@ import (
 	"regexp"
 )
 
+// MintCredit represents the Velo mint credit Operation.
 type MintCredit struct {
 	AssetCodeToBeIssued string
 	CollateralAssetCode string
 	CollateralAmount    string
 }
 
+// BuildXDR for MintCredit returns a fully configured XDR Operation.
 func (mintCredit *MintCredit) BuildXDR() (vxdr.VeloOp, error) {
 	if err := mintCredit.Validate(); err != nil {
 		return vxdr.VeloOp{}, err
@@ -38,6 +40,7 @@ func (mintCredit *MintCredit) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
+// FromXDR for MintCredit initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (mintCredit *MintCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	mintCreditOp := vXdrOp.Body.MintCreditOp
 	if mintCreditOp == nil {
@@ -50,6 +53,8 @@ func (mintCredit *MintCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
+// Validation function for MintCredit. Validates the required struct fields. It returns an error if any of the fields are
+// invalid. Otherwise, it returns nil.
 func (mintCredit *MintCredit) Validate() error {
 	if mintCredit.AssetCodeToBeIssued == "" {
 		return errors.New("assetCodeToBeIssued must not be blank")

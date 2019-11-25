@@ -1,3 +1,6 @@
+// Package vtxnbuild implements transactions and operations on the Velo Node.
+// This library provides an interface to the Velo transaction model.
+// For more information and further examples, see https://docs.velo.org.
 package vtxnbuild
 
 import (
@@ -13,6 +16,7 @@ import (
 	"github.com/velo-protocol/DRSv1/libs/xdr"
 )
 
+// VeloTx represents a Velo transaction.
 type VeloTx struct {
 	SourceAccount txnbuild.Account
 	VeloOp        VeloOp
@@ -21,6 +25,8 @@ type VeloTx struct {
 	veloXdrEnvelope *vxdr.VeloTxEnvelope
 }
 
+// Build for Transaction completely configures the Transaction. After calling Build,
+// the Transaction is ready to be serialised or signed.
 func (veloTx *VeloTx) Build() error {
 	if veloTx.veloXdrEnvelope != nil {
 		if veloTx.veloXdrEnvelope.Signatures != nil {
@@ -71,6 +77,8 @@ func (veloTx *VeloTx) Build() error {
 	return nil
 }
 
+// Sign for Transaction signs a previously built transaction. A signed transaction may be
+// submitted to the Velo network.
 func (veloTx *VeloTx) Sign(kps ...*keypair.Full) error {
 	// Hash the transaction
 	hashedValue, err := veloTx.Hash()
@@ -91,6 +99,7 @@ func (veloTx *VeloTx) Sign(kps ...*keypair.Full) error {
 	return nil
 }
 
+// Hash provides a signable object representing the Transaction on the specified Velo network.
 func (veloTx *VeloTx) Hash() ([32]byte, error) {
 	var txBytes bytes.Buffer
 
@@ -102,6 +111,7 @@ func (veloTx *VeloTx) Hash() ([32]byte, error) {
 	return hash.Hash(txBytes.Bytes()), nil
 }
 
+// Base64 returns the base 64 XDR representation of the transaction envelope.
 func (veloTx *VeloTx) Base64() (string, error) {
 	bs, err := veloTx.MarshalBinary()
 	if err != nil {
@@ -111,6 +121,7 @@ func (veloTx *VeloTx) Base64() (string, error) {
 	return base64.StdEncoding.EncodeToString(bs), nil
 }
 
+// MarshalBinary returns the binary XDR representation of the transaction envelope.
 func (veloTx *VeloTx) MarshalBinary() ([]byte, error) {
 	var txBytes bytes.Buffer
 	_, err := xdr.Marshal(&txBytes, veloTx.veloXdrEnvelope)
@@ -121,6 +132,8 @@ func (veloTx *VeloTx) MarshalBinary() ([]byte, error) {
 	return txBytes.Bytes(), nil
 }
 
+// BuildSignEncode performs all the steps to produce a final transaction suitable
+// for submitting to the Velo network.
 func (veloTx *VeloTx) BuildSignEncode(keyPairs ...*keypair.Full) (string, error) {
 	err := veloTx.Build()
 	if err != nil {
@@ -140,6 +153,7 @@ func (veloTx *VeloTx) BuildSignEncode(keyPairs ...*keypair.Full) (string, error)
 	return txeBase64, err
 }
 
+// TransactionFromXDR parses the supplied transaction envelope in base64 XDR and returns a Transaction object.
 func TransactionFromXDR(veloTxBase64 string) (VeloTx, error) {
 	var veloXdrEnvelope vxdr.VeloTxEnvelope
 	err := xdr.SafeUnmarshalBase64(veloTxBase64, &veloXdrEnvelope)
@@ -163,6 +177,7 @@ func TransactionFromXDR(veloTxBase64 string) (VeloTx, error) {
 	return veloTx, nil
 }
 
+// TxEnvelope returns the TransactionEnvelope XDR struct.
 func (veloTx *VeloTx) TxEnvelope() *vxdr.VeloTxEnvelope {
 	return veloTx.veloXdrEnvelope
 }

@@ -6,12 +6,14 @@ import (
 	"github.com/velo-protocol/DRSv1/libs/xdr"
 )
 
+// Whitelist represents the Velo whitelist Operation.
 type Whitelist struct {
 	Address  string
 	Role     string
 	Currency string
 }
 
+// BuildXDR for Whitelist returns a fully configured XDR Operation.
 func (whitelist *Whitelist) BuildXDR() (vxdr.VeloOp, error) {
 	if err := whitelist.Validate(); err != nil {
 		return vxdr.VeloOp{}, err
@@ -36,6 +38,7 @@ func (whitelist *Whitelist) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
+// FromXDR for Whitelist initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (whitelist *Whitelist) FromXDR(vXdrOp vxdr.VeloOp) error {
 	whitelistOp := vXdrOp.Body.WhitelistOp
 	if whitelistOp == nil {
@@ -49,6 +52,8 @@ func (whitelist *Whitelist) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
+// Validation function for Whitelist. Validates the required struct fields. It returns an error if any of the fields are
+// invalid. Otherwise, it returns nil.
 func (whitelist *Whitelist) Validate() error {
 	if whitelist.Address == "" {
 		return errors.New("address must not be blank")
