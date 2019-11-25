@@ -10,9 +10,10 @@ import (
 
 func ExampleClient_GetCollateralHealthCheck() {
 
-	client, err := NewDefaultTestNetClient("localhost:8080", clientSecretKey)
+	client, err := NewDefaultTestNetClient("testnet-drsv1-0.velo.org", clientSecretKey)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	defer func() {
 		_ = client.Close()
@@ -30,9 +31,10 @@ func ExampleClient_GetCollateralHealthCheck() {
 }
 
 func ExampleClient_Whitelist() {
-	client, err := NewDefaultTestNetClient("localhost:8080", clientSecretKey)
+	client, err := NewDefaultTestNetClient("testnet-drsv1-0.velo.org", clientSecretKey)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	defer func() {
 		_ = client.Close()
@@ -56,9 +58,10 @@ func ExampleClient_Whitelist() {
 }
 
 func ExampleClient_SetupCredit() {
-	client, err := NewDefaultTestNetClient("localhost:8080", clientSecretKey)
+	client, err := NewDefaultTestNetClient("testnet-drsv1-0.velo.org", clientSecretKey)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	defer func() {
 		_ = client.Close()
