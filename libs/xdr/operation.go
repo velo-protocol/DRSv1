@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// VeloOp struct contains an operation body which contain an info on how the operation
+// VeloOp struct contains an operation body with information on how the operation
 // should be executed.
 type VeloOp struct {
 	Body OperationBody
