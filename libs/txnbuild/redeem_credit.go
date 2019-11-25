@@ -8,12 +8,14 @@ import (
 	"regexp"
 )
 
+// RedeemCredit represents the Velo redeem credit Operation.
 type RedeemCredit struct {
 	AssetCode string
 	Issuer    string
 	Amount    string
 }
 
+// BuildXDR for RedeemCredit returns a fully configured XDR Operation.
 func (redeemCredit *RedeemCredit) BuildXDR() (vxdr.VeloOp, error) {
 	if err := redeemCredit.Validate(); err != nil {
 		return vxdr.VeloOp{}, err
@@ -42,6 +44,7 @@ func (redeemCredit *RedeemCredit) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
+// FromXDR for RedeemCredit initialises the vtxnbuild struct from the corresponding xdr Operation.
 func (redeemCredit *RedeemCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	redeemOp := vXdrOp.Body.RedeemCreditOp
 	if redeemOp == nil {
@@ -55,6 +58,8 @@ func (redeemCredit *RedeemCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
+// Validate for RedeemCredit validates the required struct fields. It returns an error if any of the fields are
+// invalid. Otherwise, it returns nil.
 func (redeemCredit *RedeemCredit) Validate() error {
 	if redeemCredit.AssetCode == "" {
 		return errors.New("assetCode must not be blank")
