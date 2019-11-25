@@ -40,7 +40,7 @@ func (mintCredit *MintCredit) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
-// FromXDR for MintCredit initialises the vtxnbuild struct from the corresponding xdr Operation.
+// FromXDR for MintCredit initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (mintCredit *MintCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	mintCreditOp := vXdrOp.Body.MintCreditOp
 	if mintCreditOp == nil {
@@ -53,7 +53,7 @@ func (mintCredit *MintCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
-// Validate for MintCredit validates the required struct fields. It returns an error if any of the fields are
+// Validation function for MintCredit. Validates the required struct fields. It returns an error if any of the fields are
 // invalid. Otherwise, it returns nil.
 func (mintCredit *MintCredit) Validate() error {
 	if mintCredit.AssetCodeToBeIssued == "" {

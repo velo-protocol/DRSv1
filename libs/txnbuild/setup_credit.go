@@ -40,7 +40,7 @@ func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
-// FromXDR for SetupCredit initialises the vtxnbuild struct from the corresponding xdr Operation.
+// FromXDR for SetupCredit initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	setupCreditOp := vXdrOp.Body.SetupCreditOp
 	if setupCreditOp == nil {
@@ -54,7 +54,7 @@ func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
-// Validate for SetupCredit validates the required struct fields. It returns an error if any of the fields are
+// Validation function for SetupCredit. Validates the required struct fields. It returns an error if any of the fields are
 // invalid. Otherwise, it returns nil.
 func (setupCredit *SetupCredit) Validate() error {
 	if setupCredit.AssetCode == "" {

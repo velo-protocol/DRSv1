@@ -38,7 +38,7 @@ func (whitelist *Whitelist) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
-// FromXDR for Whitelist initialises the vtxnbuild struct from the corresponding xdr Operation.
+// FromXDR for Whitelist initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (whitelist *Whitelist) FromXDR(vXdrOp vxdr.VeloOp) error {
 	whitelistOp := vXdrOp.Body.WhitelistOp
 	if whitelistOp == nil {
@@ -52,7 +52,7 @@ func (whitelist *Whitelist) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
-// Validate for Whitelist validates the required struct fields. It returns an error if any of the fields are
+// Validation function for Whitelist. Validates the required struct fields. It returns an error if any of the fields are
 // invalid. Otherwise, it returns nil.
 func (whitelist *Whitelist) Validate() error {
 	if whitelist.Address == "" {

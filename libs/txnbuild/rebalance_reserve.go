@@ -22,7 +22,7 @@ func (rebalanceReserve *RebalanceReserve) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
-// FromXDR for RebalanceReserve initialises the vtxnbuild struct from the corresponding xdr Operation.
+// FromXDR for RebalanceReserve initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (rebalanceReserve *RebalanceReserve) FromXDR(vXdrOp vxdr.VeloOp) error {
 	redeemOp := vXdrOp.Body.RebalanceReserveOp
 	if redeemOp == nil {
@@ -32,7 +32,7 @@ func (rebalanceReserve *RebalanceReserve) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
-// Validate for RebalanceReserve validates the required struct fields. It returns an error if any of the fields are
+// Validation function for RebalanceReserve. Validates the required struct fields. It returns an error if any of the fields are
 // invalid. Otherwise, it returns nil.
 func (rebalanceReserve *RebalanceReserve) Validate() error {
 	return nil

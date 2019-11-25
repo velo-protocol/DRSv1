@@ -39,7 +39,7 @@ func (priceUpdate *PriceUpdate) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
-// FromXDR for PriceUpdate initialises the vtxnbuild struct from the corresponding xdr Operation.
+// FromXDR for PriceUpdate initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (priceUpdate *PriceUpdate) FromXDR(vXdrOp vxdr.VeloOp) error {
 	priceUpdateOp := vXdrOp.Body.PriceUpdateOp
 	if priceUpdateOp == nil {
@@ -53,7 +53,7 @@ func (priceUpdate *PriceUpdate) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
-// Validate for PriceUpdate validates the required struct fields. It returns an error if any of the fields are
+// Validation function for PriceUpdate. Validates the required struct fields. It returns an error if any of the fields are
 // invalid. Otherwise, it returns nil.
 func (priceUpdate *PriceUpdate) Validate() error {
 	if priceUpdate.Asset == "" {

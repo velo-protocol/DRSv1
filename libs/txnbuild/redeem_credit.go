@@ -44,7 +44,7 @@ func (redeemCredit *RedeemCredit) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
-// FromXDR for RedeemCredit initialises the vtxnbuild struct from the corresponding xdr Operation.
+// FromXDR for RedeemCredit initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (redeemCredit *RedeemCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	redeemOp := vXdrOp.Body.RedeemCreditOp
 	if redeemOp == nil {
@@ -58,7 +58,7 @@ func (redeemCredit *RedeemCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
-// Validate for RedeemCredit validates the required struct fields. It returns an error if any of the fields are
+// Validate function for RedeemCredit. Validates the required struct fields. It returns an error if any of the fields are
 // invalid. Otherwise, it returns nil.
 func (redeemCredit *RedeemCredit) Validate() error {
 	if redeemCredit.AssetCode == "" {
