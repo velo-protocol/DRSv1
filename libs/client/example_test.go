@@ -37,15 +37,13 @@ func ExampleClient_MintCredit() {
 	log.Println("Asset Code to be issued: ", whitelistResult.VeloNodeResult.AssetCodeToBeIssued)
 	log.Println("Collateral Asset Code: ", whitelistResult.VeloNodeResult.CollateralAssetCode)
 	log.Println("Collateral Amount: ", whitelistResult.VeloNodeResult.CollateralAmount)
-	/*
-		Output:
-		Horizon Transaction Hash: 8d6befa5ddf8845fb75748c81ba360de9728d5e253c8f864b3aef0c1748fa9f5
-		Asset Code to be issued: vTHB
-		Asset Issuer to be issued: GBIO46CY6F2NDON6ZGXHF6WU3P2O7TDW7QREQYAS3OEKFC2RFUYXDSBG
-		Asset Distributor to be issued: GBIO46CY6F2NDON6ZGXHF6WU3P2O7TDW7QREQYAS3OEKFC2RFUYXDSBG
-		Collateral Asset Code: VELO
-		Collateral Amount: 100.0000000
-	*/
+	//Output:
+	//Horizon Transaction Hash: 8d6befa5ddf8845fb75748c81ba360de9728d5e253c8f864b3aef0c1748fa9f5
+	//Asset Code to be issued: vTHB
+	//Asset Issuer to be issued: GBIO46CY6F2NDON6ZGXHF6WU3P2O7TDW7QREQYAS3OEKFC2RFUYXDSBG
+	//Asset Distributor to be issued: GBIO46CY6F2NDON6ZGXHF6WU3P2O7TDW7QREQYAS3OEKFC2RFUYXDSBG
+	//Collateral Asset Code: VELO
+	//Collateral Amount: 100.0000000
 
 }
 
