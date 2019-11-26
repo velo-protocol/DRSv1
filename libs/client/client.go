@@ -1,5 +1,7 @@
-// Package vclient provides client access to a Velo Node server, and facilitate submitting transaction to Horizon server.
-// For more information and further examples, see https://docs.velo.org.
+/*
+Package vclient provides client access to a Velo Node server, and facilitate submitting transaction to Horizon server.
+For more information and further examples, see https://docs.velo.org/.
+*/
 package vclient
 
 import (
