@@ -1,6 +1,8 @@
-// Package vtxnbuild implements transactions and operations on the Velo Node.
-// This library provides an interface to the Velo transaction model.
-// For more information and further examples, see https://docs.velo.org.
+/*
+Package vtxnbuild implements transactions and operations on the Velo Node.
+This library provides an interface to the Velo transaction model.
+For more information and further examples, see https://docs.velo.org.
+*/
 package vtxnbuild
 
 import (
