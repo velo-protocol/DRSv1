@@ -245,12 +245,13 @@ func ExampleClient_GetExchangeRate() {
 	log.Println("Asset Issuer: ", replyCollateralHealthCheck.Issuer)
 	log.Println("RequiredAmount: ", replyCollateralHealthCheck.RedeemableCollateral)
 	log.Println("PoolAmount: ", replyCollateralHealthCheck.RedeemablePricePerUnit)
-
-	// Output:
-	// Asset Code: vTHB
-	// Asset Issuer: GAXKPU22AE22NO7FXSW7GTNJJ6FGN5NQLXWTJGNBF4VOKLXVJ3RROXTI
-	// RequiredAmount: 2000.0000000
-	// PoolAmount: 1500.0000000
+	/*
+		Output:
+		Asset Code: vTHB
+		Asset Issuer: GAXKPU22AE22NO7FXSW7GTNJJ6FGN5NQLXWTJGNBF4VOKLXVJ3RROXTI
+		RequiredAmount: 2000.0000000
+		PoolAmount: 1500.0000000
+	*/
 }
 
 func ExampleClient_GetCollateralHealthCheck() {
@@ -273,10 +274,11 @@ func ExampleClient_GetCollateralHealthCheck() {
 	log.Println("Asset Issuer: ", replyCollateralHealthCheck.AssetIssuer)
 	log.Println("RequiredAmount: ", replyCollateralHealthCheck.RequiredAmount)
 	log.Println("PoolAmount: ", replyCollateralHealthCheck.PoolAmount)
-
-	// Output:
-	// Asset Code: VELO
-	// Asset Issuer: GCNMY2YGZZNUDMHB3EA36FYWW63ZRAWJX5RQZTZXDLRWCK73H77F264J
-	// RequiredAmount: 2000.0000000
-	// PoolAmount: 1500.0000000
+	/*
+		Output:
+		Asset Code: VELO
+		Asset Issuer: GCNMY2YGZZNUDMHB3EA36FYWW63ZRAWJX5RQZTZXDLRWCK73H77F264J
+		RequiredAmount: 2000.0000000
+		PoolAmount: 1500.0000000
+	*/
 }
