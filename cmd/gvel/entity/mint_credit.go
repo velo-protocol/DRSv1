@@ -17,6 +17,7 @@ type MintCreditOutput struct {
 	CollateralAmount           string
 	AssetIssuerToBeIssued      string
 	AssetDistributorToBeIssued string
+	AssetAmountToBeIssued      string
 	SourceAddress              string
 	TxResult                   *horizon.TransactionSuccess
 }

@@ -67,6 +67,7 @@ func TestLogic_MintCredit(t *testing.T) {
 		assert.Equal(t, assetCodeToBeIssued, output.AssetCodeToBeMinted)
 		assert.Equal(t, assetIssuerToBeIssued, output.AssetIssuerToBeIssued)
 		assert.Equal(t, assetDistributorToBeIssued, output.AssetDistributorToBeIssued)
+		assert.Equal(t, assetAmountToBeIssued, output.AssetAmountToBeIssued)
 		assert.Equal(t, stellarAccountEntity().Address, output.SourceAddress)
 	})
 
