@@ -20,6 +20,7 @@ func TestCommandHandler_Mint(t *testing.T) {
 
 		assetIssuerToBeIssued      = "GBI..."
 		assetDistributorToBeIssued = "GAD..."
+		assetAmountToBeIssued      = "100"
 	)
 
 	t.Run("success", func(t *testing.T) {
@@ -44,6 +45,7 @@ func TestCommandHandler_Mint(t *testing.T) {
 				AssetCodeToBeMinted:        assetCodeToBeMint,
 				CollateralAssetCode:        collateralAssetCode,
 				CollateralAmount:           collateralAmount,
+				AssetAmountToBeIssued:      assetAmountToBeIssued,
 				AssetIssuerToBeIssued:      assetIssuerToBeIssued,
 				AssetDistributorToBeIssued: assetDistributorToBeIssued,
 				SourceAddress:              "GA...",
@@ -55,7 +57,7 @@ func TestCommandHandler_Mint(t *testing.T) {
 		helper.creditCommandHandler.Mint(helper.mintCmd, nil)
 
 		logEntries := helper.logHook.Entries
-		assert.Equal(t, "100 kBEAM minted successfully. The stable credit is in GAD...", logEntries[0].Message)
+		assert.Equal(t, fmt.Sprintf("%s %s minted successfully. The stable credit is in %s", assetAmountToBeIssued, assetCodeToBeMint, assetDistributorToBeIssued), logEntries[0].Message)
 		assert.Equal(t, fmt.Sprintf("🔗 Stellar Transaction Hash: %s", "264226cb06af3b86299031884175155e67a02e0a8ad0b3ab3a88b409a8c09d5c"), logEntries[1].Message)
 	})
 

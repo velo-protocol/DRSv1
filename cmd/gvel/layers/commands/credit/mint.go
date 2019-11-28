@@ -25,7 +25,7 @@ func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 
 	console.Logger.Infof(
 		"%s %s minted successfully. The stable credit is in %s",
-		output.CollateralAmount,
+		output.AssetAmountToBeIssued,
 		output.AssetCodeToBeMinted,
 		output.AssetDistributorToBeIssued,
 	)
