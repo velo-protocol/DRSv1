@@ -2,8 +2,11 @@ precommit/init:
 	brew install pre-commit
 	pre-commit install
 
+format:
+	go fmt ./...
+
 ci_test:
-	go test ./... -v -coverprofile .coverage.txt
+	go test --tags="unit" ./... -v -coverprofile .coverage.txt
 
 ci_sonarqube:
 	sonar-scanner \
