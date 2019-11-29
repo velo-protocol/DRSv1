@@ -14,7 +14,7 @@ import (
 func main() {
 	regulatorKeyPair, _ := vconvert.SecretKeyToKeyPair(helper.SecretKeyFirstRegulator)
 	priceFeederKeyPair, _ := vconvert.SecretKeyToKeyPair(helper.SecretKeyPriceFeeder)
-	trustedPartnerKeyPair, _ := vconvert.SecretKeyToKeyPair(helper.SecretKeyTrustedPartner)
+	trustedPartnerKeyPair, _ := vconvert.SecretKeyToKeyPair("SB4REBSHGECK7IDDJWTUX3CJSEX5J24O32XWPISQVH5C443L56G6AMQ2")
 	redeemerKeyPair, _ := vconvert.SecretKeyToKeyPair(helper.SecretKeyRedeemer)
 
 	// generate whitelist vXDR
@@ -24,7 +24,7 @@ func main() {
 	buildB64PriceUpdateTx(priceFeederKeyPair.Address(), "VELO", "THB", "0.5", priceFeederKeyPair)
 
 	// generate mint vXDR
-	buildB64MintTx(trustedPartnerKeyPair.Address(), "vTHB", "VELO", "10", trustedPartnerKeyPair)
+	buildB64MintTx(trustedPartnerKeyPair.Address(), "vTHB", "VELO", "1", trustedPartnerKeyPair)
 
 	// generate Setup vXDR
 	buildB64SetupTx(trustedPartnerKeyPair.Address(), "vTHB", "THB", "1", trustedPartnerKeyPair)
@@ -105,7 +105,7 @@ func buildB64MintTx(txSourceAccount, assetCodeToBeIssued, collateralAssetCode, c
 }
 
 func buildB64SetupTx(txSourceAccount, assetCode, peggedCurrency, peggedValue string, secretKey *keypair.Full) {
-	fmt.Println("##### Start Build Mint Transaction #####")
+	fmt.Println("##### Start Build Setup Transaction #####")
 
 	veloTxB64, err := (&vtxnbuild.VeloTx{
 		SourceAccount: &txnbuild.SimpleAccount{
@@ -123,7 +123,7 @@ func buildB64SetupTx(txSourceAccount, assetCode, peggedCurrency, peggedValue str
 
 	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
 
-	fmt.Println("##### End Build Mint Transaction #####")
+	fmt.Println("##### End Build Setup Transaction #####")
 
 }
 
@@ -151,7 +151,7 @@ func buildB64RedeemTx(txSourceAccount, assetCode, issuer, amount string, secretK
 }
 
 func buildB64RebalanceTx(txSourceAccount string, secretKey *keypair.Full) {
-	fmt.Println("##### Start Build Redeem Transaction #####")
+	fmt.Println("##### Start Build Rebalance Transaction #####")
 
 	veloTxB64, err := (&vtxnbuild.VeloTx{
 		SourceAccount: &txnbuild.SimpleAccount{
@@ -165,6 +165,6 @@ func buildB64RebalanceTx(txSourceAccount string, secretKey *keypair.Full) {
 
 	fmt.Printf("Velo Transaction: %s \n", veloTxB64)
 
-	fmt.Println("##### End Build Redeem Transaction #####")
+	fmt.Println("##### End Build Rebalance Transaction #####")
 
 }
