@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/utils"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/utils"
 )
 
 func (repo *repo) GetAccountDecodedDataByKey(stellarAddress string, key string) (string, error) {

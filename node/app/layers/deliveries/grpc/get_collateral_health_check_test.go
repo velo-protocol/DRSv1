@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	"github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 	"testing"
 )
 

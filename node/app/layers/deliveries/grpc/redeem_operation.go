@@ -3,10 +3,10 @@ package grpc
 import (
 	"context"
 	"fmt"
-	spec "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 )
 
 func (handler *handler) handleRedeemCreditOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
@@ -25,5 +25,13 @@ func (handler *handler) handleRedeemCreditOperation(ctx context.Context, veloTx 
 	return &spec.VeloTxReply{
 		SignedStellarTxXdr: redeemCreditOutput.SignedStellarTxXdr,
 		Message:            constants.ReplyRedeemCreditSuccess,
+		RedeemCreditOpResponse: &spec.RedeemCreditOpResponse{
+			AssetCodeToBeRedeemed:   redeemCreditOutput.AssetCodeToBeRedeemed,
+			AssetIssuerToBeRedeemed: redeemCreditOutput.AssetIssuerToBeRedeemed,
+			AssetAmountToBeRedeemed: redeemCreditOutput.AssetAmountToBeRedeemed.StringFixed(7),
+			CollateralCode:          redeemCreditOutput.CollateralCode,
+			CollateralIssuer:        redeemCreditOutput.CollateralIssuer,
+			CollateralAmount:        redeemCreditOutput.CollateralAmount.StringFixed(7),
+		},
 	}, nil
 }

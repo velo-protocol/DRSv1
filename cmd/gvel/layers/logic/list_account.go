@@ -3,7 +3,7 @@ package logic
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
 )
 
 func (lo *logic) ListAccount() (*[]entity.StellarAccount, error) {

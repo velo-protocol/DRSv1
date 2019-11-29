@@ -9,25 +9,26 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/errors"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 	"testing"
 )
 
 func TestUseCase_MintCredit(t *testing.T) {
 
 	var (
-		collateralAmount  = decimal.NewFromFloat(1000)
-		collateralAsset   = "VELO"
-		vThbIssuerAccount = "GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72"
-		peggedCurrency    = "THB"
-		assetToBeIssued   = "vTHB"
-		peggedValueStroop = decimal.NewFromFloat(2000)
-		peggedValue       = decimal.New(peggedValueStroop.IntPart(), -7)
-		medianPrice       = decimal.NewFromFloat(2.5)
+		collateralAmount       = decimal.NewFromFloat(1000)
+		collateralAsset        = "VELO"
+		vThbIssuerAccount      = "GAN6D232HXTF4OHL7J36SAJD3M22H26B2O4QFVRO32OEM523KTMB6Q72"
+		vThbDistributorAccount = "GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"
+		peggedCurrency         = "THB"
+		assetToBeIssued        = "vTHB"
+		peggedValueStroop      = decimal.NewFromFloat(2000)
+		peggedValue            = decimal.New(peggedValueStroop.IntPart(), -7)
+		medianPrice            = decimal.NewFromFloat(2.5)
 
 		getMockVeloTx = func() *vtxnbuild.VeloTx {
 			return &vtxnbuild.VeloTx{
@@ -69,7 +70,7 @@ func TestUseCase_MintCredit(t *testing.T) {
 
 		// get trusted partner meta
 		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
-			Return(map[string]string{"vTHB_" + vThbIssuerAccount: base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"))}, nil)
+			Return(map[string]string{"vTHB_" + vThbIssuerAccount: base64.StdEncoding.EncodeToString([]byte(vThbDistributorAccount))}, nil)
 
 		// get issuer account data
 		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(vThbIssuerAccount).
@@ -82,16 +83,18 @@ func TestUseCase_MintCredit(t *testing.T) {
 		helper.mockStellarRepo.EXPECT().GetMedianPriceFromPriceAccount(drsAccountDataEnity.VeloPriceAddress(vxdr.Currency(peggedCurrency))).
 			Return(medianPrice, nil)
 
-		mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue)
+		assetAmountToBeIssued := collateralAmount.Mul(medianPrice).Div(peggedValue)
 
 		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
 		assert.NotNil(t, mintOutput)
 		assert.NotEmpty(t, mintOutput.SignedStellarTxXdr)
 		assert.Equal(t, collateralAmount.String(), mintOutput.CollateralAmount.String())
-		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
-		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
-		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
+		assert.Equal(t, collateralAsset, mintOutput.CollateralAssetCode)
+		assert.Equal(t, assetAmountToBeIssued.String(), mintOutput.AssetAmountToBeIssued.String())
+		assert.Equal(t, assetToBeIssued, mintOutput.AssetCodeToBeIssued)
+		assert.Equal(t, vThbIssuerAccount, mintOutput.AssetIssuerToBeMinted)
+		assert.Equal(t, vThbDistributorAccount, mintOutput.AssetDistributorToBeMinted)
 
 	})
 
@@ -131,7 +134,7 @@ func TestUseCase_MintCredit(t *testing.T) {
 
 		// get trusted partner meta
 		helper.mockStellarRepo.EXPECT().GetAccountData(publicKey3).
-			Return(map[string]string{"vTHB_" + vThbIssuerAccount: base64.StdEncoding.EncodeToString([]byte("GDWAFY3ZQJVDCKNUUNLVG55NVFBDZVVPYDSFZR3EDPLKIZL344JZLT6U"))}, nil)
+			Return(map[string]string{"vTHB_" + vThbIssuerAccount: base64.StdEncoding.EncodeToString([]byte(vThbDistributorAccount))}, nil)
 
 		// get issuer account data
 		helper.mockStellarRepo.EXPECT().GetAccountDecodedData(vThbIssuerAccount).
@@ -144,16 +147,18 @@ func TestUseCase_MintCredit(t *testing.T) {
 		helper.mockStellarRepo.EXPECT().GetMedianPriceFromPriceAccount(drsAccountDataEnity.VeloPriceAddress(vxdr.Currency(peggedCurrency))).
 			Return(medianPrice, nil)
 
-		mintAmount := largeCollateral.Mul(medianPrice).Div(peggedValue)
+		assetAmountToBeIssued := largeCollateral.Mul(medianPrice).Div(peggedValue)
 
 		mintOutput, err := helper.useCase.MintCredit(context.Background(), veloTx)
 		assert.NoError(t, err)
 		assert.NotNil(t, mintOutput)
 		assert.NotEmpty(t, mintOutput.SignedStellarTxXdr)
 		assert.Equal(t, largeCollateral.String(), mintOutput.CollateralAmount.String())
-		assert.Equal(t, collateralAsset, mintOutput.CollateralAsset)
-		assert.Equal(t, mintAmount.String(), mintOutput.MintAmount.String())
-		assert.Equal(t, assetToBeIssued, mintOutput.MintCurrency)
+		assert.Equal(t, collateralAsset, mintOutput.CollateralAssetCode)
+		assert.Equal(t, assetAmountToBeIssued.String(), mintOutput.AssetAmountToBeIssued.String())
+		assert.Equal(t, assetToBeIssued, mintOutput.AssetCodeToBeIssued)
+		assert.Equal(t, vThbIssuerAccount, mintOutput.AssetIssuerToBeMinted)
+		assert.Equal(t, vThbDistributorAccount, mintOutput.AssetDistributorToBeMinted)
 
 	})
 

@@ -3,16 +3,18 @@ package vtxnbuild
 import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 	"regexp"
 )
 
+// SetupCredit represents the Velo setup credit Operation.
 type SetupCredit struct {
 	PeggedValue    string
 	PeggedCurrency string
 	AssetCode      string
 }
 
+// BuildXDR for SetupCredit returns a fully configured XDR Operation.
 func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
 	if err := setupCredit.Validate(); err != nil {
 		return vxdr.VeloOp{}, err
@@ -38,6 +40,7 @@ func (setupCredit *SetupCredit) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
+// FromXDR for SetupCredit initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	setupCreditOp := vXdrOp.Body.SetupCreditOp
 	if setupCreditOp == nil {
@@ -51,6 +54,8 @@ func (setupCredit *SetupCredit) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
+// Validation function for SetupCredit. Validates the required struct fields. It returns an error if any of the fields are
+// invalid. Otherwise, it returns nil.
 func (setupCredit *SetupCredit) Validate() error {
 	if setupCredit.AssetCode == "" {
 		return errors.New("assetCode must not be blank")

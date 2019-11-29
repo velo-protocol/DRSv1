@@ -3,7 +3,7 @@ package stellar
 import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
-	"gitlab.com/velo-labs/cen/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
 )
 
 func (repo *repo) GetAccountData(stellarAddress string) (map[string]string, error) {

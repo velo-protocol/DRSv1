@@ -4,8 +4,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
-	"gitlab.com/velo-labs/cen/libs/client"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/libs/client"
 	"google.golang.org/grpc"
 	"net/http"
 )

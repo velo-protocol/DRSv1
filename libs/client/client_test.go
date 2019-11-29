@@ -9,9 +9,9 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/support/render/problem"
 	"github.com/stretchr/testify/assert"
-	cenGrpc "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,6 +31,7 @@ func TestNewPublicClient(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
 func TestNewTestNetClient(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		client, err := NewTestNetClient(&grpc.ClientConn{}, clientSecretKey)
@@ -162,6 +163,240 @@ func TestClient_executeVeloTx(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "cannot connect to horizon")
 		assert.NotNil(t, veloNodeResult)
+	})
+}
+
+func TestClient_Whitelist(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				WhitelistOpResponse: &cenGrpc.WhitelistOpResponse{
+					Address: whitelistingPublicKey,
+					Role:    string(vxdr.RoleRegulator),
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.Whitelist(context.Background(), vtxnbuild.Whitelist{
+			Address: whitelistingPublicKey,
+			Role:    string(vxdr.RoleRegulator),
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.NotEmpty(t, output.VeloNodeResult)
+		assert.NotEmpty(t, output.HorizonResult)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.Whitelist(context.Background(), vtxnbuild.Whitelist{})
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_SetupCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				SetupCreditOpResponse: &cenGrpc.SetupCreditOpResponse{
+					AssetIssuer:      assetIssuerToBeSetup,
+					AssetCode:        assetCodeToBeSetup,
+					AssetDistributor: assetDistributorToBeSetup,
+					PeggedValue:      peggedValue,
+					PeggedCurrency:   peggedCurrency,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{
+			PeggedValue:    peggedValue,
+			PeggedCurrency: peggedCurrency,
+			AssetCode:      assetCodeToBeSetup,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.NotEmpty(t, output.VeloNodeResult)
+		assert.NotEmpty(t, output.HorizonResult)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.SetupCredit(context.Background(), vtxnbuild.SetupCredit{})
+
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_PriceUpdate(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				PriceUpdateOpResponse: &cenGrpc.PriceUpdateOpResponse{
+					CollateralCode:              asset,
+					Currency:                    currency,
+					PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{
+			Asset:                       asset,
+			Currency:                    currency,
+			PriceInCurrencyPerAssetUnit: priceInCurrencyPerAssetUnit,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.Equal(t, asset, output.VeloNodeResult.CollateralCode)
+		assert.Equal(t, currency, output.VeloNodeResult.Currency)
+		assert.Equal(t, priceInCurrencyPerAssetUnit, output.VeloNodeResult.PriceInCurrencyPerAssetUnit)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.PriceUpdate(context.Background(), vtxnbuild.PriceUpdate{})
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_RedeemCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				RedeemCreditOpResponse: &cenGrpc.RedeemCreditOpResponse{
+					AssetCodeToBeRedeemed:   assetCodeToBeRedeemed,
+					AssetIssuerToBeRedeemed: assetIssuerToBeRedeemed,
+					AssetAmountToBeRedeemed: assetAmountToBeRedeemed,
+					CollateralCode:          collateralCode,
+					CollateralIssuer:        collateralIssuer,
+					CollateralAmount:        collateralAmount,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.RedeemCredit(context.Background(), vtxnbuild.RedeemCredit{
+			AssetCode: assetCodeToBeRedeemed,
+			Issuer:    assetIssuerToBeRedeemed,
+			Amount:    assetAmountToBeRedeemed,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+
+		assert.Equal(t, assetCodeToBeRedeemed, output.VeloNodeResult.AssetCodeToBeRedeemed)
+		assert.Equal(t, assetIssuerToBeRedeemed, output.VeloNodeResult.AssetIssuerToBeRedeemed)
+		assert.Equal(t, assetAmountToBeRedeemed, output.VeloNodeResult.AssetAmountToBeRedeemed)
+
+		assert.Equal(t, collateralCode, output.VeloNodeResult.CollateralCode)
+		assert.Equal(t, collateralIssuer, output.VeloNodeResult.CollateralIssuer)
+		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.RedeemCredit(context.Background(), vtxnbuild.RedeemCredit{})
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_MintCredit(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr: getSimpleBumpTxXdr(drsKp),
+				Message:            "Success",
+				MintCreditOpResponse: &cenGrpc.MintCreditOpResponse{
+					AssetCodeToBeIssued:   assetCodeToBeIssued,
+					AssetAmountToBeIssued: assetAmountToBeIssued,
+					CollateralAmount:      collateralAmount,
+					CollateralAssetCode:   asset,
+				},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.MintCredit(context.Background(), vtxnbuild.MintCredit{
+			AssetCodeToBeIssued: assetCodeToBeIssued,
+			CollateralAssetCode: asset,
+			CollateralAmount:    collateralAmount,
+		})
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+		assert.Equal(t, asset, output.VeloNodeResult.CollateralAssetCode)
+		assert.Equal(t, collateralAmount, output.VeloNodeResult.CollateralAmount)
+		assert.Equal(t, assetAmountToBeIssued, output.VeloNodeResult.AssetAmountToBeIssued)
+		assert.Equal(t, assetCodeToBeIssued, output.VeloNodeResult.AssetCodeToBeIssued)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		_, err := helper.client.MintCredit(context.Background(), vtxnbuild.MintCredit{})
+		assert.Error(t, err)
+	})
+}
+
+func TestClient_RebalanceReserve(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(&cenGrpc.VeloTxReply{
+				SignedStellarTxXdr:         getSimpleBumpTxXdr(drsKp),
+				Message:                    "Success",
+				RebalanceReserveOpResponse: &cenGrpc.RebalanceReserveOpResponse{},
+			}, nil)
+		helper.mockHorizonClient.
+			On("SubmitTransactionXDR", getSimpleBumpTxXdr(drsKp, clientKp)).
+			Return(horizon.TransactionSuccess{
+				Result: "AAAA...",
+			}, nil)
+
+		output, err := helper.client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
+		assert.NoError(t, err)
+		assert.NotEmpty(t, output)
+	})
+	t.Run("error, executeVeloTx returns an error", func(t *testing.T) {
+		helper := initTest(t)
+		helper.mockVeloNodeClient.EXPECT().
+			SubmitVeloTx(context.Background(), gomock.AssignableToTypeOf(&cenGrpc.VeloTxRequest{})).
+			Return(nil, errors.New("some error has occurred"))
+		_, err := helper.client.RebalanceReserve(context.Background(), vtxnbuild.RebalanceReserve{})
+		assert.Error(t, err)
 	})
 }
 

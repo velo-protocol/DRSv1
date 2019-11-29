@@ -1,4 +1,4 @@
-module gitlab.com/velo-labs/cen
+module github.com/velo-protocol/DRSv1
 
 go 1.12
 

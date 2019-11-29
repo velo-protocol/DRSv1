@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"gitlab.com/velo-labs/cen/libs/client"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/testkit/helper"
+	"github.com/velo-protocol/DRSv1/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/testkit/helper"
 	"log"
 )
 
@@ -31,4 +31,7 @@ func callPriceUpdate() {
 		panic(err)
 	}
 	log.Println(result.HorizonResult.TransactionSuccessToString())
+	log.Println("Collateral Code: ", result.VeloNodeResult.CollateralCode)
+	log.Println("Currency: ", result.VeloNodeResult.Currency)
+	log.Println("Price In Currency Per Asset Unit: ", result.VeloNodeResult.PriceInCurrencyPerAssetUnit)
 }

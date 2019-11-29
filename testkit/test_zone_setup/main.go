@@ -9,10 +9,10 @@ import (
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/client"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/testkit/helper"
+	"github.com/velo-protocol/DRSv1/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/testkit/helper"
 	"log"
 	"net/http"
 )
@@ -79,7 +79,6 @@ func main() {
 	tx := txnbuild.Transaction{
 		SourceAccount: &sourceAccount,
 		Operations: []txnbuild.Operation{
-			// TODO: add trust line of virtual credit to redeemer
 			&txnbuild.ChangeTrust{
 				SourceAccount: &horizon.Account{
 					AccountID: redeemer.Address(),
@@ -98,7 +97,6 @@ func main() {
 				},
 				Line: vSGD,
 			},
-			// TODO: add trust line of VELO to redeemer
 			&txnbuild.ChangeTrust{
 				SourceAccount: &horizon.Account{
 					AccountID: redeemer.Address(),
@@ -108,7 +106,6 @@ func main() {
 					Issuer: helper.VeloIssuerAddress,
 				},
 			},
-			// TODO: add trust line of VELO to TP
 			&txnbuild.ChangeTrust{
 				SourceAccount: &horizon.Account{
 					AccountID: tp.Address(),

@@ -3,9 +3,9 @@ package subusecases
 import (
 	"context"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
 )
 
 func (subUseCase *subUseCase) GetTrustedPartnerFromIssuerAccount(ctx context.Context, input *entities.GetTrustedPartnerFromIssuerAccountInput) (*entities.GetTrustedPartnerFromIssuerAccountOutput, error) {

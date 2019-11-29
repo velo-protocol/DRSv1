@@ -7,14 +7,14 @@ import (
 	"github.com/shopspring/decimal"
 	"github.com/stellar/go/amount"
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/convert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/errors"
-	"gitlab.com/velo-labs/cen/node/app/utils"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
+	"github.com/velo-protocol/DRSv1/node/app/utils"
 	"strconv"
 )
 
@@ -182,6 +182,12 @@ func (useCase *useCase) RedeemCredit(ctx context.Context, veloTx *vtxnbuild.Velo
 		}
 	}
 	return &entities.RedeemCreditOutput{
-		SignedStellarTxXdr: signedTx,
+		SignedStellarTxXdr:      signedTx,
+		AssetCodeToBeRedeemed:   op.AssetCode,
+		AssetIssuerToBeRedeemed: op.Issuer.Address(),
+		AssetAmountToBeRedeemed: decimal.New(int64(op.Amount), -7),
+		CollateralCode:          string(vxdr.AssetVELO),
+		CollateralIssuer:        env.VeloIssuerPublicKey,
+		CollateralAmount:        veloAmount.Truncate(7),
 	}, nil
 }

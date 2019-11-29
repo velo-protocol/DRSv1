@@ -1,6 +1,6 @@
 package vtxnbuild
 
-import "gitlab.com/velo-labs/cen/libs/convert"
+import "github.com/velo-protocol/DRSv1/libs/convert"
 
 const (
 	publicKey1 = "GBVI3QZYXCWQBSGZ4TNJOHDZ5KZYGZOVSE46TVAYJYTMNCGW2PWLWO73"

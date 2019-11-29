@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/extensions"
-	grpcDelivery "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
-	_stellarRepo "gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar"
-	"gitlab.com/velo-labs/cen/node/app/layers/subusecases"
-	"gitlab.com/velo-labs/cen/node/app/layers/usecases"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/extensions"
+	grpcDelivery "github.com/velo-protocol/DRSv1/node/app/layers/deliveries/grpc"
+	_stellarRepo "github.com/velo-protocol/DRSv1/node/app/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/node/app/layers/subusecases"
+	"github.com/velo-protocol/DRSv1/node/app/layers/usecases"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -36,14 +36,7 @@ func main() {
 
 	group, ctx := errgroup.WithContext(ctx)
 
-	grpcServer := grpc.NewServer(
-	// TODO: Add auth, log, correlation, etc. middleware?
-	//grpc.UnaryInterceptor(
-	//	grpc_middleware.ChainUnaryServer(
-	//		// TODO: Each middleware goes here
-	//	),
-	//),
-	)
+	grpcServer := grpc.NewServer()
 
 	healthServer := health.NewServer()
 	initHealthServer(group, healthServer)

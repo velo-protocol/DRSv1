@@ -5,16 +5,19 @@ import (
 )
 
 type MintCreditInput struct {
-	AssetToBeMinted     string
+	AssetCodeToBeMinted string
 	CollateralAssetCode string
 	CollateralAmount    string
 	Passphrase          string
 }
 
 type MintCreditOutput struct {
-	AssetToBeMinted     string
-	CollateralAssetCode string
-	CollateralAmount    string
-	SourceAddress       string
-	TxResult            *horizon.TransactionSuccess
+	AssetCodeToBeMinted        string
+	CollateralAssetCode        string
+	CollateralAmount           string
+	AssetIssuerToBeIssued      string
+	AssetDistributorToBeIssued string
+	AssetAmountToBeIssued      string
+	SourceAddress              string
+	TxResult                   *horizon.TransactionSuccess
 }

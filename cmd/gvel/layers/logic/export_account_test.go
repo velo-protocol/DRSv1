@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/crypto"
 	"testing"
 )
 

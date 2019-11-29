@@ -15,7 +15,7 @@ ENV GO111MODULE=on
 RUN apk update && apk add git mercurial bzr && apk add build-base
 
 # Set working directory
-WORKDIR /go/src/gitlab.com/velo-labs/cen
+WORKDIR /go/src/github.com/velo-protocol/DRSv1
 
 # Install Fresh for local development
 RUN go get github.com/pilu/fresh
@@ -33,6 +33,9 @@ RUN wget https://raw.githubusercontent.com/eficode/wait-for/master/wait-for -O /
 COPY go.mod go.mod
 COPY go.sum go.sum
 
+# Download dependency
+RUN go mod download
+
 # Copy src
 COPY node/app node/app
 COPY libs libs
@@ -46,10 +49,10 @@ CMD cd node/app && fresh
 # ------------------------------------------------------------------------------
 FROM golang:1.12.7-alpine3.10 as build
 
-WORKDIR /go/src/gitlab.com/velo-labs/cen
+WORKDIR /go/src/github.com/velo-protocol/DRSv1
 
 # Copy stuff from development stage
-COPY --from=development /go/src/gitlab.com/velo-labs/cen .
+COPY --from=development /go/src/github.com/velo-protocol/DRSv1 .
 
 # Update OS package and install Git
 RUN apk update && apk add git mercurial bzr && apk add build-base

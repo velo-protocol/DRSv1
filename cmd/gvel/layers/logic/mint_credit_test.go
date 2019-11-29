@@ -6,13 +6,26 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	vclient "gitlab.com/velo-labs/cen/libs/client"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	cenGrpc "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/client"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 	"testing"
 )
 
 func TestLogic_MintCredit(t *testing.T) {
+	var (
+		assetCodeToBeMint   = "kBEAM"
+		collateralAssetCode = "VELO"
+		collateralAmount    = "100"
+		passphrase          = "password"
+
+		assetAmountToBeIssued      = "100"
+		assetCodeToBeIssued        = "kBEAM"
+		assetIssuerToBeIssued      = "GBI..."
+		assetDistributorToBeIssued = "GAD..."
+	)
+
 	t.Run("happy", func(t *testing.T) {
 		helper := initTest(t)
 		defer helper.done()
@@ -30,19 +43,31 @@ func TestLogic_MintCredit(t *testing.T) {
 			MintCredit(context.Background(), gomock.AssignableToTypeOf(vtxnbuild.MintCredit{})).
 			Return(vclient.MintCreditResult{
 				HorizonResult: &horizon.TransactionSuccess{},
+				VeloNodeResult: &cenGrpc.MintCreditOpResponse{
+					AssetAmountToBeIssued:      assetAmountToBeIssued,
+					AssetCodeToBeIssued:        assetCodeToBeIssued,
+					AssetIssuerToBeIssued:      assetIssuerToBeIssued,
+					AssetDistributorToBeIssued: assetDistributorToBeIssued,
+					CollateralAmount:           collateralAmount,
+					CollateralAssetCode:        collateralAssetCode,
+				},
 			}, nil)
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
-			Passphrase:          "password",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
+			Passphrase:          passphrase,
 		})
 
 		assert.NoError(t, err)
-		assert.Equal(t, "THB", output.CollateralAssetCode)
-		assert.Equal(t, "100", output.CollateralAmount)
-		assert.Equal(t, "kBeam", output.AssetToBeMinted)
+		assert.Equal(t, collateralAssetCode, output.CollateralAssetCode)
+		assert.Equal(t, collateralAmount, output.CollateralAmount)
+		assert.Equal(t, assetCodeToBeMint, output.AssetCodeToBeMinted)
+		assert.Equal(t, assetCodeToBeIssued, output.AssetCodeToBeMinted)
+		assert.Equal(t, assetIssuerToBeIssued, output.AssetIssuerToBeIssued)
+		assert.Equal(t, assetDistributorToBeIssued, output.AssetDistributorToBeIssued)
+		assert.Equal(t, assetAmountToBeIssued, output.AssetAmountToBeIssued)
 		assert.Equal(t, stellarAccountEntity().Address, output.SourceAddress)
 	})
 
@@ -58,9 +83,9 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(nil, errors.New("some error has occurred"))
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
 			Passphrase:          "strong_password!",
 		})
 
@@ -81,9 +106,9 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(stellarAccountsBytes(), nil)
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
 			Passphrase:          "bad passphrase",
 		})
 
@@ -116,10 +141,10 @@ func TestLogic_MintCredit(t *testing.T) {
 			Return(vclient.MintCreditResult{}, errors.New("some error has occurred"))
 
 		output, err := helper.logic.MintCredit(&entity.MintCreditInput{
-			AssetToBeMinted:     "kBeam",
-			CollateralAssetCode: "THB",
-			CollateralAmount:    "100",
-			Passphrase:          "password",
+			AssetCodeToBeMinted: assetCodeToBeMint,
+			CollateralAssetCode: collateralAssetCode,
+			CollateralAmount:    collateralAmount,
+			Passphrase:          passphrase,
 		})
 
 		assert.Error(t, err)

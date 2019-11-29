@@ -4,9 +4,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	"github.com/stellar/go/clients/horizonclient"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/layers/repositories/stellar/models"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/layers/repositories/stellar/models"
 	"sort"
 	"time"
 )

@@ -2,9 +2,10 @@ package initialize
 
 import (
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 type CommandHandler struct {
@@ -23,7 +24,7 @@ func NewCommandHandler(logic logic.Logic, prompt console.Prompt, config config.C
 
 func (initCommand *CommandHandler) Command() *cobra.Command {
 	return &cobra.Command{
-		Use:   "init",
+		Use:   constants.CmdInit,
 		Short: "Use init command for initializing all configurations",
 		Run:   initCommand.Init,
 	}

@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/parser"
-	"gitlab.com/velo-labs/cen/libs/convert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/crypto"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/parser"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 )
 
 func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOutput, error) {
@@ -35,7 +35,7 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 	}
 
 	result, err := lo.Velo.Client(keyPair).MintCredit(context.Background(), vtxnbuild.MintCredit{
-		AssetCodeToBeIssued: input.AssetToBeMinted,
+		AssetCodeToBeIssued: input.AssetCodeToBeMinted,
 		CollateralAssetCode: input.CollateralAssetCode,
 		CollateralAmount:    input.CollateralAmount,
 	})
@@ -45,10 +45,13 @@ func (lo *logic) MintCredit(input *entity.MintCreditInput) (*entity.MintCreditOu
 	}
 
 	return &entity.MintCreditOutput{
-		AssetToBeMinted:     input.AssetToBeMinted,
-		CollateralAssetCode: input.CollateralAssetCode,
-		CollateralAmount:    input.CollateralAmount,
-		SourceAddress:       defaultAccount,
-		TxResult:            result.HorizonResult,
+		AssetCodeToBeMinted:        input.AssetCodeToBeMinted,
+		CollateralAssetCode:        input.CollateralAssetCode,
+		CollateralAmount:           input.CollateralAmount,
+		AssetIssuerToBeIssued:      result.VeloNodeResult.AssetIssuerToBeIssued,
+		AssetDistributorToBeIssued: result.VeloNodeResult.AssetDistributorToBeIssued,
+		AssetAmountToBeIssued:      result.VeloNodeResult.AssetAmountToBeIssued,
+		SourceAddress:              defaultAccount,
+		TxResult:                   result.HorizonResult,
 	}, nil
 }

@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	spec "gitlab.com/velo-labs/cen/grpc"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	spec "github.com/velo-protocol/DRSv1/grpc"
 )
 
 func (lo *logic) GetExchangeRate(input *entity.GetExchangeRateInput) (*entity.GetExchangeRateOutput, error) {

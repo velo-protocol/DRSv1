@@ -3,8 +3,8 @@ package vclient
 import (
 	"context"
 	"github.com/stellar/go/keypair"
-	cenGrpc "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 )
 
 type ClientInterface interface {
@@ -18,6 +18,6 @@ type ClientInterface interface {
 	RedeemCredit(ctx context.Context, veloOp vtxnbuild.RedeemCredit) (RedeemCreditResult, error)
 	RebalanceReserve(ctx context.Context, veloOp vtxnbuild.RebalanceReserve) (RebalanceReserveResult, error)
 
-	GetExchangeRate(ctx context.Context, request *cenGrpc.GetExchangeRateRequest) (*cenGrpc.GetExchangeRateReply, error)
-	GetCollateralHealthCheck(ctx context.Context, request *cenGrpc.GetCollateralHealthCheckRequest) (*cenGrpc.GetCollateralHealthCheckReply, error)
+	GetExchangeRate(ctx context.Context, request *spec.GetExchangeRateRequest) (*spec.GetExchangeRateReply, error)
+	GetCollateralHealthCheck(ctx context.Context, request *spec.GetCollateralHealthCheckRequest) (*spec.GetCollateralHealthCheckReply, error)
 }

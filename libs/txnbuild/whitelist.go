@@ -3,15 +3,17 @@ package vtxnbuild
 import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/strkey"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 )
 
+// Whitelist represents the Velo whitelist Operation.
 type Whitelist struct {
 	Address  string
 	Role     string
 	Currency string
 }
 
+// BuildXDR for Whitelist returns a fully configured XDR Operation.
 func (whitelist *Whitelist) BuildXDR() (vxdr.VeloOp, error) {
 	if err := whitelist.Validate(); err != nil {
 		return vxdr.VeloOp{}, err
@@ -36,6 +38,7 @@ func (whitelist *Whitelist) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
+// FromXDR for Whitelist initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (whitelist *Whitelist) FromXDR(vXdrOp vxdr.VeloOp) error {
 	whitelistOp := vXdrOp.Body.WhitelistOp
 	if whitelistOp == nil {
@@ -49,6 +52,8 @@ func (whitelist *Whitelist) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
+// Validation function for Whitelist. Validates the required struct fields. It returns an error if any of the fields are
+// invalid. Otherwise, it returns nil.
 func (whitelist *Whitelist) Validate() error {
 	if whitelist.Address == "" {
 		return errors.New("address must not be blank")
@@ -66,10 +71,8 @@ func (whitelist *Whitelist) Validate() error {
 		return errors.New("role specified does not exist")
 	}
 
-	if whitelist.Currency != "" {
-		if !vxdr.Currency(whitelist.Currency).IsValid() {
-			return errors.Errorf("currency %s does not exist", whitelist.Currency)
-		}
+	if whitelist.Currency != "" && !vxdr.Currency(whitelist.Currency).IsValid() {
+		return errors.Errorf("currency %s does not exist", whitelist.Currency)
 	}
 
 	return nil

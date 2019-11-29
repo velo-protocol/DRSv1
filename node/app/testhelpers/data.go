@@ -1,8 +1,8 @@
 package testhelpers
 
 import (
-	"gitlab.com/velo-labs/cen/libs/convert"
-	"gitlab.com/velo-labs/cen/node/app/entities"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
 )
 
 const (

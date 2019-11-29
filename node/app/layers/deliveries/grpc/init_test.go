@@ -2,9 +2,9 @@ package grpc_test
 
 import (
 	"github.com/golang/mock/gomock"
-	"gitlab.com/velo-labs/cen/grpc"
-	_handler "gitlab.com/velo-labs/cen/node/app/layers/deliveries/grpc"
-	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
+	"github.com/velo-protocol/DRSv1/grpc"
+	_handler "github.com/velo-protocol/DRSv1/node/app/layers/deliveries/grpc"
+	"github.com/velo-protocol/DRSv1/node/app/layers/mocks"
 	"testing"
 )
 

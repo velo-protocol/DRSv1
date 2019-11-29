@@ -2,9 +2,9 @@ package subusecases_test
 
 import (
 	"github.com/golang/mock/gomock"
-	"gitlab.com/velo-labs/cen/node/app/layers/mocks"
-	"gitlab.com/velo-labs/cen/node/app/layers/subusecases"
-	"gitlab.com/velo-labs/cen/node/app/testhelpers"
+	"github.com/velo-protocol/DRSv1/node/app/layers/mocks"
+	"github.com/velo-protocol/DRSv1/node/app/layers/subusecases"
+	"github.com/velo-protocol/DRSv1/node/app/testhelpers"
 	"testing"
 )
 

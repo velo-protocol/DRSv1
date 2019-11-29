@@ -34,5 +34,5 @@ func makeXdrViewerUrl(envelope string, horizonUrl string, network string) string
 		Host:     "www.stellar.org",
 		Path:     "laboratory",
 		Fragment: "xdr-viewer",
-	}).String() + fragmentQuery // Todo: cannot push it inside url because it repeat encode with .String() function, refactor if we can
+	}).String() + fragmentQuery
 }

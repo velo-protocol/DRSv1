@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	spec "gitlab.com/velo-labs/cen/grpc"
+	spec "github.com/velo-protocol/DRSv1/grpc"
 )
 
 func (handler handler) GetCollateralHealthCheck(ctx context.Context, empty *spec.GetCollateralHealthCheckRequest) (*spec.GetCollateralHealthCheckReply, error) {

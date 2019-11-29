@@ -1,93 +1,30 @@
-#Velo Centralized
-1. Node - the deployable Velo Node
-2. Libraries - xdr encoding/decoding, errors, types
 
-## Project Structure
-```
-.
-|-- grpc
-|-- libs
-|   |-- crypto
-|   |   `-- crypto.go
-|   |-- errors
-|   |   `-- errors.go
-|   |-- types
-|   |   `-- types.go
-|   `-- xdr
-|       `-- xdr.go
-|-- node
-|   |-- app
-|   |   |-- constants
-|   |   |   `-- strings.go
-|   |   |-- entities
-|   |   |   `-- credit.go
-|   |   |-- environments
-|   |   |   `-- env.go
-|   |   |-- extensions
-|   |   |   |-- horizon.go
-|   |   |-- layers
-|   |   |   |-- deliveries
-|   |   |   |   `-- grpc
-|   |   |   |       |-- check.go
-|   |   |   |       |-- init.go
-|   |   |   |       `-- watch.go
-|   |   |   |-- repositories
-|   |   |   |   |-- stellar
-|   |   |   |   |   |-- build_mint_tx.go
-|   |   |   |   |   |-- build_setup_tx.go
-|   |   |   |   |   |-- init.go
-|   |   |   |   |   |-- interface.go
-|   |   |   |   |   |-- load_account.go
-|   |   |   |   |   `-- submit_transaction.go
-|   |   |   |   `-- whitelist
-|   |   |   `-- usecases
-|   |   |       |-- init.go
-|   |   |       |-- interface.go
-|   |   |       |-- mint.go
-|   |   |       |-- setup_account.go
-|   |   |       `-- setup_account_test.go
-|   |   |-- migrations
-|   |   |-- test_helpers
-|   |   |   |-- data.go
-|   |   |   |-- init.go
-|   |   |   `-- stellar.go
-|   |   |-- tmp
-|   |   |   `-- runner-build
-|   |   |-- utils
-|   |   |   |-- keypair.go
-|   |   |   |-- keypair_test.go
-|   |   |   |-- response.go
-|   |   |   `-- response_test.go
-|   |   `-- main.go
-|   |-- resources
-|   |   `-- docker
-|   |       `-- docker-compose.yaml
-|   |-- tmp
-|   |-- Dockerfile
-|   `-- Makefile
-|-- README.md
-|-- go.mod
-`-- go.sum
-```
+<div align="center">
+<a href="https://velo.org"><img alt="Stellar" src="https://raw.githubusercontent.com/velo-protocol/assets/master/images/logo.png" width="368" /></a>
+<br/>
+<h1>VELO DRS</h1>
+</div>
 
+[![GoDoc](https://godoc.org/github.com/velo-protocol/DRSv1?status.svg)](https://godoc.org/github.com/velo-protocol/DRSv1)  [![Go Report Card](https://goreportcard.com/badge/github.com/velo-protocol/DRSv1)](https://goreportcard.com/report/github.com/velo-protocol/DRSv1)
 
-###Troubleshoot
+## Package Index
+- [Node](node) : the deployable Velo Node
+- [Go Velo SDK - vclient](libs/client) : Client for Velo Node (queries and transaction submission)
+- [Go Velo SDK - vtxnbuild](libs/txnbuild) : Construct Velo transactions and operations
+- [Go Velo CLI]() : Cli for Velo Node
+- [Document](https://docs.velo.org/) : Velo documentation
+ 
+### Dependencies
+This repository is officially supported on the last two releases of Go, which is currently Go 1.12 and Go 1.13.
+
+It depends on a [number of external dependencies](go.mod), and uses Go [Modules](https://github.com/golang/go/wiki/Modules) to manage them. Running any `go` command will automatically download dependencies required for that operation.
+
+You can choose to checkout this repository into a [GOPATH](https://github.com/golang/go/wiki/GOPATH) or into any directory, but if you are using a GOPATH with Go 1.12 or earlier you must set environment variable `GO111MODULE=on` to enable Modules.
+
+### Troubleshoot
 - If `go mod download` or `go mod tidy` fail, try
 ```bash
 brew install hg
 brew install bzr
-```
-
-- To consume `cen/node`'s api via command line, it is recommended to use grpCurl.
-```bash
-grpcurl -plaintext \
-    -d '{"signedVeloTxXdr":"AAAA..."}' \
-    localhost:8080  grpc.VeloNode/SubmitVeloTx
-
-# if reflection api is not enabled, supply --proto flag
-grpcurl -plaintext \
-    -d '{"signedVeloTxXdr":"AAAA..."}' \
-    --proto ./grpc/velo_node.proto \
-    localhost:8080  grpc.VeloNode/SubmitVeloTx
 ```
 

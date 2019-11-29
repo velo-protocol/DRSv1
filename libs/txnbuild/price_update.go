@@ -3,15 +3,17 @@ package vtxnbuild
 import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/amount"
-	"gitlab.com/velo-labs/cen/libs/xdr"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
 )
 
+// PriceUpdate represents the Velo price update Operation.
 type PriceUpdate struct {
 	Asset                       string
 	Currency                    string
 	PriceInCurrencyPerAssetUnit string
 }
 
+// BuildXDR for PriceUpdate returns a fully configured XDR Operation.
 func (priceUpdate *PriceUpdate) BuildXDR() (vxdr.VeloOp, error) {
 	if err := priceUpdate.Validate(); err != nil {
 		return vxdr.VeloOp{}, err
@@ -37,6 +39,7 @@ func (priceUpdate *PriceUpdate) BuildXDR() (vxdr.VeloOp, error) {
 	return vxdr.VeloOp{Body: body}, nil
 }
 
+// FromXDR for PriceUpdate initialises the vtxnbuild struct from the corresponding XDR Operation.
 func (priceUpdate *PriceUpdate) FromXDR(vXdrOp vxdr.VeloOp) error {
 	priceUpdateOp := vXdrOp.Body.PriceUpdateOp
 	if priceUpdateOp == nil {
@@ -50,6 +53,8 @@ func (priceUpdate *PriceUpdate) FromXDR(vXdrOp vxdr.VeloOp) error {
 	return nil
 }
 
+// Validation function for PriceUpdate. Validates the required struct fields. It returns an error if any of the fields are
+// invalid. Otherwise, it returns nil.
 func (priceUpdate *PriceUpdate) Validate() error {
 	if priceUpdate.Asset == "" {
 		return errors.New("asset must not be blank")

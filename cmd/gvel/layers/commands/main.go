@@ -2,14 +2,14 @@ package commands
 
 import (
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/account"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/collateral"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/credit"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/commands/initialize"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/logic"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/config"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
-	"log"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/constants"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/account"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/collateral"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/credit"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/commands/initialize"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/logic"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/config"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 type GvelHandler struct {
@@ -34,10 +34,7 @@ func NewGvelHandler(logic logic.Logic, config config.Configuration) *GvelHandler
 
 func NewGvelRootCommand() *cobra.Command {
 	return &cobra.Command{
-		Use: "gvel",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			log.Println("IMPORTANT NOTICE: Heavily WIP, expect anything.")
-		},
+		Use: constants.CmdRootGvel,
 	}
 }
 

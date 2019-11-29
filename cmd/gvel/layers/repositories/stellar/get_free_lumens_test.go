@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/velo-labs/cen/cmd/gvel/layers/repositories/stellar"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/layers/repositories/stellar"
 	"testing"
 )
 

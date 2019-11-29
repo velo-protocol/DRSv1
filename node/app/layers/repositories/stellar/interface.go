@@ -3,7 +3,7 @@ package stellar
 import (
 	"github.com/shopspring/decimal"
 	"github.com/stellar/go/protocols/horizon"
-	"gitlab.com/velo-labs/cen/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
 )
 
 type Repo interface {

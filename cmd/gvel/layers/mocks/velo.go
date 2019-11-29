@@ -7,7 +7,7 @@ package mocks
 import (
 	gomock "github.com/golang/mock/gomock"
 	keypair "github.com/stellar/go/keypair"
-	client "gitlab.com/velo-labs/cen/libs/client"
+	client "github.com/velo-protocol/DRSv1/libs/client"
 	reflect "reflect"
 )
 

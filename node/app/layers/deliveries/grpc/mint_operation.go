@@ -3,10 +3,10 @@ package grpc
 import (
 	"context"
 	"fmt"
-	spec "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/errors"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
 )
 
 func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*spec.VeloTxReply, error) {
@@ -22,14 +22,25 @@ func (handler *handler) handleMintCreditOperation(ctx context.Context, veloTx *v
 		return nil, err.GRPCError()
 	}
 
+	assetAmountToBeIssued := mintCreditOutput.AssetAmountToBeIssued.Truncate(7).StringFixed(7)
+	collateralAmount := mintCreditOutput.CollateralAmount.Truncate(7).StringFixed(7)
+
 	return &spec.VeloTxReply{
 		SignedStellarTxXdr: mintCreditOutput.SignedStellarTxXdr,
 		Message: fmt.Sprintf(
 			constants.ReplyMintCreditSuccess,
-			mintCreditOutput.MintAmount.Truncate(7).StringFixed(7),
-			mintCreditOutput.MintCurrency,
-			mintCreditOutput.CollateralAmount.Truncate(7).StringFixed(7),
-			mintCreditOutput.CollateralAsset,
+			assetAmountToBeIssued,
+			mintCreditOutput.AssetCodeToBeIssued,
+			collateralAmount,
+			mintCreditOutput.CollateralAssetCode,
 		),
+		MintCreditOpResponse: &spec.MintCreditOpResponse{
+			AssetAmountToBeIssued:      assetAmountToBeIssued,
+			AssetCodeToBeIssued:        mintCreditOutput.AssetCodeToBeIssued,
+			AssetIssuerToBeIssued:      mintCreditOutput.AssetIssuerToBeMinted,
+			AssetDistributorToBeIssued: mintCreditOutput.AssetDistributorToBeMinted,
+			CollateralAmount:           collateralAmount,
+			CollateralAssetCode:        mintCreditOutput.CollateralAssetCode,
+		},
 	}, nil
 }

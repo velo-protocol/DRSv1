@@ -2,14 +2,14 @@ package credit
 
 import (
 	"github.com/spf13/cobra"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/console"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/console"
 )
 
 func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 
 	mintCreditInput := &entity.MintCreditInput{
-		AssetToBeMinted:     creditCommand.Prompt.RequestString("Please input asset code of credit to be minted", nil),
+		AssetCodeToBeMinted: creditCommand.Prompt.RequestString("Please input asset code of credit to be minted", nil),
 		CollateralAssetCode: creditCommand.Prompt.RequestString("Please input asset code of collateral", nil),
 		CollateralAmount:    creditCommand.Prompt.RequestString("Please input amount of collateral", nil),
 		Passphrase:          creditCommand.Prompt.RequestHiddenString("🔑 Please input passphrase", nil),
@@ -23,6 +23,11 @@ func (creditCommand *CommandHandler) Mint(cmd *cobra.Command, args []string) {
 		console.ExitWithError(console.ExitError, err)
 	}
 
-	console.Logger.Infof("%s minted successfully.", output.AssetToBeMinted)
+	console.Logger.Infof(
+		"%s %s minted successfully. The stable credit is in %s",
+		output.AssetAmountToBeIssued,
+		output.AssetCodeToBeMinted,
+		output.AssetDistributorToBeIssued,
+	)
 	console.Logger.Infof("🔗 Stellar Transaction Hash: %s", output.TxResult.Hash)
 }

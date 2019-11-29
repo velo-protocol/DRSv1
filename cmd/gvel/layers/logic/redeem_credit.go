@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
-	"gitlab.com/velo-labs/cen/cmd/gvel/entity"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/crypto"
-	"gitlab.com/velo-labs/cen/cmd/gvel/utils/parser"
-	"gitlab.com/velo-labs/cen/libs/convert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/entity"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/crypto"
+	"github.com/velo-protocol/DRSv1/cmd/gvel/utils/parser"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
 )
 
 func (lo *logic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCreditOutput, error) {
@@ -35,9 +35,9 @@ func (lo *logic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCr
 	}
 
 	result, err := lo.Velo.Client(keyPair).RedeemCredit(context.Background(), vtxnbuild.RedeemCredit{
-		AssetCode: input.AssetCode,
-		Issuer:    input.AssetIssuer,
-		Amount:    input.Amount,
+		AssetCode: input.AssetCodeToBeRedeemed,
+		Issuer:    input.AssetIssuerToBeRedeemed,
+		Amount:    input.AmountToBeRedeemed,
 	})
 	if err != nil {
 		err = parser.ParseHorizonError(err, lo.AppConfig.GetHorizonUrl(), lo.AppConfig.GetNetworkPassphrase())
@@ -45,9 +45,12 @@ func (lo *logic) RedeemCredit(input *entity.RedeemCreditInput) (*entity.RedeemCr
 	}
 
 	return &entity.RedeemCreditOutput{
-		AssetCode:   input.AssetCode,
-		AssetIssuer: input.AssetIssuer,
-		Amount:      input.Amount,
-		TxResult:    result.HorizonResult,
+		AssetCodeToBeRedeemed:   input.AssetCodeToBeRedeemed,
+		AssetIssuerToBeRedeemed: input.AssetIssuerToBeRedeemed,
+		AmountToBeRedeemed:      input.AmountToBeRedeemed,
+		CollateralCode:          result.VeloNodeResult.CollateralCode,
+		CollateralIssuer:        result.VeloNodeResult.CollateralIssuer,
+		CollateralAmount:        result.VeloNodeResult.CollateralAmount,
+		TxResult:                result.HorizonResult,
 	}, nil
 }

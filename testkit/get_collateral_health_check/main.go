@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	cenGrpc "gitlab.com/velo-labs/cen/grpc"
-	"gitlab.com/velo-labs/cen/libs/client"
+	spec "github.com/velo-protocol/DRSv1/grpc"
+	"github.com/velo-protocol/DRSv1/libs/client"
 	"log"
 )
 
@@ -17,7 +17,7 @@ func main() {
 		_ = client.Close()
 	}()
 
-	getCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &cenGrpc.GetCollateralHealthCheckRequest{})
+	getCollateralHealthCheck, err := client.GetCollateralHealthCheck(context.Background(), &spec.GetCollateralHealthCheckRequest{})
 	if err != nil {
 		panic(err)
 	}

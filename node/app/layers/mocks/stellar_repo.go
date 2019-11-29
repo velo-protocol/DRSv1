@@ -8,7 +8,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	decimal "github.com/shopspring/decimal"
 	horizon "github.com/stellar/go/protocols/horizon"
-	entities "gitlab.com/velo-labs/cen/node/app/entities"
+	entities "github.com/velo-protocol/DRSv1/node/app/entities"
 	reflect "reflect"
 )
 

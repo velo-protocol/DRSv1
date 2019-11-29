@@ -6,14 +6,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	"github.com/stellar/go/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/convert"
-	"gitlab.com/velo-labs/cen/libs/txnbuild"
-	"gitlab.com/velo-labs/cen/libs/xdr"
-	"gitlab.com/velo-labs/cen/node/app/constants"
-	"gitlab.com/velo-labs/cen/node/app/entities"
-	"gitlab.com/velo-labs/cen/node/app/environments"
-	"gitlab.com/velo-labs/cen/node/app/errors"
-	"gitlab.com/velo-labs/cen/node/app/utils"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
+	"github.com/velo-protocol/DRSv1/node/app/utils"
 	"strconv"
 	"strings"
 )
@@ -139,7 +139,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 	collateralAsset := string(op.CollateralAssetCode)
 	collateralAssetIssuer := env.VeloIssuerPublicKey
 
-	mintAmount := collateralAmount.Mul(medianPrice).Div(peggedValue).Truncate(7)
+	assetAmountToBeIssued := collateralAmount.Mul(medianPrice).Div(peggedValue).Truncate(7)
 
 	drsKp, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
 	if err != nil {
@@ -164,7 +164,7 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 			},
 			&txnbuild.Payment{
 				Destination: distributionAccount,
-				Amount:      mintAmount.String(),
+				Amount:      assetAmountToBeIssued.String(),
 				Asset: txnbuild.CreditAsset{
 					Code:   op.AssetCodeToBeIssued,
 					Issuer: issuerAccount,
@@ -182,10 +182,12 @@ func (useCase *useCase) MintCredit(ctx context.Context, veloTx *vtxnbuild.VeloTx
 		}
 	}
 	return &entities.MintCreditOutput{
-		SignedStellarTxXdr: signedTx,
-		MintAmount:         mintAmount,
-		MintCurrency:       op.AssetCodeToBeIssued,
-		CollateralAmount:   collateralAmount,
-		CollateralAsset:    collateralAsset,
+		SignedStellarTxXdr:         signedTx,
+		AssetAmountToBeIssued:      assetAmountToBeIssued,
+		AssetCodeToBeIssued:        op.AssetCodeToBeIssued,
+		AssetIssuerToBeMinted:      issuerAccount,
+		AssetDistributorToBeMinted: distributionAccount,
+		CollateralAmount:           collateralAmount,
+		CollateralAssetCode:        collateralAsset,
 	}, nil
 }

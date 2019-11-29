@@ -14,7 +14,7 @@ docker/local/down:
 	docker-compose -f resources/docker/docker-compose.yaml down
 
 test/run:
-	export GIN_MODE=release && go test ./app/... -v -coverprofile .coverage.txt
+	go test ./app/... -v -coverprofile .coverage.txt
 	go tool cover -func .coverage.txt
 
 test/run-debug:
@@ -54,21 +54,21 @@ mockgen/repo:
 		-destination=./app/layers/mocks/$(m)_repo.go \
 		-package mocks \
 		-mock_names Repo=Mock$(M)Repo \
-		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
+		-imports vxdr=github.com/velo-protocol/DRSv1/libs/xdr,nerrors=github.com/velo-protocol/DRSv1/node/app/errors,vtxnbuild=github.com/velo-protocol/DRSv1/libs/txnbuild
 
 mockgen/usecase:
 	mockgen \
 		-source=./app/layers/usecases/interface.go \
 		-destination=./app/layers/mocks/usecases.go \
 		-package mocks \
-		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
+		-imports vxdr=github.com/velo-protocol/DRSv1/libs/xdr,nerrors=github.com/velo-protocol/DRSv1/node/app/errors,vtxnbuild=github.com/velo-protocol/DRSv1/libs/txnbuild
 
 mockgen/subusecase:
 	mockgen \
 		-source=./app/layers/subusecases/interface.go \
 		-destination=./app/layers/mocks/subusecases.go \
 		-package mocks \
-		-imports vxdr=gitlab.com/velo-labs/cen/libs/xdr,nerrors=gitlab.com/velo-labs/cen/node/app/errors,vtxnbuild=gitlab.com/velo-labs/cen/libs/txnbuild
+		-imports vxdr=github.com/velo-protocol/DRSv1/libs/xdr,nerrors=github.com/velo-protocol/DRSv1/node/app/errors,vtxnbuild=github.com/velo-protocol/DRSv1/libs/txnbuild
 
 mockgen/all:
 	make mockgen/usecase
