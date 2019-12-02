@@ -6,7 +6,7 @@ import (
 	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	"github.com/velo-protocol/DRSv1/libs/convert"
-	_operations "github.com/velo-protocol/DRSv1/tools/setup_drs_accounts/operations"
+	_operations "github.com/velo-protocol/DRSv1/tools/shared/setup_drs_accounts/operations"
 	"log"
 )
 
