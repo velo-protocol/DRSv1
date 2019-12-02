@@ -1,13 +1,13 @@
 vendor
-tmp
-app/app
-app/tmp
+node/app/tmp
+node/app/app
 coverage.out
 .coverage.txt
-resources/docker/postgres/db
+cmd/gvel/gvel
 
 # IntelliJ project files
 .idea
 *.iml
 out
 gen
+.scannerwork

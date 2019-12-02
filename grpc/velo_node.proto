@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package grpc;
+
+service VeloNode {
+    rpc SubmitVeloTx (VeloTxRequest) returns (VeloTxReply) {
+    }
+    rpc GetExchangeRate (GetExchangeRateRequest) returns (GetExchangeRateReply) {
+    }
+    rpc GetCollateralHealthCheck (GetCollateralHealthCheckRequest) returns (GetCollateralHealthCheckReply) {
+    }
+}
+
+message VeloTxRequest {
+    string signedVeloTxXdr = 1;
+}
+
+message VeloTxReply {
+    string signedStellarTxXdr = 1;
+    string message = 2;
+
+    WhitelistOpResponse whitelistOpResponse = 3;
+    SetupCreditOpResponse setupCreditOpResponse = 4;
+    PriceUpdateOpResponse priceUpdateOpResponse = 5;
+    MintCreditOpResponse mintCreditOpResponse = 6;
+    RedeemCreditOpResponse redeemCreditOpResponse = 7;
+    RebalanceReserveOpResponse rebalanceReserveOpResponse = 8;
+}
+
+message WhitelistOpResponse {
+    string address = 1;
+    string role = 2;
+    string currency = 3;
+    string trustedPartnerMetaAddress = 4;
+}
+
+message SetupCreditOpResponse {
+    string assetIssuer = 1;
+    string assetDistributor = 2;
+    string assetCode = 3;
+    string peggedValue = 4;
+    string peggedCurrency = 5;
+}
+
+message PriceUpdateOpResponse {
+    string collateralCode = 1;
+    string currency = 2;
+    string priceInCurrencyPerAssetUnit = 3;
+}
+
+message MintCreditOpResponse {
+    string assetAmountToBeIssued = 1;
+    string assetCodeToBeIssued = 2;
+    string assetIssuerToBeIssued = 3;
+    string assetDistributorToBeIssued = 4;
+    string collateralAmount = 5;
+    string collateralAssetCode = 6;
+}
+
+message RedeemCreditOpResponse {
+    string assetCodeToBeRedeemed = 1;
+    string assetIssuerToBeRedeemed = 2;
+    string assetAmountToBeRedeemed = 3;
+    string collateralCode = 4;
+    string collateralIssuer = 5;
+    string collateralAmount = 6;
+}
+
+message RebalanceReserveOpResponse {
+}
+
+message GetExchangeRateRequest {
+    string assetCode = 1;
+    string issuer = 2;
+}
+
+message GetExchangeRateReply {
+    string assetCode = 1;
+    string issuer = 2;
+    string redeemableCollateral = 3;
+    string redeemablePricePerUnit = 4;
+}
+
+message GetCollateralHealthCheckRequest {
+}
+
+message GetCollateralHealthCheckReply {
+    string assetCode = 1;
+    string assetIssuer = 2;
+    string requiredAmount = 3;
+    string poolAmount = 4;
+}

@@ -1,0 +1,262 @@
+package usecases
+
+import (
+	"context"
+	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
+	"github.com/stellar/go/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/convert"
+	"github.com/velo-protocol/DRSv1/libs/txnbuild"
+	"github.com/velo-protocol/DRSv1/libs/xdr"
+	"github.com/velo-protocol/DRSv1/node/app/constants"
+	"github.com/velo-protocol/DRSv1/node/app/entities"
+	"github.com/velo-protocol/DRSv1/node/app/environments"
+	"github.com/velo-protocol/DRSv1/node/app/errors"
+	"strings"
+	"sync"
+)
+
+func (useCase *useCase) RebalanceReserve(ctx context.Context, veloTx *vtxnbuild.VeloTx) (*entities.RebalanceOutput, nerrors.NodeError) {
+	if err := veloTx.VeloOp.Validate(); err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+
+	txSenderPublicKey := veloTx.TxEnvelope().VeloTx.SourceAccount.Address()
+	txSenderKeyPair, err := vconvert.PublicKeyToKeyPair(txSenderPublicKey)
+	if err != nil {
+		return nil, nerrors.ErrInvalidArgument{Message: err.Error()}
+	}
+	if veloTx.TxEnvelope().Signatures == nil {
+		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotFound}
+	}
+	if txSenderKeyPair.Hint() != veloTx.TxEnvelope().Signatures[0].Hint {
+		return nil, nerrors.ErrUnAuthenticated{Message: constants.ErrSignatureNotMatchSourceAccount}
+	}
+
+	// get tx sender account
+	txSenderAccount, err := useCase.StellarRepo.GetAccount(veloTx.SourceAccount.GetAccountID())
+	if err != nil {
+		return nil, nerrors.ErrNotFound{
+			Message: errors.Wrap(err, constants.ErrGetSenderAccount).Error(),
+		}
+	}
+
+	// get drs collateral account
+	drsCollateralAccount, err := useCase.StellarRepo.GetDrsAccountData()
+	if err != nil {
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, constants.ErrGetDrsAccountData).Error(),
+		}
+	}
+
+	// get median price thb
+	medianPriceThb, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsCollateralAccount.PriceThbVeloAddress)
+	if err != nil {
+		return nil, nerrors.ErrPrecondition{
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
+		}
+	}
+
+	// get median price usd
+	medianPriceUsd, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsCollateralAccount.PriceUsdVeloAddress)
+	if err != nil {
+		return nil, nerrors.ErrPrecondition{
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
+		}
+	}
+
+	// get median price sgd
+	medianPriceSgd, err := useCase.StellarRepo.GetMedianPriceFromPriceAccount(drsCollateralAccount.PriceSgdVeloAddress)
+	if err != nil {
+		return nil, nerrors.ErrPrecondition{
+			Message: errors.Wrap(err, constants.ErrGetPriceOfPeggedCurrency).Error(),
+		}
+	}
+
+	// get tp list data
+	tpListData, err := useCase.StellarRepo.GetAccountDecodedData(drsCollateralAccount.TrustedPartnerListAddress)
+	if err != nil {
+		return nil, nerrors.ErrPrecondition{
+			Message: errors.Wrap(err, constants.ErrGetTrustedPartnerListAccountData).Error(),
+		}
+	}
+
+	var drsCollateralRequiredAmount = decimal.Zero
+
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(len(tpListData))
+	var waitGroupErr nerrors.NodeError
+	// calculate drs collateral required amount
+	for _, tpMetaAddress := range tpListData {
+		go func(tpMetaAddress string) {
+			defer func() {
+				if r := recover(); r != nil {
+					waitGroupErr = r.(nerrors.NodeError)
+				}
+				waitGroup.Done()
+			}()
+			tpMetaData, err := useCase.StellarRepo.GetAccountDecodedData(tpMetaAddress)
+			if err != nil {
+				panic(nerrors.ErrPrecondition{
+					Message: errors.Wrap(err, constants.ErrGetTrustedPartnerMetaAccountDetail).Error(),
+				})
+			}
+
+			// calculate drs collateral required amount per tp
+			var collateralPerTp = decimal.Zero
+			for stableCredit := range tpMetaData {
+				assetDetail := strings.Split(stableCredit, "_")
+				if len(assetDetail) != 2 {
+					panic(nerrors.ErrPrecondition{Message: constants.ErrVerifyAssetCode})
+				}
+
+				issuerAccount, err := useCase.SubUseCase.GetIssuerAccount(ctx, &entities.GetIssuerAccountInput{IssuerAddress: assetDetail[1]})
+				if err != nil {
+					panic(nerrors.ErrPrecondition{Message: errors.Wrap(err, constants.ErrGetIssuerAccount).Error()})
+				}
+
+				assetPage, err := useCase.StellarRepo.GetAsset(entities.GetAssetInput{
+					AssetCode:   assetDetail[0],
+					AssetIssuer: assetDetail[1],
+				})
+				if err != nil {
+					panic(nerrors.ErrPrecondition{Message: errors.Wrapf(err, constants.ErrGetAsset, assetDetail[0]).Error()})
+				}
+
+				if len(assetPage.Embedded.Records) < 1 {
+					continue
+				}
+				stableAmount, err := decimal.NewFromString(assetPage.Embedded.Records[0].Amount)
+				if err != nil {
+					panic(nerrors.ErrPrecondition{Message: errors.Wrapf(err, "invalid stable amount format").Error()})
+				}
+
+				var collateralPerCredit decimal.Decimal
+				switch vxdr.Currency(issuerAccount.PeggedCurrency) {
+				case vxdr.CurrencyTHB:
+					collateralPerCredit = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceThb)
+				case vxdr.CurrencySGD:
+					collateralPerCredit = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceSgd)
+				case vxdr.CurrencyUSD:
+					collateralPerCredit = stableAmount.Mul(issuerAccount.PeggedValue).Div(medianPriceUsd)
+				default:
+					panic(nerrors.ErrInternal{Message: constants.ErrPeggedCurrencyIsNotSupport})
+				}
+				// sum total drs collateral required amount of tp
+				collateralPerTp = collateralPerTp.Add(collateralPerCredit)
+			}
+			// sum total drs collateral required amount
+			drsCollateralRequiredAmount = drsCollateralRequiredAmount.Add(collateralPerTp)
+		}(tpMetaAddress)
+	}
+	waitGroup.Wait()
+	if waitGroupErr != nil {
+		return nil, waitGroupErr
+	}
+
+	// get drs collateral amount
+	drsCollateralBalances, err := useCase.StellarRepo.GetAccountBalances(env.DrsPublicKey)
+	if err != nil {
+		return nil, nerrors.ErrInternal{Message: errors.Wrap(err, constants.ErrGetDrsAccountBalance).Error()}
+	}
+
+	var drsCollateralAmount = decimal.Zero
+	var drsCollateralAssetCode string
+	var drsCollateralAssetIssuer string
+	for _, balance := range drsCollateralBalances {
+		if balance.Code == string(vxdr.AssetVELO) && balance.Issuer == env.VeloIssuerPublicKey {
+			balanceDecimal, err := decimal.NewFromString(balance.Balance)
+			if err != nil {
+				return nil, nerrors.ErrInternal{Message: err.Error()}
+			}
+			drsCollateralAssetCode = balance.Code
+			drsCollateralAssetIssuer = balance.Issuer
+			drsCollateralAmount = balanceDecimal
+		}
+	}
+	if drsCollateralAssetIssuer == "" || drsCollateralAssetCode == "" {
+		return nil, nerrors.ErrInternal{Message: constants.ErrDrsCollateralTrustlineNotFound}
+	}
+
+	drsCollateralRequiredAmount = drsCollateralRequiredAmount.Truncate(7)
+	drsCollateralAmount = drsCollateralAmount.Truncate(7)
+
+	rebalanceOutput := &entities.RebalanceOutput{
+		Collaterals: []*entities.Collateral{
+			{
+				AssetCode:      drsCollateralAssetCode,
+				AssetIssuer:    drsCollateralAssetIssuer,
+				RequiredAmount: drsCollateralRequiredAmount,
+				PoolAmount:     drsCollateralAmount,
+			},
+		},
+	}
+
+	drsCollateralKP, err := vconvert.SecretKeyToKeyPair(env.DrsSecretKey)
+	if err != nil {
+		return nil, nerrors.ErrInternal{
+			Message: errors.Wrap(err, constants.ErrDerivedKeyPairFromSeed).Error(),
+		}
+	}
+
+	if drsCollateralAmount.GreaterThan(drsCollateralRequiredAmount) { // collateral amount greater than required amount
+		tx := txnbuild.Transaction{
+			SourceAccount: txSenderAccount,
+			Network:       env.NetworkPassphrase,
+			Timebounds:    txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes),
+			Operations: []txnbuild.Operation{
+				&txnbuild.Payment{
+					Destination: drsCollateralAccount.DrsReserve,
+					Amount:      drsCollateralAmount.Sub(drsCollateralRequiredAmount).Truncate(7).String(),
+					Asset: txnbuild.CreditAsset{
+						Code:   drsCollateralAssetCode,
+						Issuer: drsCollateralAssetIssuer,
+					},
+					SourceAccount: &txnbuild.SimpleAccount{
+						AccountID: drsCollateralKP.Address(),
+					},
+				},
+			},
+		}
+		signedTx, err := tx.BuildSignEncode(drsCollateralKP)
+		if err != nil {
+			return nil, nerrors.ErrInternal{
+				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
+			}
+		}
+		rebalanceOutput.SignedStellarTxXdr = &signedTx
+	} else if drsCollateralAmount.LessThan(drsCollateralRequiredAmount) { // required amount greater than collateral amount
+
+		tx := txnbuild.Transaction{
+			SourceAccount: txSenderAccount,
+			Network:       env.NetworkPassphrase,
+			Timebounds:    txnbuild.NewTimeout(env.StellarTxTimeBoundInMinutes),
+			Operations: []txnbuild.Operation{
+				&txnbuild.Payment{
+					Destination: drsCollateralKP.Address(),
+					Amount:      drsCollateralRequiredAmount.Sub(drsCollateralAmount).Truncate(7).String(),
+					Asset: txnbuild.CreditAsset{
+						Code:   drsCollateralAssetCode,
+						Issuer: drsCollateralAssetIssuer,
+					},
+					SourceAccount: &txnbuild.SimpleAccount{
+						AccountID: drsCollateralAccount.DrsReserve,
+					},
+				},
+			},
+		}
+		signedTx, err := tx.BuildSignEncode(drsCollateralKP)
+		if err != nil {
+			return nil, nerrors.ErrInternal{
+				Message: errors.Wrap(err, constants.ErrBuildAndSignTransaction).Error(),
+			}
+		}
+		rebalanceOutput.SignedStellarTxXdr = &signedTx
+	} else {
+		return nil, nerrors.ErrPrecondition{
+			Message: errors.New(constants.ErrRebalanceIsNotRequired).Error(),
+		}
+	}
+
+	return rebalanceOutput, nil
+}
