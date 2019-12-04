@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	sourceSeedKey          = "SC4SZV5REEH7XSBTEMKZ5IEC3RMBVGXLI224NZSM5V6JR2KDPVNTWP77"
-	veloAssetIssuerSeedKey = "SAMDFVRBLEA2YPGJYZAHQTFKNHSUQF5YMLJBXTNRWCED7QNOVWRBN4O7"
+	sourceSeedKey          = "<YOUR_SECRET_KEY>"
+	veloAssetIssuerSeedKey = "<VELO_ASSET_ISSUER_SEED_KEY>"
 	veloAsset              = "VELO"
 
 	sourceKP, _          = vconvert.SecretKeyToKeyPair(sourceSeedKey)
