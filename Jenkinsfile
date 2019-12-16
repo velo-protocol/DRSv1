@@ -17,6 +17,14 @@ pipeline {
         CONTAINER_IMAGE="registry.gitlab.com/velo-labs/${appName}"
     }
     stages {
+        stage ('Cleanup') {
+            steps {
+                dir('directoryToDelete') {
+                    deleteDir()
+                }
+            }
+        }
+
         stage('Build Image Test') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '6a0ef684-a441-4262-937f-d9a7a0602b56', passwordVariable: 'gitlabPassword', usernameVariable: 'gitlabUsername')]) {
@@ -119,6 +127,9 @@ pipeline {
         always {
             junit "reports/coverage-tasks.xml"
             cobertura coberturaReportFile: "reports/coverage.xml"
+        }
+        cleanup {
+            deleteDir()
         }
     }
 }
