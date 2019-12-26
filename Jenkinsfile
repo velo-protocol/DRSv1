@@ -123,7 +123,7 @@ pipeline {
         failure {
             withCredentials([string(credentialsId: 'velo-github-token', variable: 'githubToken')]) {
             sh '''
-                curl \"https://api.github.com/repos/${githubUsername}/${appName}/statuses/${GIT_COMMIT}?access_token=${githubToken}\" \
+                curl \"https://api.github.com/repos/${githubUsername}/${repoName}/statuses/${GIT_COMMIT}?access_token=${githubToken}\" \
                 -H \"Content-Type: application/json\" \
                 -X POST \
                 -d "${status_failure}"
@@ -133,7 +133,7 @@ pipeline {
         success {
             withCredentials([string(credentialsId: 'velo-github-token', variable: 'githubToken')]) {
             sh '''
-                curl \"https://api.github.com/repos/${githubUsername}/${appName}/statuses/${GIT_COMMIT}?access_token=${githubToken}\" \
+                curl \"https://api.github.com/repos/${githubUsername}/${repoName}/statuses/${GIT_COMMIT}?access_token=${githubToken}\" \
                 -H \"Content-Type: application/json\" \
                 -X POST \
                 -d "${status_success}"
