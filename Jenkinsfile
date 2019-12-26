@@ -14,6 +14,7 @@ pipeline {
         dockerTag="${env.branchName}-${env.newVersion}"
         dockerImage="${env.CONTAINER_IMAGE}:${env.dockerTag}"
         appName="cen"
+        repoName="DRSv1"
         githubUsername="velo-protocol"
         CONTAINER_IMAGE="registry.gitlab.com/velo-labs/${appName}"
         status_failure="{\"state\": \"failure\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"${BUILD_URL}\"}"
