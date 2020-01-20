@@ -14,7 +14,11 @@ pipeline {
         dockerTag="${env.branchName}-${env.newVersion}"
         dockerImage="${env.CONTAINER_IMAGE}:${env.dockerTag}"
         appName="cen"
+        repoName="DRSv1"
+        githubUsername="velo-protocol"
         CONTAINER_IMAGE="registry.gitlab.com/velo-labs/${appName}"
+        status_failure="{\"state\": \"failure\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"${BUILD_URL}\"}"
+        status_success="{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"${BUILD_URL}\"}"
     }
     stages {
         stage('Build Image Test') {
@@ -116,6 +120,26 @@ pipeline {
     }
 
     post {
+        failure {
+            withCredentials([string(credentialsId: 'velo-github-token', variable: 'githubToken')]) {
+            sh '''
+                curl \"https://api.github.com/repos/${githubUsername}/${repoName}/statuses/${GIT_COMMIT}?access_token=${githubToken}\" \
+                -H \"Content-Type: application/json\" \
+                -X POST \
+                -d "${status_failure}"
+            '''
+            }
+        }
+        success {
+            withCredentials([string(credentialsId: 'velo-github-token', variable: 'githubToken')]) {
+            sh '''
+                curl \"https://api.github.com/repos/${githubUsername}/${repoName}/statuses/${GIT_COMMIT}?access_token=${githubToken}\" \
+                -H \"Content-Type: application/json\" \
+                -X POST \
+                -d "${status_success}"
+            '''
+            }
+        }
         always {
             junit "reports/coverage-tasks.xml"
             cobertura coberturaReportFile: "reports/coverage.xml"
